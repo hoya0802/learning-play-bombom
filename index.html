@@ -504,6 +504,31 @@
     .sprite.bulb { background-position: 50% 100%; }
     .sprite.check { background-position: 100% 100%; }
 
+    .kit-sprite {
+      display: inline-block;
+      width: 54px;
+      height: 54px;
+      flex: 0 0 auto;
+      background-image: url("assets/learning-kit-sprite.png");
+      background-repeat: no-repeat;
+      background-size: 400% 300%;
+      filter: drop-shadow(0 8px 12px rgba(80, 48, 54, .12));
+      vertical-align: middle;
+    }
+
+    .kit-logo { background-position: 0 0; }
+    .kit-memory { background-position: 33.333% 0; }
+    .kit-meaning { background-position: 66.666% 0; }
+    .kit-hanja-choice { background-position: 100% 0; }
+    .kit-ox { background-position: 0 50%; }
+    .kit-review { background-position: 33.333% 50%; }
+    .kit-time { background-position: 66.666% 50%; }
+    .kit-connect { background-position: 100% 50%; }
+    .kit-write { background-position: 0 100%; }
+    .kit-english { background-position: 33.333% 100%; }
+    .kit-math { background-position: 66.666% 100%; }
+    .kit-science { background-position: 100% 100%; }
+
     body {
       background:
         radial-gradient(circle at 4% 4%, rgba(255, 122, 152, .16), transparent 20%),
@@ -530,9 +555,14 @@
     .mark {
       position: relative;
       background: #fff;
-      color: #ef5f86;
       border: 2px solid #ffd0dc;
       box-shadow: 0 8px 18px rgba(239, 95, 134, .16);
+    }
+
+    .mark .kit-sprite {
+      width: 48px;
+      height: 48px;
+      filter: none;
     }
 
     .mark::after {
@@ -1158,9 +1188,11 @@
       border: 2px solid #149067;
       border-radius: 8px;
       background: #fff;
-      font-family: "Songti SC", "Noto Serif CJK KR", serif;
-      font-size: 72px;
-      line-height: 1;
+    }
+
+    .pack-card .hanja-preview .kit-sprite {
+      width: 120px;
+      height: 120px;
     }
 
     .level-summary {
@@ -1258,15 +1290,18 @@
     }
 
     .mode-icon {
-      width: 42px;
-      height: 42px;
+      width: 62px;
+      height: 62px;
       display: grid;
       place-items: center;
       border-radius: 8px;
       background: #fff4f7;
-      color: #ef4f77;
-      font-size: 24px;
-      font-weight: 950;
+    }
+
+    .mode-icon .kit-sprite {
+      width: 62px;
+      height: 62px;
+      filter: none;
     }
 
     .home-side {
@@ -1339,14 +1374,18 @@
     }
 
     .mini-icon {
-      width: 44px;
-      height: 44px;
+      width: 58px;
+      height: 58px;
       display: grid;
       place-items: center;
       border-radius: 8px;
       background: #f1fff7;
-      color: #16805f;
-      font-weight: 950;
+    }
+
+    .mini-icon .kit-sprite {
+      width: 58px;
+      height: 58px;
+      filter: none;
     }
 
     @media (max-width: 1100px) {
@@ -1497,7 +1536,7 @@
   <div class="app">
     <header class="topbar">
       <div class="brand" aria-label="Learning Play Kit">
-        <div class="mark">花</div>
+        <div class="mark"><span class="kit-sprite kit-logo" aria-hidden="true"></span></div>
         <div>
           <h1>Learning <span class="accent">Play Kit</span></h1>
           <div class="source">태블릿 학습 게임 · 현재 콘텐츠: 한자 메모리</div>
@@ -1540,7 +1579,7 @@
             </div>
           </div>
           <div class="pack-card">
-            <div class="hanja-preview">學</div>
+            <div class="hanja-preview"><span class="kit-sprite kit-memory" aria-hidden="true"></span></div>
             <strong>한자 메모리</strong>
             <div class="level-summary" aria-label="한자 급수">
               <span>8급<br>50자</span>
@@ -1557,7 +1596,7 @@
           </div>
           <div id="modeGrid" class="mode-grid">
             <button class="mode-card" type="button" data-mode="memory" data-ready="true">
-              <span class="mode-icon">記</span>
+              <span class="mode-icon"><span class="kit-sprite kit-memory" aria-hidden="true"></span></span>
               <span>
                 <h3>메모리</h3>
                 <p>한자와 뜻·음을 카드로 맞춰요.</p>
@@ -1565,7 +1604,7 @@
               <span class="mode-meta"><span>사용 가능</span><span>보석 +3</span></span>
             </button>
             <button class="mode-card" type="button" data-mode="meaning" data-ready="false">
-              <span class="mode-icon">뜻</span>
+              <span class="mode-icon"><span class="kit-sprite kit-meaning" aria-hidden="true"></span></span>
               <span>
                 <h3>뜻 고르기</h3>
                 <p>한자를 보고 맞는 뜻·음을 골라요.</p>
@@ -1573,7 +1612,7 @@
               <span class="mode-meta"><span>다음 단계</span><span>준비중</span></span>
             </button>
             <button class="mode-card" type="button" data-mode="hanja" data-ready="false">
-              <span class="mode-icon">字</span>
+              <span class="mode-icon"><span class="kit-sprite kit-hanja-choice" aria-hidden="true"></span></span>
               <span>
                 <h3>한자 고르기</h3>
                 <p>뜻·음을 보고 맞는 한자를 찾아요.</p>
@@ -1581,7 +1620,7 @@
               <span class="mode-meta"><span>다음 단계</span><span>준비중</span></span>
             </button>
             <button class="mode-card" type="button" data-mode="ox" data-ready="false">
-              <span class="mode-icon">OX</span>
+              <span class="mode-icon"><span class="kit-sprite kit-ox" aria-hidden="true"></span></span>
               <span>
                 <h3>OX 퀴즈</h3>
                 <p>맞는 짝인지 빠르게 판단해요.</p>
@@ -1589,7 +1628,7 @@
               <span class="mode-meta"><span>다음 단계</span><span>준비중</span></span>
             </button>
             <button class="mode-card" type="button" data-mode="review" data-ready="false">
-              <span class="mode-icon">↻</span>
+              <span class="mode-icon"><span class="kit-sprite kit-review" aria-hidden="true"></span></span>
               <span>
                 <h3>복습함</h3>
                 <p>틀린 문제만 다시 모아 연습해요.</p>
@@ -1597,7 +1636,7 @@
               <span class="mode-meta"><span>곧 연결</span><span>복습</span></span>
             </button>
             <button class="mode-card" type="button" data-mode="time" data-ready="false">
-              <span class="mode-icon">60</span>
+              <span class="mode-icon"><span class="kit-sprite kit-time" aria-hidden="true"></span></span>
               <span>
                 <h3>타임어택</h3>
                 <p>정해진 시간 안에 많이 맞혀요.</p>
@@ -1605,7 +1644,7 @@
               <span class="mode-meta"><span>확장 모드</span><span>기록</span></span>
             </button>
             <button class="mode-card" type="button" data-mode="connect" data-ready="false">
-              <span class="mode-icon">↔</span>
+              <span class="mode-icon"><span class="kit-sprite kit-connect" aria-hidden="true"></span></span>
               <span>
                 <h3>짝 잇기</h3>
                 <p>왼쪽과 오른쪽의 짝을 이어요.</p>
@@ -1613,7 +1652,7 @@
               <span class="mode-meta"><span>확장 모드</span><span>비교</span></span>
             </button>
             <button class="mode-card" type="button" data-mode="write" data-ready="false">
-              <span class="mode-icon">✎</span>
+              <span class="mode-icon"><span class="kit-sprite kit-write" aria-hidden="true"></span></span>
               <span>
                 <h3>쓰기 연습</h3>
                 <p>태블릿 펜이나 손가락으로 따라 써요.</p>
@@ -1637,18 +1676,23 @@
           <h2>콘텐츠팩</h2>
           <div class="content-packs">
             <div class="mini-pack">
-              <span class="mini-icon">漢</span>
+              <span class="mini-icon"><span class="kit-sprite kit-memory" aria-hidden="true"></span></span>
               <span><b>한자 메모리</b><span>공인한자능력시험 8급~7급</span></span>
               <strong>활성</strong>
             </div>
             <div class="mini-pack">
-              <span class="mini-icon">EN</span>
+              <span class="mini-icon"><span class="kit-sprite kit-english" aria-hidden="true"></span></span>
               <span><b>영어 단어</b><span>단어 카드 학습팩</span></span>
               <strong>예정</strong>
             </div>
             <div class="mini-pack">
-              <span class="mini-icon">＋</span>
+              <span class="mini-icon"><span class="kit-sprite kit-math" aria-hidden="true"></span></span>
               <span><b>수학 연산</b><span>빠른 계산 게임팩</span></span>
+              <strong>예정</strong>
+            </div>
+            <div class="mini-pack">
+              <span class="mini-icon"><span class="kit-sprite kit-science" aria-hidden="true"></span></span>
+              <span><b>과학 탐험</b><span>용어와 개념 카드팩</span></span>
               <strong>예정</strong>
             </div>
           </div>
