@@ -261,6 +261,7 @@
     }
 
     .math-active .topbar {
+      display: none;
       min-height: 58px;
       padding: 8px 10px;
       grid-template-columns: auto 1fr;
@@ -295,7 +296,7 @@
     }
 
     .math-active #gameView {
-      min-height: calc(100svh - 78px);
+      min-height: calc(100svh - 20px);
     }
 
     .math-active .side {
@@ -738,7 +739,7 @@
     }
 
     .math-battle {
-      min-height: calc(100svh - 82px);
+      min-height: calc(100svh - 20px);
       align-content: start;
       gap: 10px;
       padding: clamp(8px, 1.2vw, 14px);
@@ -797,6 +798,32 @@
       box-shadow: 0 8px 16px rgba(5, 29, 23, .14);
     }
 
+    .math-battle[data-screen="battle"] .math-head,
+    .math-battle[data-screen="ranch"] .math-head,
+    .math-battle[data-screen="gear"] .math-head,
+    .math-battle[data-screen="items"] .math-head,
+    .math-battle[data-screen="reward"] .math-head {
+      min-height: 54px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      padding: 8px 10px;
+    }
+
+    .math-battle[data-screen="battle"] .math-head p,
+    .math-battle[data-screen="ranch"] .math-head p,
+    .math-battle[data-screen="gear"] .math-head p,
+    .math-battle[data-screen="items"] .math-head p,
+    .math-battle[data-screen="reward"] .math-head p {
+      display: none;
+    }
+
+    .math-battle[data-screen="battle"] .math-head h2,
+    .math-battle[data-screen="ranch"] .math-head h2,
+    .math-battle[data-screen="gear"] .math-head h2,
+    .math-battle[data-screen="items"] .math-head h2,
+    .math-battle[data-screen="reward"] .math-head h2 {
+      font-size: clamp(20px, 2vw, 26px);
+    }
+
     .math-view.hidden {
       display: none;
     }
@@ -805,12 +832,12 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(286px, 360px);
       gap: 10px;
-      min-height: min(760px, calc(100svh - 178px));
+      min-height: min(760px, calc(100svh - 116px));
     }
 
     .math-world-board {
       position: relative;
-      min-height: min(760px, calc(100svh - 178px));
+      min-height: min(760px, calc(100svh - 116px));
       overflow: hidden;
       border: 1px solid rgba(93, 145, 121, .42);
       border-radius: 8px;
@@ -948,7 +975,7 @@
     }
 
     .math-arena {
-      min-height: min(760px, calc(100svh - 178px));
+      min-height: min(760px, calc(100svh - 116px));
       border-color: rgba(255, 224, 143, .38);
       box-shadow: inset 0 -120px 100px rgba(18, 50, 42, .12), 0 16px 30px rgba(5, 29, 23, .2);
       background:
@@ -962,7 +989,7 @@
     }
 
     .battle-field {
-      min-height: clamp(320px, 48svh, 520px);
+      min-height: clamp(250px, 40svh, 470px);
     }
 
     .battle-actor img {
@@ -1132,7 +1159,7 @@
     }
 
     .math-location-view {
-      min-height: min(760px, calc(100svh - 178px));
+      min-height: min(760px, calc(100svh - 116px));
     }
 
     .math-location-scene {
@@ -1140,7 +1167,7 @@
       display: grid;
       grid-template-rows: auto 1fr;
       gap: 14px;
-      min-height: min(760px, calc(100svh - 178px));
+      min-height: min(760px, calc(100svh - 116px));
       padding: 72px 18px 18px;
       overflow: hidden;
       border: 1px solid rgba(93, 145, 121, .42);
@@ -3699,6 +3726,15 @@
         grid-template-columns: 1fr;
       }
 
+      .math-active .math-choices {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .math-active .math-choice {
+        min-height: 64px;
+        font-size: clamp(22px, 8vw, 32px);
+      }
+
       .shop-card {
         grid-template-columns: 48px 1fr;
       }
@@ -4685,6 +4721,7 @@
 
     function renderMathScreen() {
       const screen = state.math.screen || "world";
+      els.mathBattleWrap.dataset.screen = screen;
       els.mathWorldView.classList.toggle("hidden", screen !== "world");
       els.mathBattleView.classList.toggle("hidden", screen !== "battle");
       els.mathLocationView.classList.toggle("hidden", !["ranch", "gear", "items", "reward"].includes(screen));
