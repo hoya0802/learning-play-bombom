@@ -25,6 +25,117 @@
 
     * { box-sizing: border-box; }
 
+    body.auth-locked .app {
+      display: none;
+    }
+
+    .auth-screen {
+      display: none;
+    }
+
+    body.auth-locked .auth-screen {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 18% 16%, rgba(255, 202, 64, .22), transparent 28%),
+        radial-gradient(circle at 80% 78%, rgba(79, 166, 255, .18), transparent 30%),
+        linear-gradient(135deg, rgba(255, 240, 244, .9), rgba(245, 255, 249, .92)),
+        var(--bg);
+    }
+
+    .auth-card {
+      width: min(460px, 100%);
+      display: grid;
+      gap: 18px;
+      padding: 28px;
+      border: 1px solid #efd9d3;
+      border-radius: 8px;
+      background: rgba(255, 253, 248, .96);
+      box-shadow: 0 22px 54px rgba(108, 71, 65, .16);
+      text-align: center;
+    }
+
+    .auth-card img {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto;
+      object-fit: contain;
+    }
+
+    .auth-card h1 {
+      font-size: 30px;
+      line-height: 1.12;
+    }
+
+    .auth-card p {
+      margin: 0;
+      color: #68726d;
+      font-size: 15px;
+      font-weight: 850;
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .auth-form label {
+      color: #3d4943;
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .auth-input-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+    }
+
+    .auth-form input {
+      min-height: 54px;
+      width: 100%;
+      padding: 0 16px;
+      border: 1px solid #eadbd2;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-size: 20px;
+      font-weight: 950;
+      letter-spacing: .18em;
+      outline: none;
+    }
+
+    .auth-form input:focus {
+      border-color: #ef7b96;
+      box-shadow: 0 0 0 4px rgba(239, 79, 123, .12);
+    }
+
+    .auth-submit {
+      min-height: 54px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ff6b94, #ef4f77);
+      color: #fff;
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(239, 79, 123, .22);
+    }
+
+    .auth-error {
+      min-height: 20px;
+      color: #d13f5f;
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+    }
+
     body {
       margin: 0;
       min-height: 100svh;
@@ -861,54 +972,80 @@
     }
 
     .world-node {
-      width: clamp(92px, 12vw, 150px);
-      min-height: 100px;
+      width: auto;
+      min-width: 92px;
+      min-height: 42px;
       cursor: pointer;
       transition: transform .18s ease, filter .18s ease;
+      transform: translate(-50%, -50%);
     }
 
     .world-node:hover,
     .world-node:focus-visible {
       outline: none;
-      transform: translateY(-5px) scale(1.04);
+      transform: translate(-50%, calc(-50% - 5px)) scale(1.04);
       filter: drop-shadow(0 12px 10px rgba(15, 83, 62, .22));
     }
 
     .world-node img {
-      width: 100%;
-      height: clamp(78px, 11vw, 132px);
-      object-fit: contain;
-      pointer-events: none;
+      display: none;
     }
 
     .world-node span,
     .world-trainer span {
-      padding: 5px 8px;
-      border: 1px solid rgba(121, 152, 107, .5);
+      position: relative;
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px 6px 28px;
+      border: 2px solid rgba(255, 224, 143, .72);
       border-radius: 8px;
-      background: rgba(255, 255, 255, .82);
+      background: linear-gradient(180deg, rgba(255, 253, 239, .96), rgba(235, 255, 239, .92));
+      box-shadow: 0 8px 14px rgba(12, 55, 43, .22), inset 0 -3px 0 rgba(36, 114, 88, .12);
       font-size: 13px;
       line-height: 1;
       white-space: nowrap;
     }
 
-    .node-battle { left: 11%; top: 12%; }
-    .node-ranch { left: 54%; top: 12%; }
-    .node-gear { left: 28%; top: 42%; }
-    .node-items { right: 9%; top: 38%; }
-    .node-practice { left: 10%; bottom: 10%; }
-    .node-reward { right: 24%; bottom: 8%; }
+    .world-node span::before,
+    .world-trainer span::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #ffffff;
+      border-radius: 999px;
+      background: #1e8a72;
+      box-shadow: 0 0 0 2px rgba(30, 138, 114, .26);
+    }
+
+    .node-battle { left: 47%; top: 34%; }
+    .node-ranch { left: 14%; top: 56%; }
+    .node-gear { left: 58%; top: 58%; }
+    .node-items { left: 77%; top: 58%; }
+    .node-practice { left: 73%; top: 82%; }
+    .node-reward { left: 86%; top: 61%; }
 
     .world-trainer {
       left: 45%;
-      bottom: 20%;
-      width: clamp(70px, 9vw, 110px);
+      top: 66%;
+      width: clamp(70px, 8vw, 98px);
+      transform: translate(-50%, -50%);
     }
 
     .world-trainer img {
       width: 100%;
       object-fit: contain;
       filter: drop-shadow(0 12px 10px rgba(25, 58, 48, .22));
+    }
+
+    .world-trainer span {
+      padding-left: 10px;
+    }
+
+    .world-trainer span::before {
+      display: none;
     }
 
     .math-world-status {
@@ -983,17 +1120,75 @@
         url("assets/math-pet-battle/backgrounds/bg-forest-academy-vivid.png") center / cover no-repeat;
     }
 
+    .math-battle-view .math-arena {
+      display: block;
+      min-height: min(760px, calc(100svh - 116px));
+    }
+
     .math-shell {
       grid-template-columns: minmax(0, 1fr) minmax(230px, 280px);
       gap: 10px;
     }
 
     .battle-field {
-      min-height: clamp(250px, 40svh, 470px);
+      min-height: min(760px, calc(100svh - 116px));
+    }
+
+    .battle-hud {
+      position: absolute;
+      top: 12px;
+      left: 88px;
+      right: 12px;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      pointer-events: none;
+    }
+
+    .battle-hud-chip {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border: 2px solid rgba(255, 224, 143, .56);
+      border-radius: 8px;
+      background: rgba(22, 49, 43, .88);
+      color: #fff7d3;
+      font-size: 12px;
+      font-weight: 950;
+      box-shadow: 0 8px 14px rgba(5, 29, 23, .2);
+    }
+
+    .battle-hud-chip img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
     }
 
     .battle-actor img {
       filter: drop-shadow(0 16px 16px rgba(9, 38, 31, .28));
+    }
+
+    .math-battle-view .battle-actor {
+      z-index: 2;
+    }
+
+    .math-battle-view .actor-trainer {
+      left: 4%;
+      bottom: clamp(230px, 31svh, 320px);
+    }
+
+    .math-battle-view .actor-pet {
+      left: 22%;
+      bottom: clamp(250px, 34svh, 350px);
+    }
+
+    .math-battle-view .actor-enemy {
+      right: 10%;
+      bottom: clamp(250px, 34svh, 350px);
     }
 
     .actor-name {
@@ -1011,13 +1206,18 @@
     }
 
     .math-command {
+      position: absolute;
+      left: clamp(10px, 2vw, 22px);
+      right: clamp(10px, 2vw, 22px);
+      bottom: clamp(10px, 2vw, 18px);
+      z-index: 3;
       gap: 10px;
-      margin: 0 12px 12px;
-      padding: 12px;
-      border: 1px solid rgba(255, 224, 143, .52);
+      margin: 0;
+      padding: 14px;
+      border: 3px solid rgba(51, 77, 67, .92);
       border-radius: 8px;
-      background: linear-gradient(180deg, rgba(255, 253, 238, .96), rgba(234, 255, 239, .94));
-      box-shadow: 0 14px 26px rgba(5, 29, 23, .18);
+      background: linear-gradient(180deg, rgba(255, 239, 203, .98), rgba(236, 209, 164, .98));
+      box-shadow: 0 18px 24px rgba(5, 29, 23, .28), inset 0 0 0 2px rgba(255,255,255,.38);
     }
 
     .math-question {
@@ -1029,7 +1229,7 @@
       display: block;
       margin-top: 4px;
       color: #182f29;
-      font-size: clamp(38px, 5.6vw, 70px);
+      font-size: clamp(42px, 6vw, 76px);
       text-shadow: 0 2px 0 rgba(255,255,255,.9);
     }
 
@@ -1052,22 +1252,45 @@
     }
 
     .math-choice {
-      min-height: 74px;
-      border: 2px solid #f0c96f;
-      background: linear-gradient(180deg, #fffdf6, #ecfff2);
-      color: #162d27;
-      box-shadow: inset 0 -4px 0 rgba(26, 93, 74, .12), 0 8px 14px rgba(5, 29, 23, .12);
+      min-height: 82px;
+      border: 3px solid rgba(255,255,255,.62);
+      color: #fff;
+      text-shadow: 0 2px 0 rgba(0,0,0,.2);
+      box-shadow: inset 0 -7px 0 rgba(0,0,0,.18), 0 8px 14px rgba(5, 29, 23, .18);
+    }
+
+    .math-choice:nth-child(1) {
+      background: linear-gradient(180deg, #4eb8ff, #176ac7);
+    }
+
+    .math-choice:nth-child(2) {
+      background: linear-gradient(180deg, #77cc6a, #2e944d);
+    }
+
+    .math-choice:nth-child(3) {
+      background: linear-gradient(180deg, #ff9a6c, #db493c);
     }
 
     .math-choice:hover,
     .math-choice:focus-visible {
-      border-color: #22b88f;
+      border-color: #fff7d3;
       transform: translateY(-2px);
+    }
+
+    .math-choice.correct {
+      border-color: #fff7d3;
+      background: linear-gradient(180deg, #8ce37a, #2e944d);
+    }
+
+    .math-choice.wrong-selected,
+    .math-choice.wrong {
+      border-color: #fff7d3;
+      background: linear-gradient(180deg, #ff9a6c, #cf4036);
     }
 
     .math-log {
       border-color: #ead08b;
-      background: #fff7d9;
+      background: rgba(255, 248, 218, .9);
       color: #33463e;
     }
 
@@ -1153,9 +1376,9 @@
     }
 
     .math-choice.wrong-selected {
-      border-color: #df6b57;
-      background: #fff0ec;
-      box-shadow: 0 0 0 5px rgba(223, 107, 87, .18);
+      border-color: #fff7d3;
+      background: linear-gradient(180deg, #ff9a6c, #cf4036);
+      box-shadow: inset 0 -7px 0 rgba(0,0,0,.18), 0 0 0 5px rgba(223, 107, 87, .18);
     }
 
     .math-location-view {
@@ -3664,23 +3887,36 @@
       }
 
       .world-node {
-        width: 92px;
+        min-width: 76px;
       }
 
       .world-node img {
         height: 84px;
       }
 
-      .node-battle { left: 5%; top: 8%; }
-      .node-ranch { left: 56%; top: 9%; }
-      .node-gear { left: 18%; top: 39%; }
-      .node-items { right: 4%; top: 38%; }
-      .node-practice { left: 6%; bottom: 13%; }
-      .node-reward { right: 12%; bottom: 10%; }
+      .world-node span,
+      .world-trainer span {
+        min-height: 28px;
+        padding: 5px 8px 5px 24px;
+        font-size: 11px;
+      }
+
+      .world-node span::before {
+        left: 7px;
+        width: 9px;
+        height: 9px;
+      }
+
+      .node-battle { left: 47%; top: 34%; }
+      .node-ranch { left: 14%; top: 56%; }
+      .node-gear { left: 58%; top: 58%; }
+      .node-items { left: 77%; top: 58%; }
+      .node-practice { left: 73%; top: 82%; }
+      .node-reward { left: 86%; top: 61%; }
 
       .world-trainer {
-        left: 41%;
-        bottom: 27%;
+        left: 45%;
+        top: 66%;
         width: 78px;
       }
 
@@ -3702,27 +3938,45 @@
       }
 
       .battle-field {
-        min-height: 330px;
+        min-height: min(720px, calc(100svh - 116px));
+      }
+
+      .battle-hud {
+        left: 12px;
+        top: 54px;
+      }
+
+      .battle-hud-chip {
+        min-height: 30px;
+        padding: 4px 8px;
+      }
+
+      .battle-hud-chip img {
+        width: 18px;
+        height: 18px;
       }
 
       .battle-actor img {
-        width: 132px;
+        width: 118px;
       }
 
-      .actor-trainer {
+      .math-battle-view .actor-trainer {
         left: 4%;
+        bottom: clamp(310px, 40svh, 370px);
       }
 
       .actor-trainer img {
         width: 82px;
       }
 
-      .actor-pet {
+      .math-battle-view .actor-pet {
         left: 18%;
+        bottom: clamp(300px, 38svh, 365px);
       }
 
-      .actor-enemy {
+      .math-battle-view .actor-enemy {
         right: 4%;
+        bottom: clamp(300px, 38svh, 365px);
       }
 
       .hp-bar {
@@ -3740,7 +3994,7 @@
       }
 
       .math-active .math-choice {
-        min-height: 64px;
+        min-height: 62px;
         font-size: clamp(22px, 8vw, 32px);
       }
 
@@ -3808,7 +4062,24 @@
     }
   </style>
 </head>
-<body>
+<body class="auth-locked">
+  <section id="authScreen" class="auth-screen" aria-label="사이트 암호 입력">
+    <div class="auth-card">
+      <img src="assets/learning-logo.png" alt="" aria-hidden="true">
+      <div>
+        <h1>Learning Play Bombom</h1>
+        <p>학습을 시작하려면 입장 암호를 입력해 주세요.</p>
+      </div>
+      <form id="authForm" class="auth-form" autocomplete="off">
+        <label for="authPassword">입장 암호</label>
+        <div class="auth-input-row">
+          <input id="authPassword" name="authPassword" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="12" aria-describedby="authError">
+          <button class="auth-submit" type="submit">입장</button>
+        </div>
+        <div id="authError" class="auth-error" role="alert" aria-live="polite"></div>
+      </form>
+    </div>
+  </section>
   <div class="app">
     <header class="topbar">
       <div class="brand" aria-label="Learning Play Bombom">
@@ -4069,9 +4340,14 @@
         <div id="mathBattleView" class="math-view math-battle-view hidden">
           <div class="math-shell">
             <div class="math-arena">
-              <div class="battle-field">
-                <button class="math-back-button" type="button" data-math-destination="world">월드맵</button>
-                <div id="mathBattleEffect" class="math-battle-effect hidden" aria-live="polite"></div>
+            <div class="battle-field">
+              <button class="math-back-button" type="button" data-math-destination="world">월드맵</button>
+              <div class="battle-hud" aria-label="전투 상태">
+                <span class="battle-hud-chip"><img src="assets/math-pet-battle/ui/single/stage-flag.png" alt="" aria-hidden="true"><b id="mathBattleStage">스테이지 1</b></span>
+                <span class="battle-hud-chip"><img src="assets/math-pet-battle/ui/single/pet-paw.png" alt="" aria-hidden="true"><b id="mathBattlePet">모모</b></span>
+                <span class="battle-hud-chip"><img src="assets/math-pet-battle/ui/single/attack-burst.png" alt="" aria-hidden="true"><b id="mathBattleEnemy">숫자젤리</b></span>
+              </div>
+              <div id="mathBattleEffect" class="math-battle-effect hidden" aria-live="polite"></div>
                 <div class="battle-actor actor-trainer">
                   <img src="assets/math-pet-battle/characters/trainer-arin.png" alt="조련사 아린">
                   <span class="actor-name">조련사 아린</span>
@@ -4255,6 +4531,11 @@
       "70": { label: "7급", codes: ["80", "72", "70"], total: 150 }
     };
 
+    const AUTH_PASSWORD = "0802";
+    const AUTH_STORAGE_KEY = "learning-play-bombom-auth-v1";
+    const AUTH_DURATION_MS = 2 * 24 * 60 * 60 * 1000;
+    let authSessionExpiresAt = 0;
+
     const state = {
       mode: "memory",
       level: "72",
@@ -4348,6 +4629,9 @@
       mathBattleEffect: document.querySelector("#mathBattleEffect"),
       mathWorldMessage: document.querySelector("#mathWorldMessage"),
       mathExitButton: document.querySelector("#mathExitButton"),
+      mathBattleStage: document.querySelector("#mathBattleStage"),
+      mathBattlePet: document.querySelector("#mathBattlePet"),
+      mathBattleEnemy: document.querySelector("#mathBattleEnemy"),
       mathCoins: document.querySelector("#mathCoins"),
       mathGems: document.querySelector("#mathGems"),
       mathStage: document.querySelector("#mathStage"),
@@ -4372,6 +4656,120 @@
       mathItems: document.querySelector("#mathItems"),
       mathShopGrid: document.querySelector("#mathShopGrid")
     };
+
+    const authEls = {
+      screen: document.querySelector("#authScreen"),
+      form: document.querySelector("#authForm"),
+      password: document.querySelector("#authPassword"),
+      error: document.querySelector("#authError")
+    };
+
+    function readSavedAuth() {
+      try {
+        const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+        if (!raw) return null;
+        const saved = JSON.parse(raw);
+        if (saved?.status !== "passed" || typeof saved.expiresAt !== "number") {
+          localStorage.removeItem(AUTH_STORAGE_KEY);
+          return null;
+        }
+        if (saved.expiresAt <= Date.now()) {
+          localStorage.removeItem(AUTH_STORAGE_KEY);
+          return null;
+        }
+        return saved;
+      } catch {
+        try {
+          localStorage.removeItem(AUTH_STORAGE_KEY);
+        } catch {
+          // Ignore storage cleanup failures.
+        }
+        return null;
+      }
+    }
+
+    function hasSavedAuth() {
+      return authSessionExpiresAt > Date.now() || Boolean(readSavedAuth());
+    }
+
+    function saveAuth() {
+      const now = Date.now();
+      authSessionExpiresAt = now + AUTH_DURATION_MS;
+      try {
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
+          status: "passed",
+          savedAt: now,
+          expiresAt: authSessionExpiresAt
+        }));
+      } catch {
+        // If storage is blocked, keep the current session open after a valid password.
+      }
+    }
+
+    function lockApp(message = "") {
+      document.body.classList.add("auth-locked");
+      authEls.error.textContent = message;
+      window.requestAnimationFrame(() => authEls.password.focus());
+    }
+
+    function unlockApp() {
+      document.body.classList.remove("auth-locked");
+      authEls.error.textContent = "";
+      authEls.password.value = "";
+    }
+
+    function requireAuth() {
+      if (hasSavedAuth()) {
+        unlockApp();
+        return true;
+      }
+      lockApp("암호 유효기간이 지났어요. 다시 입력해 주세요.");
+      return false;
+    }
+
+    function initAuthGate() {
+      if (hasSavedAuth()) {
+        unlockApp();
+        return;
+      }
+      lockApp();
+    }
+
+    authEls.form.addEventListener("submit", event => {
+      event.preventDefault();
+      if (authEls.password.value.trim() === AUTH_PASSWORD) {
+        saveAuth();
+        unlockApp();
+        return;
+      }
+      authEls.error.textContent = "암호가 맞지 않아요. 다시 입력해 주세요.";
+      authEls.password.select();
+    });
+
+    window.addEventListener("pageshow", initAuthGate);
+    window.addEventListener("focus", requireAuth);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) requireAuth();
+    });
+    window.addEventListener("storage", event => {
+      if (event.key !== AUTH_STORAGE_KEY) return;
+      if (hasSavedAuth()) unlockApp();
+      else lockApp("암호 유효기간이 지났어요. 다시 입력해 주세요.");
+    });
+    document.addEventListener("click", event => {
+      if (event.target.closest("#authScreen")) return;
+      if (hasSavedAuth()) return;
+      event.preventDefault();
+      event.stopPropagation();
+      lockApp("암호 유효기간이 지났어요. 다시 입력해 주세요.");
+    }, true);
+    document.addEventListener("keydown", event => {
+      if (event.target.closest("#authScreen")) return;
+      if (hasSavedAuth()) return;
+      event.preventDefault();
+      event.stopPropagation();
+      lockApp("암호 유효기간이 지났어요. 다시 입력해 주세요.");
+    }, true);
 
     const MODE_META = {
       memory: { title: "메모리", prompt: "한자 카드와 뜻·음 카드를 맞춰 보세요." },
@@ -4696,6 +5094,9 @@
       els.mathCoins.textContent = math.coins;
       els.mathGems.textContent = math.gems;
       els.mathStage.textContent = `스테이지 ${math.stage}`;
+      els.mathBattleStage.textContent = `스테이지 ${math.stage}`;
+      els.mathBattlePet.textContent = `${pet.name} Lv.${petState.level}`;
+      els.mathBattleEnemy.textContent = enemySpec.name;
       els.mathPetImage.src = pet.asset;
       els.mathPetImage.alt = `${pet.name} 펫`;
       els.mathPetHpBar.style.setProperty("--hp", mathHpPercent(petState.hp, pet.maxHp));
@@ -5508,6 +5909,7 @@
     }
 
     function setMode(mode) {
+      if (!requireAuth()) return;
       document.body.classList.toggle("math-active", mode === "math-battle");
       document.body.classList.remove("home-active");
       els.homeView.classList.add("hidden");
@@ -5595,6 +5997,7 @@
     }
 
     function showHome() {
+      if (!requireAuth()) return;
       closeQuizResult();
       document.body.classList.remove("math-active");
       document.body.classList.add("home-active");
@@ -5669,6 +6072,7 @@
 
     newGame();
     showHome();
+    initAuthGate();
   </script>
 </body>
 </html>
