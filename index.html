@@ -1,0 +1,1630 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>한자 메모리</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fbfaf6;
+      --ink: #1f2523;
+      --muted: #68726d;
+      --line: #d9ded6;
+      --panel: #ffffff;
+      --paper: #f4f0e8;
+      --jade: #1e8a72;
+      --jade-dark: #146653;
+      --coral: #df6b57;
+      --gold: #d69f38;
+      --blue: #3f6c8f;
+      --shadow: 0 18px 46px rgba(36, 45, 42, .12);
+      --radius: 8px;
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      color: var(--ink);
+      background:
+        linear-gradient(135deg, rgba(30, 138, 114, .05), transparent 36%),
+        linear-gradient(315deg, rgba(223, 107, 87, .08), transparent 34%),
+        var(--bg);
+    }
+
+    button, select {
+      font: inherit;
+      color: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app {
+      width: min(1480px, 100%);
+      margin: 0 auto;
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 18px;
+      padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 18px;
+      min-height: 78px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, .78);
+      border: 1px solid rgba(217, 222, 214, .86);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 28px rgba(43, 55, 50, .08);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: grid;
+      grid-template-columns: 46px auto;
+      align-items: center;
+      gap: 12px;
+      min-width: 210px;
+    }
+
+    .mark {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--ink);
+      color: white;
+      font-family: "Songti SC", "Noto Serif CJK KR", serif;
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .source {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .segmented {
+      display: inline-grid;
+      grid-auto-flow: column;
+      gap: 4px;
+      padding: 4px;
+      background: #eef3ef;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .segmented button,
+    .new-game {
+      min-height: 44px;
+      border: 0;
+      border-radius: 6px;
+      padding: 0 16px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .segmented button[aria-pressed="true"] {
+      color: white;
+      background: var(--jade);
+      box-shadow: 0 8px 18px rgba(30, 138, 114, .2);
+    }
+
+    .pair-select {
+      min-height: 52px;
+      padding: 0 38px 0 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: white;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .new-game {
+      color: white;
+      min-height: 52px;
+      background: var(--ink);
+      box-shadow: 0 12px 24px rgba(31, 37, 35, .18);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(72px, auto));
+      gap: 8px;
+      justify-content: end;
+    }
+
+    .stat {
+      min-height: 52px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      text-align: center;
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 292px;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .board-wrap,
+    .side {
+      min-height: 0;
+      border: 1px solid rgba(217, 222, 214, .9);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .7);
+      box-shadow: var(--shadow);
+    }
+
+    .board-wrap {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: hidden;
+    }
+
+    .board-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid rgba(217, 222, 214, .74);
+    }
+
+    .board-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .board {
+      --cols: 4;
+      display: grid;
+      grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+      gap: clamp(8px, 1.25vw, 14px);
+      align-content: center;
+      min-height: 0;
+      padding: clamp(12px, 1.8vw, 24px);
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / .9;
+      min-height: 76px;
+      border: 0;
+      border-radius: var(--radius);
+      background: transparent;
+      perspective: 900px;
+      cursor: pointer;
+    }
+
+    .card:focus-visible {
+      outline: 3px solid rgba(63, 108, 143, .5);
+      outline-offset: 3px;
+    }
+
+    .card-inner {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform .32s ease;
+    }
+
+    .card.flipped .card-inner,
+    .card.matched .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .face {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 10px;
+      backface-visibility: hidden;
+      border: 1px solid rgba(36, 45, 42, .12);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 24px rgba(32, 44, 39, .1);
+      overflow: hidden;
+    }
+
+    .front {
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, .72), transparent),
+        repeating-linear-gradient(45deg, rgba(30, 138, 114, .08) 0 1px, transparent 1px 10px),
+        var(--paper);
+    }
+
+    .front::after {
+      content: "漢";
+      color: rgba(31, 37, 35, .18);
+      font-family: "Songti SC", "Noto Serif CJK KR", serif;
+      font-size: clamp(30px, 5vw, 64px);
+      font-weight: 900;
+    }
+
+    .back {
+      transform: rotateY(180deg);
+      background: white;
+    }
+
+    .card.hanja .back {
+      border-color: rgba(30, 138, 114, .34);
+    }
+
+    .card.meaning .back {
+      border-color: rgba(223, 107, 87, .34);
+    }
+
+    .card.matched .back {
+      background: #edf7f2;
+      border-color: rgba(30, 138, 114, .55);
+    }
+
+    .hanja-char {
+      font-family: "Songti SC", "Noto Serif CJK KR", "Batang", serif;
+      font-size: clamp(42px, 7vw, 86px);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .reading {
+      display: grid;
+      gap: 7px;
+      text-align: center;
+      line-height: 1.18;
+    }
+
+    .reading strong {
+      font-size: clamp(18px, 2.2vw, 28px);
+      word-break: keep-all;
+    }
+
+    .reading span,
+    .grade-chip {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .side {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 14px;
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .progress-ring {
+      aspect-ratio: 1;
+      max-height: 210px;
+      justify-self: center;
+      width: min(210px, 100%);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--jade) var(--progress), #e8ece6 0);
+      box-shadow: inset 0 0 0 18px rgba(255,255,255,.82);
+    }
+
+    .progress-ring div {
+      display: grid;
+      place-items: center;
+      width: calc(100% - 48px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: white;
+      text-align: center;
+      border: 1px solid var(--line);
+    }
+
+    .progress-ring strong {
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .progress-ring span {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .message {
+      min-height: 82px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: #f7f8f4;
+      border: 1px solid var(--line);
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .study-list {
+      min-height: 0;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .study-list h2 {
+      position: sticky;
+      top: 0;
+      margin: 0 0 10px;
+      padding: 2px 0 10px;
+      background: linear-gradient(var(--panel) 75%, rgba(255,255,255,0));
+      font-size: 16px;
+    }
+
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .word {
+      min-height: 52px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: white;
+    }
+
+    .word b {
+      display: block;
+      font-family: "Songti SC", "Noto Serif CJK KR", serif;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .word span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.2;
+      word-break: keep-all;
+    }
+
+    .win {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background: rgba(31, 37, 35, .34);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .win.open { display: grid; }
+
+    .win-box {
+      width: min(420px, 100%);
+      padding: 26px;
+      border-radius: var(--radius);
+      background: white;
+      box-shadow: 0 24px 70px rgba(0,0,0,.24);
+      text-align: center;
+    }
+
+    .win-box h2 {
+      margin: 0 0 10px;
+      font-size: 30px;
+    }
+
+    .win-box p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .win-box button {
+      min-height: 48px;
+      border: 0;
+      border-radius: 6px;
+      padding: 0 18px;
+      background: var(--jade);
+      color: white;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .sprite {
+      display: inline-block;
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      background-image: url("assets/hanja-stickers-sprite.png");
+      background-repeat: no-repeat;
+      background-size: 300% 200%;
+      filter: drop-shadow(0 6px 10px rgba(80, 48, 54, .12));
+      vertical-align: middle;
+    }
+
+    .sprite.gem { background-position: 0 0; }
+    .sprite.flower { background-position: 50% 0; }
+    .sprite.heart { background-position: 100% 0; }
+    .sprite.sprout { background-position: 0 100%; }
+    .sprite.bulb { background-position: 50% 100%; }
+    .sprite.check { background-position: 100% 100%; }
+
+    body {
+      background:
+        radial-gradient(circle at 4% 4%, rgba(255, 122, 152, .16), transparent 20%),
+        radial-gradient(circle at 98% 8%, rgba(255, 187, 193, .22), transparent 18%),
+        linear-gradient(180deg, #fffaf6 0%, #f6faf3 52%, #fff7f8 100%);
+    }
+
+    .app {
+      width: min(1460px, 100%);
+      gap: 16px;
+    }
+
+    .topbar {
+      min-height: 88px;
+      background: rgba(255, 253, 248, .9);
+      border-color: #efd9d3;
+      box-shadow: 0 12px 32px rgba(108, 71, 65, .1);
+    }
+
+    .brand {
+      min-width: 280px;
+    }
+
+    .mark {
+      position: relative;
+      background: #fff;
+      color: #ef5f86;
+      border: 2px solid #ffd0dc;
+      box-shadow: 0 8px 18px rgba(239, 95, 134, .16);
+    }
+
+    .mark::after {
+      content: "";
+      position: absolute;
+      right: -8px;
+      top: -8px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ffcb4f;
+      box-shadow: 0 0 0 5px #fff7fb;
+    }
+
+    h1 {
+      font-size: 30px;
+      font-weight: 950;
+    }
+
+    h1 .accent {
+      color: #ef4f7b;
+    }
+
+    .source {
+      color: #7a8178;
+      font-weight: 800;
+    }
+
+    .segmented {
+      background: #fff;
+      border-color: #eadbd2;
+      box-shadow: 0 8px 18px rgba(122, 82, 72, .08);
+    }
+
+    .segmented button {
+      min-width: 74px;
+      min-height: 54px;
+      color: #5d675f;
+      font-size: 18px;
+      line-height: 1.05;
+    }
+
+    .segmented button small {
+      display: block;
+      margin-top: 5px;
+      color: inherit;
+      font-size: 12px;
+      opacity: .82;
+    }
+
+    .segmented button[aria-pressed="true"] {
+      background: linear-gradient(180deg, #2ea879, #178761);
+      box-shadow: 0 10px 20px rgba(30, 138, 114, .24);
+    }
+
+    .pair-select {
+      border-color: #eadbd2;
+      box-shadow: 0 8px 18px rgba(122, 82, 72, .08);
+    }
+
+    .new-game {
+      background: linear-gradient(180deg, #ff6b94, #eb4471);
+      box-shadow: 0 12px 24px rgba(239, 79, 123, .24);
+      font-size: 18px;
+    }
+
+    .stats {
+      padding: 4px;
+      border: 1px solid #eadbd2;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 8px 18px rgba(122, 82, 72, .08);
+    }
+
+    .stat {
+      border: 0;
+      border-radius: 6px;
+      min-width: 78px;
+      background: #fff;
+    }
+
+    .stat + .stat {
+      border-left: 1px solid #efe2dc;
+    }
+
+    .stat span {
+      color: #7d746f;
+    }
+
+    .stat strong {
+      font-size: 22px;
+    }
+
+    main {
+      grid-template-columns: minmax(0, 1fr) 376px;
+      gap: 16px;
+    }
+
+    .board-wrap,
+    .side {
+      border-color: #efd9d3;
+      background: rgba(255, 253, 248, .86);
+      box-shadow: 0 18px 44px rgba(108, 71, 65, .12);
+    }
+
+    .board-wrap {
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .board-header {
+      border-bottom-color: #f0ded7;
+    }
+
+    .board-title {
+      font-size: 20px;
+      font-weight: 950;
+    }
+
+    .hint {
+      color: #52655c;
+    }
+
+    .card {
+      aspect-ratio: .82 / 1;
+      min-height: 118px;
+    }
+
+    .face {
+      border-width: 2px;
+      box-shadow: 0 12px 22px rgba(122, 82, 72, .13);
+    }
+
+    .front {
+      border-color: #ffc2cb;
+      background:
+        radial-gradient(circle at 78% 18%, rgba(255, 138, 161, .18) 0 7px, transparent 8px),
+        radial-gradient(circle at 22% 82%, rgba(255, 138, 161, .14) 0 5px, transparent 6px),
+        linear-gradient(180deg, rgba(255,255,255,.68), rgba(255,248,248,.78)),
+        #fff0f2;
+    }
+
+    .front::after {
+      color: rgba(239, 95, 134, .26);
+    }
+
+    .card.hanja .back {
+      border-color: #149067;
+      background: #fffefb;
+    }
+
+    .card.meaning .back {
+      border-color: #ff6d78;
+      background: #fffafa;
+    }
+
+    .card.matched .back {
+      background: #f3fff6;
+      border-color: #149067;
+    }
+
+    .card.matched .back::after {
+      content: "";
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      width: 30px;
+      height: 30px;
+      background-image: url("assets/hanja-stickers-sprite.png");
+      background-repeat: no-repeat;
+      background-size: 300% 200%;
+      background-position: 100% 100%;
+    }
+
+    .hanja-char {
+      font-size: clamp(48px, 7vw, 96px);
+    }
+
+    .reading strong {
+      font-size: clamp(20px, 2.2vw, 30px);
+    }
+
+    .play-tools {
+      display: grid;
+      grid-template-columns: 160px 160px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      padding: 0 24px 22px;
+    }
+
+    .tool-button {
+      min-height: 58px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 2px solid #edcfc0;
+      border-radius: 8px;
+      background: #fff8da;
+      color: #2c342f;
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(122, 82, 72, .1);
+    }
+
+    .tool-button.secondary {
+      background: #f1fff7;
+      border-color: #b9dccc;
+    }
+
+    .tool-button:disabled {
+      cursor: not-allowed;
+      opacity: .55;
+    }
+
+    .tool-count {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #2ea879;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .tool-button .sprite {
+      width: 30px;
+      height: 30px;
+    }
+
+    .tip-strip {
+      min-height: 58px;
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      align-items: center;
+      border: 1px solid #e5d8bc;
+      border-radius: 8px;
+      background: #fbfae9;
+      overflow: hidden;
+      color: #435047;
+      font-weight: 900;
+    }
+
+    .tip-label {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      border-right: 1px solid #e5d8bc;
+      color: #188761;
+      font-weight: 950;
+    }
+
+    .tip-strip span:last-child {
+      padding: 0 14px;
+      word-break: keep-all;
+    }
+
+    .side {
+      align-content: start;
+      grid-template-rows: auto auto auto auto;
+      gap: 14px;
+      padding: 0;
+      overflow: visible;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .quest-card {
+      border: 1px solid #efd9d3;
+      border-radius: 8px;
+      background: rgba(255, 253, 248, .92);
+      box-shadow: 0 12px 30px rgba(108, 71, 65, .1);
+      padding: 16px;
+    }
+
+    .ribbon {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      margin: -8px 0 12px;
+      padding: 0 20px;
+      background: linear-gradient(180deg, #ff6f91, #ef4f77);
+      color: #fff;
+      border-radius: 6px;
+      font-weight: 950;
+      box-shadow: 0 8px 18px rgba(239, 79, 123, .22);
+      transform: rotate(-2deg);
+    }
+
+    .mission-body {
+      display: grid;
+      grid-template-columns: 1fr 92px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .mission-body strong {
+      color: #ef4f77;
+    }
+
+    .jewel-box {
+      display: grid;
+      place-items: center;
+      min-height: 90px;
+      border: 1px solid #ffd6dc;
+      border-radius: 8px;
+      background: #fff4f7;
+      font-weight: 950;
+    }
+
+    .jewel-box b {
+      font-size: 24px;
+    }
+
+    .jewel-box .sprite {
+      width: 58px;
+      height: 58px;
+    }
+
+    .mission-path {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .path-step {
+      min-height: 56px;
+      display: grid;
+      place-items: center;
+      gap: 2px;
+      border: 1px dashed #e7c9cf;
+      border-radius: 8px;
+      color: #8a7777;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .path-step.done {
+      border-style: solid;
+      border-color: #ff7b97;
+      background: #fff2f5;
+      color: #ef4f77;
+    }
+
+    .path-step .sprite {
+      width: 28px;
+      height: 28px;
+    }
+
+    .streak-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid #efe2dc;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      font-weight: 950;
+    }
+
+    .streak-row strong {
+      color: #ef4f77;
+      font-size: 24px;
+    }
+
+    .stickers {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .sticker-slot {
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border: 2px dashed #d5cec9;
+      border-radius: 50%;
+      background: #fff;
+      opacity: .72;
+    }
+
+    .sticker-slot.filled {
+      border-color: #ffd08a;
+      background: #fff9e8;
+      opacity: 1;
+    }
+
+    .mastery {
+      background: #f5fff4;
+      border-color: #cfe4c4;
+    }
+
+    .mastery-grid {
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .level-badge {
+      display: grid;
+      place-items: center;
+      gap: 4px;
+      font-weight: 950;
+      color: #16805f;
+    }
+
+    .level-badge .sprite {
+      width: 58px;
+      height: 58px;
+    }
+
+    .bar {
+      height: 20px;
+      border-radius: 999px;
+      background: #e7eadf;
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,.08);
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: var(--w, 0%);
+      border-radius: inherit;
+      background: linear-gradient(90deg, #2fa879, #7ccf78);
+      transition: width .25s ease;
+    }
+
+    .mastery-copy {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      font-weight: 950;
+    }
+
+    .review {
+      background: #fbf5ff;
+      border-color: #dfcbed;
+    }
+
+    .panel-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 12px;
+      font-size: 17px;
+      font-weight: 950;
+      color: #69439d;
+    }
+
+    .review-count {
+      display: grid;
+      place-items: center;
+      min-width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #7653ba;
+      color: #fff;
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .review-word {
+      min-height: 72px;
+      padding: 8px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid #dfcbed;
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .review-word b {
+      display: block;
+      font-family: "Songti SC", "Noto Serif CJK KR", serif;
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .review-word span {
+      display: block;
+      margin-top: 6px;
+      color: #6c6178;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .review-empty {
+      grid-column: 1 / -1;
+      min-height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: rgba(255,255,255,.7);
+      color: #7a6b88;
+      font-weight: 900;
+    }
+
+    @media (max-width: 1100px) {
+      .topbar {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+      }
+
+      .brand {
+        min-width: 0;
+      }
+
+      .stats {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: auto;
+      }
+
+      .review {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .topbar,
+      .board-wrap,
+      .side {
+        border-radius: 8px;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+
+      .controls {
+        justify-content: stretch;
+      }
+
+      .segmented,
+      .pair-select,
+      .new-game {
+        width: 100%;
+      }
+
+      .segmented {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .board-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hint {
+        text-align: left;
+      }
+
+      .board {
+        gap: 8px;
+        padding: 10px;
+      }
+
+      .play-tools {
+        grid-template-columns: 1fr;
+        padding: 0 10px 14px;
+      }
+
+      .side {
+        grid-template-columns: 1fr;
+      }
+
+      .progress-ring {
+        width: 170px;
+      }
+
+      .mission-body,
+      .mastery-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .review-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card-inner { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand" aria-label="한자 메모리">
+        <div class="mark">花</div>
+        <div>
+          <h1>한자 <span class="accent">메모리</span></h1>
+          <div class="source">한국어문회 공인한자능력시험 배정한자 기준</div>
+        </div>
+      </div>
+
+      <div class="controls" aria-label="게임 설정">
+        <div class="segmented" role="group" aria-label="급수 선택">
+          <button id="level80" type="button" aria-pressed="false">8급<small>50자</small></button>
+          <button id="level72" type="button" aria-pressed="true">7급II<small>100자</small></button>
+          <button id="level70" type="button" aria-pressed="false">7급<small>150자</small></button>
+        </div>
+        <select id="pairCount" class="pair-select" aria-label="카드 짝 수">
+          <option value="8">8짝</option>
+          <option value="12" selected>12짝</option>
+          <option value="16">16짝</option>
+          <option value="20">20짝</option>
+          <option value="24">24짝</option>
+        </select>
+        <button id="newGame" class="new-game" type="button">✦ 새 게임</button>
+      </div>
+
+      <div class="stats" aria-label="게임 현황">
+        <div class="stat"><span>시도</span><strong id="moves">0</strong></div>
+        <div class="stat"><span>짝</span><strong id="matches">0/12</strong></div>
+        <div class="stat"><span>시간</span><strong id="timer">00:00</strong></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="board-wrap" aria-label="메모리 게임판">
+        <div class="board-header">
+          <h2 class="board-title" id="boardTitle">7급II 100자 중 12짝</h2>
+          <div class="hint" id="hint">한자 카드와 뜻·음 카드를 맞춰 보세요.</div>
+        </div>
+        <div id="board" class="board"></div>
+        <div class="play-tools" aria-label="게임 도구">
+          <button id="hintButton" class="tool-button" type="button">
+            <span class="sprite bulb" aria-hidden="true"></span>
+            힌트 <span id="hintCount" class="tool-count">3</span>
+          </button>
+          <button id="shuffleButton" class="tool-button secondary" type="button">섞기</button>
+          <div class="tip-strip">
+            <span class="tip-label">팁</span>
+            <span id="tipText">한자와 뜻·음을 짝지어 기억해요!</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side" aria-label="학습 정보">
+        <section class="quest-card mission" aria-label="오늘의 미션">
+          <div class="ribbon">오늘의 미션</div>
+          <div class="mission-body">
+            <p id="missionText">12짝을 모두 맞히고 <strong>보석 3개</strong>를 모아보세요!</p>
+            <div class="jewel-box">
+              <span class="sprite gem" aria-hidden="true"></span>
+              <b><span id="jewelCount">0</span> / 3</b>
+            </div>
+          </div>
+          <div id="missionPath" class="mission-path"></div>
+        </section>
+
+        <section class="quest-card" aria-label="연속 학습과 스티커 보상">
+          <div class="streak-row">
+            <span>연속 학습 <strong id="streakDays">3일</strong></span>
+            <span>최고 7일</span>
+          </div>
+          <div>스티커 보상</div>
+          <div id="stickerSlots" class="stickers"></div>
+        </section>
+
+        <section class="quest-card mastery" aria-label="마스터리 레벨">
+          <div class="mastery-grid">
+            <div class="level-badge">
+              <span class="sprite sprout" aria-hidden="true"></span>
+              <span>Lv. 2</span>
+            </div>
+            <div>
+              <div class="mastery-copy">
+                <span>다음 레벨까지</span>
+                <strong id="masteryPercent">0%</strong>
+              </div>
+              <div class="bar"><span id="masteryBar"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="quest-card review" aria-label="복습함">
+          <h2 class="panel-title">복습함 <span id="reviewCount" class="review-count">0</span></h2>
+          <div id="reviewGrid" class="review-grid"></div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div id="win" class="win" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+    <div class="win-box">
+      <h2 id="winTitle">완성!</h2>
+      <p id="winText">모든 짝을 맞췄습니다.</p>
+      <button id="playAgain" type="button">다시 하기</button>
+    </div>
+  </div>
+
+  <script>
+    const OFFICIAL_HANJA = [
+      ["家","집 가","72"],["歌","노래 가","70"],["間","사이 간","72"],["江","강 강","72"],["車","수레 거 | 수레 차","72"],
+      ["工","장인 공","72"],["空","빌 공","72"],["校","학교 교","80"],["敎","가르칠 교","80"],["九","아홉 구","80"],
+      ["口","입 구","70"],["國","나라 국","80"],["軍","군사 군","80"],["金","쇠 금 | 성(姓) 김","80"],["氣","기운 기","72"],
+      ["記","기록할 기","72"],["旗","기 기","70"],["南","남녘 남","80"],["男","사내 남","72"],["內","안 내","72"],
+      ["女","계집 녀","80"],["年","해 년","80"],["農","농사 농","72"],["答","대답 답","72"],["大","큰 대","80"],
+      ["道","길 도","72"],["東","동녘 동","80"],["動","움직일 동","72"],["同","한가지 동","70"],["洞","골 동 | 밝을 통","70"],
+      ["冬","겨울 동","70"],["登","오를 등","70"],["來","올 래","70"],["力","힘 력","72"],["老","늙을 로","70"],
+      ["六","여섯 륙","80"],["里","마을 리","70"],["林","수풀 림","70"],["立","설 립","72"],["萬","일만 만","80"],
+      ["每","매양 매","72"],["面","낯 면","70"],["名","이름 명","72"],["命","목숨 명","70"],["母","어미 모","80"],
+      ["木","나무 목","80"],["門","문 문","80"],["文","글월 문","70"],["問","물을 문","70"],["物","물건 물","72"],
+      ["民","백성 민","80"],["方","모[棱] 방","72"],["白","흰 백","80"],["百","일백 백","70"],["父","아비 부","80"],
+      ["夫","지아비 부","70"],["北","북녘 북 | 달아날 배","80"],["不","아닐 불","72"],["四","넉 사","80"],["事","일 사","72"],
+      ["山","메 산","80"],["算","셈 산","70"],["三","석 삼","80"],["上","윗 상","72"],["色","빛 색","70"],
+      ["生","날 생","80"],["西","서녘 서","80"],["夕","저녁 석","70"],["先","먼저 선","80"],["姓","성 성","72"],
+      ["世","인간 세","72"],["小","작을 소","80"],["少","적을 소","70"],["所","바 소","70"],["水","물 수","80"],
+      ["手","손 수","72"],["數","셈 수","70"],["時","때 시","72"],["市","저자 시","72"],["食","밥/먹을 식","72"],
+      ["植","심을 식","70"],["室","집 실","80"],["心","마음 심","70"],["十","열 십","80"],["安","편안 안","72"],
+      ["語","말씀 어","70"],["然","그럴 연","70"],["五","다섯 오","80"],["午","낮 오","72"],["王","임금 왕","80"],
+      ["外","바깥 외","80"],["右","오를/오른(쪽) 우","72"],["月","달 월","80"],["有","있을 유","70"],["育","기를 육","70"],
+      ["邑","고을 읍","70"],["二","두 이","80"],["人","사람 인","80"],["一","한 일","80"],["日","날 일","80"],
+      ["入","들 입","70"],["子","아들 자","72"],["自","스스로 자","72"],["字","글자 자","70"],["長","긴 장","80"],
+      ["場","마당 장","72"],["電","번개 전","72"],["前","앞 전","72"],["全","온전 전","72"],["正","바를 정","72"],
+      ["弟","아우 제","80"],["祖","할아비 조","70"],["足","발 족","72"],["左","왼 좌","72"],["住","살 주","70"],
+      ["主","임금/주인 주","70"],["中","가운데 중","80"],["重","무거울 중","70"],["紙","종이 지","70"],["地","따 지","70"],
+      ["直","곧을 직","72"],["千","일천 천","70"],["天","하늘 천","70"],["川","내 천","70"],["靑","푸를 청","80"],
+      ["草","풀 초","70"],["寸","마디 촌","80"],["村","마을 촌","70"],["秋","가을 추","70"],["春","봄 춘","70"],
+      ["出","날[生] 출","70"],["七","일곱 칠","80"],["土","흙 토","80"],["八","여덟 팔","80"],["便","편할 편 | 똥오줌 변","70"],
+      ["平","평평할 평","72"],["下","아래 하","72"],["夏","여름 하","70"],["學","배울 학","80"],["韓","한국/나라 한","80"],
+      ["漢","한수/한나라 한","72"],["海","바다 해","72"],["兄","형 형","80"],["火","불 화","80"],["話","말씀 화","72"],
+      ["花","꽃 화","70"],["活","살 활","72"],["孝","효도 효","72"],["後","뒤 후","72"],["休","쉴 휴","70"]
+    ].map(([hanja, reading, gradeCode], index) => ({
+      id: `${gradeCode}-${index}`,
+      hanja,
+      reading,
+      gradeCode,
+      grade: gradeCode === "80" ? "8급" : gradeCode === "72" ? "7급II" : "7급"
+    }));
+
+    const LEVELS = {
+      "80": { label: "8급", codes: ["80"], total: 50 },
+      "72": { label: "7급II", codes: ["80", "72"], total: 100 },
+      "70": { label: "7급", codes: ["80", "72", "70"], total: 150 }
+    };
+
+    const state = {
+      level: "72",
+      pairCount: 12,
+      deck: [],
+      currentWords: [],
+      missedWords: new Map(),
+      hints: 3,
+      selected: [],
+      locked: false,
+      moves: 0,
+      matches: 0,
+      startedAt: null,
+      timerId: null
+    };
+
+    const els = {
+      board: document.querySelector("#board"),
+      boardTitle: document.querySelector("#boardTitle"),
+      hint: document.querySelector("#hint"),
+      moves: document.querySelector("#moves"),
+      matches: document.querySelector("#matches"),
+      timer: document.querySelector("#timer"),
+      pairCount: document.querySelector("#pairCount"),
+      level80: document.querySelector("#level80"),
+      level72: document.querySelector("#level72"),
+      level70: document.querySelector("#level70"),
+      newGame: document.querySelector("#newGame"),
+      progressRing: document.querySelector("#progressRing"),
+      percent: document.querySelector("#percent"),
+      message: document.querySelector("#message"),
+      wordGrid: document.querySelector("#wordGrid"),
+      listTitle: document.querySelector("#listTitle"),
+      missionText: document.querySelector("#missionText"),
+      missionPath: document.querySelector("#missionPath"),
+      jewelCount: document.querySelector("#jewelCount"),
+      streakDays: document.querySelector("#streakDays"),
+      stickerSlots: document.querySelector("#stickerSlots"),
+      masteryPercent: document.querySelector("#masteryPercent"),
+      masteryBar: document.querySelector("#masteryBar"),
+      reviewCount: document.querySelector("#reviewCount"),
+      reviewGrid: document.querySelector("#reviewGrid"),
+      hintButton: document.querySelector("#hintButton"),
+      hintCount: document.querySelector("#hintCount"),
+      shuffleButton: document.querySelector("#shuffleButton"),
+      tipText: document.querySelector("#tipText"),
+      win: document.querySelector("#win"),
+      winText: document.querySelector("#winText"),
+      playAgain: document.querySelector("#playAgain")
+    };
+
+    function shuffle(items) {
+      const copy = [...items];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function formatTime(totalSeconds) {
+      const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+      const seconds = String(totalSeconds % 60).padStart(2, "0");
+      return `${minutes}:${seconds}`;
+    }
+
+    function poolForLevel(level) {
+      const allowed = LEVELS[level].codes;
+      return OFFICIAL_HANJA.filter(item => allowed.includes(item.gradeCode));
+    }
+
+    function startTimer() {
+      if (state.startedAt) return;
+      state.startedAt = Date.now();
+      state.timerId = window.setInterval(() => {
+        els.timer.textContent = formatTime(Math.floor((Date.now() - state.startedAt) / 1000));
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (state.timerId) window.clearInterval(state.timerId);
+      state.timerId = null;
+    }
+
+    function setColumns(cardCount) {
+      let cols = 4;
+      if (cardCount >= 40) cols = 8;
+      else if (cardCount >= 32) cols = 8;
+      else if (cardCount >= 24) cols = 6;
+      if (window.innerWidth < 720) cols = cardCount >= 24 ? 4 : 3;
+      els.board.style.setProperty("--cols", cols);
+    }
+
+    function makeDeck(words) {
+      return shuffle(words.flatMap(word => ([
+        { cardId: `${word.id}-hanja`, pairId: word.id, type: "hanja", word, matched: false, open: false },
+        { cardId: `${word.id}-meaning`, pairId: word.id, type: "meaning", word, matched: false, open: false }
+      ])));
+    }
+
+    function renderBoard() {
+      setColumns(state.deck.length);
+      els.board.replaceChildren(...state.deck.map(card => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `card ${card.type}${card.open ? " flipped" : ""}${card.matched ? " matched" : ""}`;
+        button.dataset.cardId = card.cardId;
+        button.setAttribute("aria-label", card.open || card.matched ? cardLabel(card) : "닫힌 카드");
+        button.innerHTML = `
+          <span class="card-inner">
+            <span class="face front"></span>
+            <span class="face back">${card.type === "hanja" ? hanjaMarkup(card.word) : readingMarkup(card.word)}</span>
+          </span>
+        `;
+        button.addEventListener("click", () => chooseCard(card.cardId));
+        return button;
+      }));
+    }
+
+    function hanjaMarkup(word) {
+      return `<span class="hanja-char">${word.hanja}</span>`;
+    }
+
+    function readingMarkup(word) {
+      return `<span class="reading"><strong>${word.reading}</strong><span>${word.grade}</span></span>`;
+    }
+
+    function cardLabel(card) {
+      return card.type === "hanja" ? `${card.word.hanja}, 한자 카드` : `${card.word.reading}, 훈음 카드`;
+    }
+
+    function renderWords(words) {
+      if (!els.wordGrid) return;
+      els.wordGrid.replaceChildren(...words.map(word => {
+        const item = document.createElement("div");
+        item.className = "word";
+        item.innerHTML = `<b>${word.hanja}</b><span>${word.reading}</span>`;
+        return item;
+      }));
+    }
+
+    function updateStats() {
+      const total = state.pairCount;
+      const percent = Math.round((state.matches / total) * 100);
+      els.moves.textContent = state.moves;
+      els.matches.textContent = `${state.matches}/${total}`;
+      if (els.percent) els.percent.textContent = `${percent}%`;
+      if (els.progressRing) els.progressRing.style.setProperty("--progress", `${percent * 3.6}deg`);
+      updateQuestPanel(percent);
+    }
+
+    function rewardCount() {
+      return [4, 8, state.pairCount].filter(goal => state.matches >= goal).length;
+    }
+
+    function updateQuestPanel(percent = 0) {
+      if (els.jewelCount) els.jewelCount.textContent = rewardCount();
+      if (els.missionText) {
+        els.missionText.innerHTML = `${state.pairCount}짝을 모두 맞히고 <strong>보석 3개</strong>를 모아보세요!`;
+      }
+      if (els.missionPath) {
+        const goals = [4, 8, state.pairCount];
+        els.missionPath.replaceChildren(...goals.map(goal => {
+          const step = document.createElement("div");
+          step.className = `path-step${state.matches >= goal ? " done" : ""}`;
+          step.innerHTML = `<span class="sprite ${state.matches >= goal ? "check" : "gem"}" aria-hidden="true"></span><span>${goal}짝</span>`;
+          return step;
+        }));
+      }
+      if (els.stickerSlots) {
+        const sprites = ["flower", "heart", "gem", "flower", "heart"];
+        const filled = rewardCount();
+        els.stickerSlots.replaceChildren(...sprites.map((sprite, index) => {
+          const slot = document.createElement("div");
+          slot.className = `sticker-slot${index < filled ? " filled" : ""}`;
+          slot.innerHTML = index < filled ? `<span class="sprite ${sprite}" aria-hidden="true"></span>` : "";
+          return slot;
+        }));
+      }
+      if (els.masteryPercent) els.masteryPercent.textContent = `${percent}%`;
+      if (els.masteryBar) els.masteryBar.style.setProperty("--w", `${percent}%`);
+      if (els.reviewCount) els.reviewCount.textContent = state.missedWords.size;
+      if (els.hintCount) els.hintCount.textContent = state.hints;
+      if (els.hintButton) els.hintButton.disabled = state.hints <= 0;
+      renderReviewBox();
+    }
+
+    function renderReviewBox() {
+      if (!els.reviewGrid) return;
+      const words = [...state.missedWords.values()].slice(-3);
+      if (words.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "review-empty";
+        empty.textContent = "틀린 단어가 여기에 모여요.";
+        els.reviewGrid.replaceChildren(empty);
+        return;
+      }
+      els.reviewGrid.replaceChildren(...words.map(word => {
+        const item = document.createElement("div");
+        item.className = "review-word";
+        item.innerHTML = `<b>${word.hanja}</b><span>${word.reading}</span>`;
+        return item;
+      }));
+    }
+
+    function chooseCard(cardId) {
+      if (state.locked) return;
+      const card = state.deck.find(item => item.cardId === cardId);
+      if (!card || card.open || card.matched) return;
+
+      startTimer();
+      card.open = true;
+      state.selected.push(card);
+      renderBoard();
+
+      if (state.selected.length === 2) {
+        state.moves += 1;
+        state.locked = true;
+        const [first, second] = state.selected;
+        if (first.pairId === second.pairId && first.type !== second.type) {
+          window.setTimeout(() => markMatch(first, second), 360);
+        } else {
+          window.setTimeout(() => closeSelection(), 780);
+        }
+      }
+      updateStats();
+    }
+
+    function markMatch(first, second) {
+      first.matched = true;
+      second.matched = true;
+      state.matches += 1;
+      state.missedWords.delete(first.word.id);
+      state.selected = [];
+      state.locked = false;
+      if (els.message) els.message.textContent = `${first.word.hanja} · ${first.word.reading} 정답입니다.`;
+      if (els.tipText) els.tipText.textContent = `${first.word.hanja}는 "${first.word.reading}"으로 기억해요.`;
+      renderBoard();
+      updateStats();
+
+      if (state.matches === state.pairCount) {
+        finishGame();
+      }
+    }
+
+    function closeSelection() {
+      state.selected.forEach(card => state.missedWords.set(card.word.id, card.word));
+      state.selected.forEach(card => { card.open = false; });
+      state.selected = [];
+      state.locked = false;
+      if (els.message) els.message.textContent = "다른 짝입니다. 위치를 기억하고 다시 찾아보세요.";
+      if (els.tipText) els.tipText.textContent = "틀린 단어는 복습함에 담겨요.";
+      renderBoard();
+      updateStats();
+    }
+
+    function finishGame() {
+      stopTimer();
+      const elapsed = state.startedAt ? formatTime(Math.floor((Date.now() - state.startedAt) / 1000)) : "00:00";
+      els.winText.textContent = `${LEVELS[state.level].label} ${state.pairCount}짝을 ${state.moves}번 시도, ${elapsed}에 맞췄습니다.`;
+      els.win.classList.add("open");
+    }
+
+    function newGame() {
+      stopTimer();
+      const levelInfo = LEVELS[state.level];
+      const pool = poolForLevel(state.level);
+      const words = shuffle(pool).slice(0, state.pairCount);
+      state.currentWords = words;
+      state.missedWords = new Map();
+      state.hints = 3;
+      state.deck = makeDeck(words);
+      state.selected = [];
+      state.locked = false;
+      state.moves = 0;
+      state.matches = 0;
+      state.startedAt = null;
+      els.timer.textContent = "00:00";
+      els.boardTitle.textContent = `${levelInfo.label} ${levelInfo.total}자 중 ${state.pairCount}짝`;
+      if (els.listTitle) els.listTitle.textContent = "이번 판 단어";
+      if (els.message) els.message.textContent = `${levelInfo.label} 배정한자에서 무작위로 ${state.pairCount}개를 골랐습니다.`;
+      els.hint.textContent = "한자 카드와 뜻·음 카드를 맞춰 보세요.";
+      if (els.tipText) els.tipText.textContent = "한자와 뜻·음을 짝지어 기억해요!";
+      els.win.classList.remove("open");
+      renderWords(words);
+      renderBoard();
+      updateStats();
+    }
+
+    function useHint() {
+      if (state.hints <= 0) return;
+      const candidates = state.deck.filter(card => !card.matched && !card.open);
+      if (candidates.length === 0) return;
+      const card = candidates[Math.floor(Math.random() * candidates.length)];
+      state.hints -= 1;
+      if (els.tipText) els.tipText.textContent = `힌트: ${card.word.hanja}는 "${card.word.reading}"입니다.`;
+      updateStats();
+    }
+
+    function shuffleUnmatched() {
+      if (state.locked) return;
+      const unmatched = shuffle(state.deck.filter(card => !card.matched));
+      const matched = state.deck.filter(card => card.matched);
+      state.deck = [...unmatched, ...matched];
+      state.selected = [];
+      if (els.tipText) els.tipText.textContent = "아직 못 맞힌 카드만 새로 섞었어요.";
+      renderBoard();
+      updateStats();
+    }
+
+    function setLevel(level) {
+      state.level = level;
+      els.level80.setAttribute("aria-pressed", String(level === "80"));
+      els.level72.setAttribute("aria-pressed", String(level === "72"));
+      els.level70.setAttribute("aria-pressed", String(level === "70"));
+      newGame();
+    }
+
+    els.level80.addEventListener("click", () => setLevel("80"));
+    els.level72.addEventListener("click", () => setLevel("72"));
+    els.level70.addEventListener("click", () => setLevel("70"));
+    els.pairCount.addEventListener("change", event => {
+      state.pairCount = Number(event.target.value);
+      newGame();
+    });
+    els.newGame.addEventListener("click", newGame);
+    els.playAgain.addEventListener("click", newGame);
+    els.hintButton.addEventListener("click", useHint);
+    els.shuffleButton.addEventListener("click", shuffleUnmatched);
+    window.addEventListener("resize", () => setColumns(state.deck.length));
+
+    newGame();
+  </script>
+</body>
+</html>
