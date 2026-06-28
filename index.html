@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>한자 메모리</title>
+  <title>Learning Play Bombom</title>
   <style>
     :root {
       color-scheme: light;
@@ -225,6 +225,7 @@
 
     .board-wrap,
     .quiz-wrap,
+    .math-battle,
     .side {
       min-height: 0;
       border: 1px solid rgba(217, 222, 214, .9);
@@ -247,6 +248,453 @@
       display: grid;
       grid-template-rows: auto 1fr;
       overflow: hidden;
+    }
+
+    .math-active main {
+      grid-template-columns: 1fr;
+    }
+
+    .math-active .side {
+      display: none;
+    }
+
+    .math-battle {
+      display: grid;
+      gap: 14px;
+      padding: clamp(12px, 1.8vw, 22px);
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.76), rgba(255,255,255,.9)),
+        #f7fbf5;
+    }
+
+    .math-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(300px, .7fr);
+      gap: 14px;
+      min-height: 0;
+    }
+
+    .math-head,
+    .math-panel,
+    .math-shop {
+      border: 1px solid #dce8d2;
+      border-radius: 8px;
+      background: rgba(255, 253, 248, .92);
+      box-shadow: 0 12px 28px rgba(60, 90, 73, .1);
+    }
+
+    .math-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 16px;
+    }
+
+    .math-head h2 {
+      margin: 0;
+      font-size: clamp(22px, 2.4vw, 30px);
+      line-height: 1.1;
+    }
+
+    .math-head p {
+      margin: 6px 0 0;
+      color: #59655f;
+      font-weight: 850;
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
+    .math-wallet {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: end;
+    }
+
+    .wallet-chip,
+    .trait-chip,
+    .math-pill {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border: 1px solid #dce8d2;
+      border-radius: 8px;
+      background: #fff;
+      color: #34433c;
+      font-size: 13px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .wallet-chip img,
+    .math-pill img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    .math-arena {
+      position: relative;
+      min-height: 460px;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      overflow: hidden;
+      border: 1px solid #cde1c8;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.16), rgba(247, 251, 245, .94) 78%),
+        url("assets/math-pet-battle/backgrounds/bg-forest-academy.png") center / cover no-repeat;
+    }
+
+    .battle-field {
+      position: relative;
+      min-height: 300px;
+    }
+
+    .stage-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 2;
+      background: rgba(255,255,255,.9);
+    }
+
+    .battle-actor {
+      position: absolute;
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      text-align: center;
+      font-weight: 950;
+    }
+
+    .battle-actor img {
+      width: min(24vw, 210px);
+      max-height: 210px;
+      object-fit: contain;
+      filter: drop-shadow(0 14px 14px rgba(24, 44, 36, .18));
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .actor-trainer {
+      left: 5%;
+      bottom: 14px;
+      opacity: .96;
+    }
+
+    .actor-trainer img {
+      width: min(16vw, 130px);
+    }
+
+    .actor-pet {
+      left: 23%;
+      bottom: 22px;
+    }
+
+    .actor-enemy {
+      right: 12%;
+      bottom: 24px;
+    }
+
+    .actor-name {
+      padding: 5px 8px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.9);
+      border: 1px solid rgba(217, 222, 214, .9);
+      font-size: 13px;
+    }
+
+    .hp-bar {
+      width: min(190px, 22vw);
+      height: 12px;
+      overflow: hidden;
+      border: 1px solid #335348;
+      border-radius: 999px;
+      background: #f6ddd5;
+    }
+
+    .hp-bar span {
+      display: block;
+      height: 100%;
+      width: var(--hp, 100%);
+      background: linear-gradient(90deg, #45b875, #b5db59);
+      transition: width .2s ease;
+    }
+
+    .math-command {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border-top: 1px solid rgba(217, 222, 214, .8);
+      background: rgba(255, 253, 248, .94);
+    }
+
+    .math-question {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .math-question strong {
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .math-question span {
+      color: #65726b;
+      font-weight: 900;
+    }
+
+    .math-choices {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .math-choice {
+      min-height: 70px;
+      border: 2px solid #d9e7ce;
+      border-radius: 8px;
+      background: #fff;
+      color: #21342c;
+      font-size: clamp(24px, 3.2vw, 36px);
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 10px 18px rgba(58, 85, 70, .1);
+    }
+
+    .math-choice:hover,
+    .math-choice:focus-visible {
+      border-color: #57b987;
+      outline: none;
+    }
+
+    .math-choice.correct {
+      border-color: #25a66d;
+      background: #e9fff2;
+    }
+
+    .math-choice.wrong {
+      border-color: #df6b57;
+      background: #fff0ec;
+    }
+
+    .math-choice.hint-choice {
+      box-shadow: 0 0 0 5px rgba(214, 159, 56, .24);
+    }
+
+    .math-choice.removed {
+      opacity: .28;
+      pointer-events: none;
+    }
+
+    .math-log {
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid #e8ddd0;
+      border-radius: 8px;
+      background: #fffaf1;
+      color: #4a504b;
+      font-weight: 900;
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
+    .math-log button,
+    .shop-buy,
+    .equip-button,
+    .item-button,
+    .pet-button {
+      min-height: 40px;
+      border: 0;
+      border-radius: 8px;
+      padding: 0 12px;
+      background: #1e8a72;
+      color: white;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .math-side {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      min-height: 0;
+    }
+
+    .math-panel,
+    .math-shop {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .math-panel h3,
+    .math-shop h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .active-pet-card {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .active-pet-card img {
+      width: 86px;
+      height: 86px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #f4fff8;
+      border: 1px solid #dce8d2;
+    }
+
+    .team-grid,
+    .item-grid,
+    .shop-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .team-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pet-button {
+      min-height: 72px;
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid #dce8d2;
+      background: #fff;
+      color: #31433c;
+      text-align: left;
+    }
+
+    .pet-button.active {
+      border-color: #1e8a72;
+      background: #effff6;
+    }
+
+    .pet-button.locked {
+      opacity: .55;
+      cursor: default;
+    }
+
+    .pet-button img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+
+    .pet-button b,
+    .shop-card b {
+      display: block;
+      line-height: 1.1;
+    }
+
+    .pet-button span,
+    .shop-card span,
+    .item-button span {
+      color: #637069;
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.2;
+    }
+
+    .item-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .item-button {
+      min-height: 62px;
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid #e2ddd2;
+      background: #fff;
+      color: #31433c;
+      text-align: left;
+      padding: 8px;
+    }
+
+    .item-button:disabled,
+    .shop-buy:disabled,
+    .equip-button:disabled {
+      opacity: .45;
+      cursor: default;
+    }
+
+    .item-button img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+    }
+
+    .shop-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .shop-tab {
+      min-height: 36px;
+      border: 1px solid #dce8d2;
+      border-radius: 8px;
+      background: #fff;
+      color: #53635c;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .shop-tab.active {
+      background: #1e8a72;
+      color: #fff;
+      border-color: #1e8a72;
+    }
+
+    .shop-card {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      min-height: 78px;
+      padding: 10px;
+      border: 1px solid #e2ddd2;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .shop-card img {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+    }
+
+    .shop-actions {
+      display: grid;
+      gap: 6px;
+      justify-items: end;
+    }
+
+    .equip-button {
+      background: #31433c;
     }
 
     .board-header {
@@ -406,7 +854,7 @@
     }
 
     .card.hanja .front::after {
-      content: "?";
+      content: "漢";
       color: rgba(30, 138, 114, .2);
     }
 
@@ -645,28 +1093,24 @@
       min-height: 78px;
       border-radius: 8px;
       background: #fff2f5;
-      color: var(--ink);
-      font-family: "Songti SC", "Noto Serif CJK KR", "Batang", serif;
-      font-size: 48px;
+      font-family: "Songti SC", "Noto Serif CJK KR", serif;
+      font-size: 46px;
       line-height: 1;
     }
 
     .result-word span {
-      display: grid;
-      gap: 5px;
-      color: var(--muted);
-      font-weight: 800;
-      line-height: 1.35;
-    }
-
-    .result-word strong {
-      color: var(--ink);
-      font-size: 20px;
+      display: block;
+      color: #52655c;
+      font-weight: 900;
+      line-height: 1.4;
+      word-break: keep-all;
     }
 
     .result-actions {
       display: flex;
       justify-content: flex-end;
+      gap: 10px;
+      margin-top: 16px;
     }
 
     .asset-icon,
@@ -1822,6 +2266,579 @@
       filter: none;
     }
 
+    .home-view {
+      grid-template-columns: minmax(0, 1fr) 430px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .home-main {
+      gap: 18px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .content-hero {
+      position: relative;
+      grid-template-columns: minmax(0, 1fr);
+      min-height: 190px;
+      padding: 20px 220px 20px 22px;
+      overflow: hidden;
+      border-color: #f4d186;
+      background:
+        radial-gradient(circle at 93% 54%, rgba(255, 214, 126, .34), transparent 19%),
+        linear-gradient(180deg, #fff7d8, #fff2c7);
+      box-shadow: 0 16px 36px rgba(150, 95, 40, .14);
+    }
+
+    .hero-heading {
+      display: flex;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-star {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #ffc83d;
+      color: #fff;
+      font-size: 24px;
+      line-height: 1;
+      box-shadow: inset 0 -3px 0 rgba(162, 107, 0, .13);
+    }
+
+    .hero-heading h2 {
+      margin: 0;
+      font-size: clamp(25px, 2.4vw, 34px);
+      line-height: 1.12;
+    }
+
+    .hero-heading p {
+      margin: 6px 0 0;
+      max-width: 560px;
+      color: #6d5d48;
+      font-size: 15px;
+      font-weight: 850;
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
+    .resume-list {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .resume-card {
+      min-height: 104px;
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      grid-template-rows: 1fr auto;
+      gap: 8px 12px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid #efd0bd;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .92);
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(133, 83, 54, .1);
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+
+    .resume-card:hover,
+    .resume-card:focus-visible {
+      transform: translateY(-2px);
+      outline: none;
+      box-shadow: 0 16px 28px rgba(133, 83, 54, .16);
+    }
+
+    .resume-icon {
+      grid-row: 1 / span 2;
+      width: 72px;
+      height: 72px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #fff7ef;
+    }
+
+    .resume-card small,
+    .pack-status,
+    .goal-box span,
+    .sticker-panel > span,
+    .summary-row span {
+      color: #6b746d;
+      font-size: 12px;
+      font-weight: 950;
+      line-height: 1.1;
+    }
+
+    .resume-card strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .resume-card em,
+    .pack-progress i {
+      display: block;
+      width: 100%;
+      height: 8px;
+      margin-top: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e7e4dd;
+    }
+
+    .resume-card em i,
+    .pack-progress i b {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: #f45d77;
+    }
+
+    .resume-card.math em i,
+    .content-pack-card.math .pack-progress i b {
+      background: #2f8be8;
+    }
+
+    .resume-card.review em i {
+      background: #57aa5d;
+    }
+
+    .resume-card > b {
+      grid-column: 2;
+      min-height: 32px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 7px;
+      background: #fff1f3;
+      color: #ef4f77;
+      font-size: 13px;
+    }
+
+    .resume-card.math > b {
+      background: #eef6ff;
+      color: #2677d8;
+    }
+
+    .resume-card.review > b {
+      background: #f0faed;
+      color: #3e8d43;
+    }
+
+    .hero-mascot {
+      position: absolute;
+      right: 18px;
+      bottom: -14px;
+      width: 176px;
+      height: 176px;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .subject-section,
+    .recent-section,
+    .status-card {
+      border: 1px solid #efd9d3;
+      border-radius: 8px;
+      background: rgba(255, 253, 248, .96);
+      box-shadow: 0 18px 44px rgba(108, 71, 65, .11);
+      padding: 22px;
+    }
+
+    .content-pack-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .content-pack-card {
+      position: relative;
+      min-height: 278px;
+      grid-template-columns: minmax(0, 1fr) 130px;
+      grid-template-rows: auto 1fr auto auto;
+      overflow: hidden;
+      padding: 22px;
+      border-color: #f3c8c8;
+      background: linear-gradient(135deg, #fff8f7, #fff);
+    }
+
+    .content-pack-card.math {
+      border-color: #b9d9f8;
+      background: linear-gradient(135deg, #f4faff, #fff);
+    }
+
+    .content-pack-card.locked {
+      opacity: 1;
+      cursor: default;
+      background: linear-gradient(135deg, #f8fff4, #fff);
+    }
+
+    .content-pack-card.future {
+      border-color: #d8ccf8;
+      background: linear-gradient(135deg, #fbf7ff, #fff);
+    }
+
+    .content-pack-card .subject-art {
+      grid-column: 2;
+      grid-row: 1 / span 4;
+      align-self: center;
+      width: 130px;
+      height: 130px;
+      background: transparent;
+    }
+
+    .content-pack-card .subject-art .asset-icon {
+      width: 130px;
+      height: 130px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .pack-status {
+      width: fit-content;
+      min-height: 30px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 12px;
+      border-radius: 7px;
+      background: #ffe8ec;
+      color: #e8486c;
+    }
+
+    .pack-status.blue {
+      background: #e7f3ff;
+      color: #2677d8;
+    }
+
+    .pack-status.green {
+      background: #ecf8e8;
+      color: #3e8d43;
+    }
+
+    .pack-status.purple {
+      background: #f0eaff;
+      color: #7a5fc7;
+    }
+
+    .pack-copy h3 {
+      margin: 18px 0 8px;
+      color: #ef4f77;
+      font-size: clamp(28px, 2.5vw, 34px);
+      line-height: 1.08;
+      white-space: nowrap;
+    }
+
+    .content-pack-card.math .pack-copy h3 {
+      color: #2677d8;
+    }
+
+    .content-pack-card.locked .pack-copy h3 {
+      color: #3f8c54;
+      font-size: clamp(22px, 2vw, 26px);
+      white-space: normal;
+    }
+
+    .content-pack-card.future .pack-copy h3 {
+      color: #7a5fc7;
+    }
+
+    .pack-copy p {
+      margin: 0;
+      max-width: 240px;
+      color: #49524d;
+      font-size: 15px;
+      font-weight: 850;
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+
+    .pack-progress {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .pack-progress span {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: #5f675f;
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .pack-progress em {
+      color: #ef4f77;
+      font-style: normal;
+    }
+
+    .content-pack-card.math .pack-progress em {
+      color: #2677d8;
+    }
+
+    .pack-action,
+    .record-button {
+      min-height: 52px;
+      display: grid;
+      place-items: center;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ff6b94, #ef4f77);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 950;
+      box-shadow: 0 12px 24px rgba(239, 79, 123, .22);
+    }
+
+    .pack-action.blue {
+      background: linear-gradient(180deg, #51a7ff, #2677d8);
+      box-shadow: 0 12px 24px rgba(38, 119, 216, .22);
+    }
+
+    .pack-action.muted {
+      background: #f1f3ed;
+      color: #708077;
+      box-shadow: none;
+    }
+
+    .mode-section-title.compact {
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .soft-action.small {
+      min-height: 38px;
+      padding: 0 14px;
+      font-size: 13px;
+    }
+
+    .recent-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .recent-item {
+      min-height: 74px;
+      display: grid;
+      grid-template-columns: 50px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid #f0ded7;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .recent-item img {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .recent-item b,
+    .recent-item small {
+      display: block;
+      line-height: 1.2;
+    }
+
+    .recent-item small {
+      margin-top: 3px;
+      color: #778178;
+      font-weight: 850;
+    }
+
+    .recent-item strong {
+      color: #5ba15f;
+      font-size: 13px;
+    }
+
+    .home-side {
+      padding: 0;
+    }
+
+    .status-card {
+      position: sticky;
+      top: 18px;
+      padding: 24px;
+    }
+
+    .side-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .side-title h2 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.1;
+      text-decoration: underline;
+      text-decoration-color: #67b765;
+      text-underline-offset: 8px;
+      text-decoration-thickness: 3px;
+    }
+
+    .side-title span {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 12px;
+      border: 1px solid #e6ded5;
+      border-radius: 8px;
+      background: #fff;
+      color: #5f675f;
+      font-weight: 950;
+    }
+
+    .goal-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 12px;
+    }
+
+    .goal-box,
+    .sticker-panel,
+    .summary-row > div {
+      border: 1px solid #e8ded7;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.72);
+    }
+
+    .goal-box {
+      min-height: 132px;
+      position: relative;
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      padding: 18px;
+    }
+
+    .goal-box strong {
+      font-size: 42px;
+      line-height: 1;
+    }
+
+    .goal-box small {
+      color: #7d857d;
+      font-weight: 850;
+    }
+
+    .mini-ring {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      width: 86px;
+      height: 86px;
+      display: grid;
+      place-items: center;
+      transform: translateY(-50%);
+      border: 11px solid #e6edf0;
+      border-right-color: #4aa3f4;
+      border-bottom-color: #4aa3f4;
+      border-radius: 50%;
+      color: #2677d8;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .mini-ring b {
+      font-size: 26px;
+    }
+
+    .mini-ring small {
+      margin-top: -20px;
+      font-size: 11px;
+    }
+
+    .sticker-panel {
+      margin-top: 12px;
+      padding: 16px;
+    }
+
+    .summary-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .summary-row > div {
+      min-height: 104px;
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      padding: 16px;
+    }
+
+    .summary-row strong {
+      font-size: 42px;
+      line-height: 1;
+    }
+
+    .summary-row > div:first-child {
+      background: #f3fff0;
+      border-color: #cfe8c9;
+    }
+
+    .summary-row > div:last-child {
+      background: #fff8f2;
+      border-color: #f1d8c6;
+    }
+
+    .record-button {
+      width: 100%;
+      margin-top: 14px;
+      background: linear-gradient(180deg, #5dacff, #2f83e8);
+      box-shadow: 0 12px 24px rgba(47, 131, 232, .22);
+      cursor: pointer;
+    }
+
+    .home-view {
+      grid-template-columns: minmax(0, 1fr) 392px;
+      grid-template-rows: auto auto auto;
+    }
+
+    .home-main {
+      display: contents;
+    }
+
+    .content-hero {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+
+    .subject-section {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .recent-section {
+      grid-column: 1;
+      grid-row: 3;
+    }
+
+    .home-side {
+      grid-column: 2;
+      grid-row: 2 / span 2;
+    }
+
     @media (max-width: 1100px) {
       .topbar {
         grid-template-columns: 1fr;
@@ -1866,6 +2883,14 @@
         grid-template-rows: auto;
       }
 
+      .math-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .actor-trainer img {
+        width: min(20vw, 120px);
+      }
+
       .review {
         grid-column: 1 / -1;
       }
@@ -1884,6 +2909,7 @@
       .topbar,
       .board-wrap,
       .quiz-wrap,
+      .math-battle,
       .side {
         border-radius: 8px;
       }
@@ -1955,6 +2981,62 @@
         padding: 16px;
       }
 
+      .math-head,
+      .math-question {
+        grid-template-columns: 1fr;
+      }
+
+      .math-wallet {
+        justify-content: start;
+      }
+
+      .math-arena {
+        min-height: 560px;
+      }
+
+      .battle-field {
+        min-height: 330px;
+      }
+
+      .battle-actor img {
+        width: 132px;
+      }
+
+      .actor-trainer {
+        left: 2%;
+      }
+
+      .actor-trainer img {
+        width: 82px;
+      }
+
+      .actor-pet {
+        left: 18%;
+      }
+
+      .actor-enemy {
+        right: 4%;
+      }
+
+      .hp-bar {
+        width: 118px;
+      }
+
+      .math-choices,
+      .team-grid,
+      .item-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .shop-card {
+        grid-template-columns: 48px 1fr;
+      }
+
+      .shop-actions {
+        grid-column: 1 / -1;
+        justify-items: stretch;
+      }
+
       .choice-grid {
         grid-template-columns: 1fr;
       }
@@ -2022,9 +3104,9 @@
       </div>
 
       <div class="hub-actions" aria-label="홈 요약">
-        <span class="hub-chip">오늘 추천 3개</span>
-        <span class="hub-chip">스티커 2개</span>
-        <span class="hub-chip">수학팩 작업중</span>
+        <span class="hub-chip">오늘 이어하기 3개</span>
+        <span class="hub-chip">스티커 4개</span>
+        <span class="hub-chip">연속 학습 7일</span>
       </div>
 
       <div class="controls game-chrome" aria-label="게임 설정">
@@ -2041,7 +3123,7 @@
           <option value="20">20짝</option>
           <option value="24">24짝</option>
         </select>
-        <button id="newGame" class="new-game" type="button">✦ 새 게임</button>
+        <button id="newGame" class="new-game" type="button">새 게임</button>
       </div>
 
       <div class="stats game-chrome" aria-label="게임 현황">
@@ -2053,189 +3135,116 @@
 
     <section id="homeView" class="home-view view" aria-label="Learning Play Bombom 홈">
       <div class="home-main">
-        <section class="content-hero" aria-label="오늘의 학습 허브">
-          <div>
-            <h2>오늘은 어떤 놀이로 배워볼까요?</h2>
-            <p>한자, 수학, 영어, 과학을 같은 게임 구조로 담는 학습 허브입니다. 지금은 한자 학습팩을 바로 플레이할 수 있고, 수학 연산 게임팩을 추가하는 중입니다.</p>
-            <div class="content-actions">
-              <button id="startLearning" class="primary-action" type="button">한자 학습팩 시작</button>
-              <button id="openModes" class="soft-action" type="button">게임 모드 보기</button>
-            </div>
-            <div class="today-strip" aria-label="오늘 추천 학습">
-              <div class="today-tile"><span>바로 플레이</span><strong>한자 12짝</strong></div>
-              <div class="today-tile"><span>새 학습팩</span><strong>수학 연산 준비중</strong></div>
-              <div class="today-tile"><span>복습 루틴</span><strong>틀린 단어 다시 보기</strong></div>
+        <section class="content-hero" aria-label="오늘 이어하기">
+          <div class="hero-heading">
+            <span class="section-star">★</span>
+            <div>
+              <h2>오늘 이어하기</h2>
+              <p>하던 학습을 바로 이어서 시작해요. 한자와 수학을 번갈아 조금씩 해도 좋아요.</p>
             </div>
           </div>
-          <div class="pack-card">
-            <div class="hanja-preview"><img class="asset-icon" src="assets/mode-memory.png" alt="" aria-hidden="true"></div>
-            <strong>추천: 한자 학습팩</strong>
-            <div class="level-summary" aria-label="한자 급수">
-              <span>8급<br>50자</span>
-              <span>7급II<br>100자</span>
-              <span>7급<br>150자</span>
-            </div>
+          <div class="resume-list">
+            <button id="startLearning" class="resume-card hanja" type="button" data-home-mode="memory">
+              <img class="resume-icon" src="assets/pack-hanja.png" alt="" aria-hidden="true">
+              <span><small>한자 학습</small><strong>8급 50자</strong><em><i style="width:60%"></i></em></span>
+              <b>이어하기</b>
+            </button>
+            <button class="resume-card math" type="button" data-home-mode="math-battle">
+              <img class="resume-icon" src="assets/pack-math.png" alt="" aria-hidden="true">
+              <span><small>수학 학습</small><strong>연산 2단계</strong><em><i style="width:40%"></i></em></span>
+              <b>이어하기</b>
+            </button>
+            <button class="resume-card review" type="button" data-home-mode="review">
+              <img class="resume-icon" src="assets/mode-review.png" alt="" aria-hidden="true">
+              <span><small>복습</small><strong>틀린 문제 다시 보기</strong><em><i style="width:32%"></i></em></span>
+              <b>복습하기</b>
+            </button>
           </div>
+          <img class="hero-mascot" src="assets/learning-logo.png" alt="" aria-hidden="true">
         </section>
 
-        <section class="subject-section" aria-label="콘텐츠팩 선택">
+        <section class="subject-section" aria-label="학습 콘텐츠 선택">
           <div class="mode-section-title">
-            <h2>콘텐츠팩</h2>
-            <span>과목이 늘어나도 같은 홈에서 시작합니다.</span>
+            <h2>학습 콘텐츠</h2>
+            <span>무엇을 배울까요?</span>
           </div>
-          <div id="subjectGrid" class="subject-grid">
-            <button class="subject-card" type="button" data-pack="hanja" data-ready="true">
-              <span class="subject-art"><img class="asset-icon" src="assets/mode-memory.png" alt="" aria-hidden="true"></span>
-              <span>
-                <h3>한자 학습팩</h3>
-                <p>공인한자능력시험 8급, 7급II, 7급 배정한자를 게임으로 익혀요.</p>
+          <div id="subjectGrid" class="subject-grid content-pack-grid">
+            <button class="subject-card content-pack-card hanja" type="button" data-pack="hanja" data-ready="true">
+              <span class="pack-status">진행 중</span>
+              <span class="subject-art"><img class="asset-icon" src="assets/pack-hanja.png" alt="" aria-hidden="true"></span>
+              <span class="pack-copy">
+                <h3>한자 학습</h3>
+                <p>8급부터 차근차근 익혀요.</p>
               </span>
-              <span class="subject-meta"><span>사용 가능</span><span>5개 모드</span></span>
+              <span class="pack-progress"><span><b>8급 50자</b><em>60%</em></span><i><b style="width:60%"></b></i></span>
+              <span class="pack-action">이어하기</span>
             </button>
-            <button class="subject-card math" type="button" data-pack="math" data-ready="false">
+            <button class="subject-card content-pack-card math" type="button" data-pack="math" data-ready="true">
+              <span class="pack-status blue">진행 중</span>
               <span class="subject-art"><img class="asset-icon" src="assets/pack-math.png" alt="" aria-hidden="true"></span>
-              <span>
-                <h3>수학 연산팩</h3>
-                <p>덧셈, 뺄셈, 빠른 계산, 숫자 짝 맞추기 게임을 준비 중이에요.</p>
+              <span class="pack-copy">
+                <h3>수학 학습</h3>
+                <p>연산부터 문제 해결까지 실력을 키워요.</p>
               </span>
-              <span class="subject-meta"><span>작업중</span><span>다음 추가</span></span>
+              <span class="pack-progress"><span><b>연산 2단계</b><em>40%</em></span><i><b style="width:40%"></b></i></span>
+              <span class="pack-action blue">이어하기</span>
             </button>
-            <button class="subject-card" type="button" data-pack="english" data-ready="false">
+            <button class="subject-card content-pack-card locked english" type="button" data-pack="english" data-ready="false">
+              <span class="pack-status green">준비중</span>
               <span class="subject-art"><img class="asset-icon" src="assets/pack-english.png" alt="" aria-hidden="true"></span>
-              <span>
-                <h3>영어 단어팩</h3>
-                <p>단어 카드와 뜻 고르기 모드로 확장할 수 있는 예정 학습팩입니다.</p>
+              <span class="pack-copy">
+                <h3>영어 학습 준비중</h3>
+                <p>단어, 문장, 듣기까지 곧 만날 수 있어요.</p>
               </span>
-              <span class="subject-meta"><span>예정</span><span>단어</span></span>
+              <span class="pack-action muted">준비중</span>
             </button>
-            <button class="subject-card" type="button" data-pack="science" data-ready="false">
-              <span class="subject-art"><img class="asset-icon" src="assets/pack-science.png" alt="" aria-hidden="true"></span>
-              <span>
-                <h3>과학 탐험팩</h3>
-                <p>용어와 개념을 퀴즈와 OX로 익히는 학습팩으로 확장합니다.</p>
+            <button class="subject-card content-pack-card locked future" type="button" data-pack="future" data-ready="false">
+              <span class="pack-status purple">추가 예정</span>
+              <span class="subject-art"><img class="asset-icon" src="assets/pack-new-content.png" alt="" aria-hidden="true"></span>
+              <span class="pack-copy">
+                <h3>새 콘텐츠 추가 예정</h3>
+                <p>다양한 학습팩을 준비하고 있어요.</p>
               </span>
-              <span class="subject-meta"><span>예정</span><span>개념</span></span>
+              <span class="pack-action muted">추가 예정</span>
             </button>
           </div>
         </section>
 
-        <section aria-label="공통 게임 모드">
-          <div class="mode-section-title">
-            <h2>공통 게임 모드</h2>
-            <span>콘텐츠팩마다 같은 놀이 규칙을 재사용합니다.</span>
+        <section class="recent-section" aria-label="최근 배운 것">
+          <div class="mode-section-title compact">
+            <h2>최근 배운 것</h2>
+            <button id="openModes" class="soft-action small" type="button">학습 콘텐츠 보기</button>
           </div>
-          <div id="modeGrid" class="mode-grid">
-            <button class="mode-card" type="button" data-mode="memory" data-ready="true">
-              <span class="mode-icon"><img class="asset-icon" src="assets/mode-memory.png" alt="" aria-hidden="true"></span>
-              <span>
-                <h3>메모리</h3>
-                <p>카드의 짝을 기억해서 맞춰요.</p>
-              </span>
-              <span class="mode-meta"><span>한자팩 가능</span><span>보석 +3</span></span>
-            </button>
-            <button class="mode-card" type="button" data-mode="meaning" data-ready="true">
-              <span class="mode-icon"><img class="asset-icon" src="assets/mode-meaning.png" alt="" aria-hidden="true"></span>
-              <span>
-                <h3>정답 고르기</h3>
-                <p>문제를 보고 맞는 답을 골라요.</p>
-              </span>
-              <span class="mode-meta"><span>한자팩 가능</span><span>퀴즈</span></span>
-            </button>
-            <button class="mode-card" type="button" data-mode="hanja" data-ready="true">
-              <span class="mode-icon"><img class="asset-icon" src="assets/mode-hanja.png" alt="" aria-hidden="true"></span>
-              <span>
-                <h3>역방향 퀴즈</h3>
-                <p>답을 보고 맞는 문제 카드를 찾아요.</p>
-              </span>
-              <span class="mode-meta"><span>한자팩 가능</span><span>역방향</span></span>
-            </button>
-            <button class="mode-card" type="button" data-mode="ox" data-ready="true">
-              <span class="mode-icon"><img class="asset-icon" src="assets/mode-ox.png" alt="" aria-hidden="true"></span>
-              <span>
-                <h3>OX 퀴즈</h3>
-                <p>맞는 짝인지 빠르게 판단해요.</p>
-              </span>
-              <span class="mode-meta"><span>한자팩 가능</span><span>판단</span></span>
-            </button>
-            <button class="mode-card" type="button" data-mode="review" data-ready="true">
-              <span class="mode-icon"><img class="asset-icon" src="assets/mode-review.png" alt="" aria-hidden="true"></span>
-              <span>
-                <h3>복습함</h3>
-                <p>틀린 문제만 다시 모아 연습해요.</p>
-              </span>
-              <span class="mode-meta"><span>한자팩 가능</span><span>복습</span></span>
-            </button>
-            <button class="mode-card" type="button" data-mode="time" data-ready="false">
-              <span class="mode-icon"><img class="asset-icon" src="assets/mode-time.png" alt="" aria-hidden="true"></span>
-              <span>
-                <h3>타임어택</h3>
-                <p>정해진 시간 안에 많이 맞혀요.</p>
-              </span>
-              <span class="mode-meta"><span>확장 모드</span><span>기록</span></span>
-            </button>
-            <button class="mode-card" type="button" data-mode="connect" data-ready="false">
-              <span class="mode-icon"><img class="asset-icon" src="assets/mode-connect.png" alt="" aria-hidden="true"></span>
-              <span>
-                <h3>짝 잇기</h3>
-                <p>왼쪽과 오른쪽의 짝을 이어요.</p>
-              </span>
-              <span class="mode-meta"><span>확장 모드</span><span>비교</span></span>
-            </button>
-            <button class="mode-card" type="button" data-mode="write" data-ready="false">
-              <span class="mode-icon"><img class="asset-icon" src="assets/mode-write.png" alt="" aria-hidden="true"></span>
-              <span>
-                <h3>쓰기 연습</h3>
-                <p>태블릿 펜이나 손가락으로 따라 써요.</p>
-              </span>
-              <span class="mode-meta"><span>확장 모드</span><span>연습</span></span>
-            </button>
+          <div class="recent-list">
+            <div class="recent-item"><img src="assets/pack-hanja.png" alt="" aria-hidden="true"><span><b>한자 학습</b><small>8급 12자 배웠어요</small></span><strong>완료</strong></div>
+            <div class="recent-item"><img src="assets/pack-math.png" alt="" aria-hidden="true"><span><b>수학 학습</b><small>덧셈 연습을 했어요</small></span><strong>완료</strong></div>
+            <div class="recent-item"><img src="assets/mode-review.png" alt="" aria-hidden="true"><span><b>복습</b><small>틀린 문제 5개를 모았어요</small></span><strong>확인</strong></div>
           </div>
         </section>
       </div>
 
-      <aside class="home-side" aria-label="오늘의 학습 정보">
-        <section class="learning-card">
-          <h2>오늘의 학습</h2>
-          <div class="today-list">
-            <div class="today-item"><span>추천 학습</span><strong>한자 12짝</strong></div>
-            <div class="today-item"><span>새 콘텐츠</span><strong>수학 작업중</strong></div>
-            <div class="today-item"><span>복습함 확인</span><strong>0개</strong></div>
+      <aside class="home-side" aria-label="나의 학습 현황">
+        <section class="learning-card status-card">
+          <div class="side-title"><h2>나의 학습 현황</h2><span>이번 주</span></div>
+          <div class="goal-grid">
+            <div class="goal-box"><span>오늘 목표</span><strong>20분</strong><div class="mini-ring"><b>12</b><small>/20분</small></div></div>
+            <div class="goal-box"><span>연속 학습</span><strong>7일</strong><small>최고 12일</small></div>
           </div>
-        </section>
-        <section class="learning-card">
-          <h2>콘텐츠팩</h2>
-          <div class="content-packs">
-            <div class="mini-pack">
-              <span class="mini-icon"><img class="asset-icon" src="assets/mode-memory.png" alt="" aria-hidden="true"></span>
-              <span><b>한자 학습팩</b><span>공인한자능력시험 8급~7급</span></span>
-              <strong>활성</strong>
-            </div>
-            <div class="mini-pack">
-              <span class="mini-icon"><img class="asset-icon" src="assets/pack-math.png" alt="" aria-hidden="true"></span>
-              <span><b>수학 연산팩</b><span>빠른 계산 게임팩</span></span>
-              <strong>작업중</strong>
-            </div>
-            <div class="mini-pack">
-              <span class="mini-icon"><img class="asset-icon" src="assets/pack-english.png" alt="" aria-hidden="true"></span>
-              <span><b>영어 단어팩</b><span>단어 카드 학습팩</span></span>
-              <strong>예정</strong>
-            </div>
-            <div class="mini-pack">
-              <span class="mini-icon"><img class="asset-icon" src="assets/pack-science.png" alt="" aria-hidden="true"></span>
-              <span><b>과학 탐험팩</b><span>용어와 개념 카드팩</span></span>
-              <strong>예정</strong>
+          <div class="sticker-panel">
+            <span>스티커 모으기</span>
+            <div class="stickers">
+              <span class="sticker-slot filled"><img class="reward-icon" src="assets/reward-flower.png" alt="" aria-hidden="true"></span>
+              <span class="sticker-slot filled"><img class="reward-icon" src="assets/reward-heart.png" alt="" aria-hidden="true"></span>
+              <span class="sticker-slot filled"><img class="reward-icon" src="assets/reward-gem.png" alt="" aria-hidden="true"></span>
+              <span class="sticker-slot"><span></span></span>
+              <span class="sticker-slot"><span></span></span>
             </div>
           </div>
-        </section>
-        <section class="learning-card">
-          <h2>보상 현황</h2>
-          <div class="stickers">
-            <span class="sticker-slot filled"><img class="reward-icon" src="assets/reward-flower.png" alt="" aria-hidden="true"></span>
-            <span class="sticker-slot filled"><img class="reward-icon" src="assets/reward-heart.png" alt="" aria-hidden="true"></span>
-            <span class="sticker-slot"><span></span></span>
-            <span class="sticker-slot"><span></span></span>
-            <span class="sticker-slot"><span></span></span>
+          <div class="summary-row">
+            <div><span>오늘 완료</span><strong>6개</strong></div>
+            <div><span>복습 필요</span><strong>3개</strong></div>
           </div>
+          <button class="record-button" type="button">학습 기록 보기</button>
         </section>
       </aside>
     </section>
@@ -2275,6 +3284,87 @@
             <div id="quizFeedback" class="quiz-feedback">정답을 고르면 다음 문제로 넘어갈 수 있어요.</div>
             <button id="nextQuestion" class="next-question" type="button" disabled>다음 문제</button>
           </div>
+        </div>
+      </section>
+
+      <section id="mathBattleWrap" class="math-battle mode-panel hidden" aria-label="수학펫 배틀">
+        <div class="math-head">
+          <div>
+            <h2>수학펫 배틀</h2>
+            <p>조련사는 명령을 내리고, 정답을 고르면 펫이 공격해요. 보상으로 펫과 장비를 키워보세요.</p>
+          </div>
+          <div class="math-wallet" aria-label="수학모드 재화">
+            <span class="wallet-chip"><img src="assets/math-pet-battle/currency/currency-star-coin.png" alt="" aria-hidden="true">별코인 <b id="mathCoins">0</b></span>
+            <span class="wallet-chip"><img src="assets/math-pet-battle/currency/currency-answer-gem.png" alt="" aria-hidden="true">정답보석 <b id="mathGems">0</b></span>
+          </div>
+        </div>
+
+        <div class="math-shell">
+          <div class="math-arena">
+            <div class="battle-field">
+              <span id="mathStage" class="stage-badge math-pill">스테이지 1</span>
+              <div class="battle-actor actor-trainer">
+                <img src="assets/math-pet-battle/characters/trainer-arin.png" alt="조련사 아린">
+                <span class="actor-name">조련사 아린</span>
+              </div>
+              <div class="battle-actor actor-pet">
+                <img id="mathPetImage" src="assets/math-pet-battle/pets/pet-momo.png" alt="">
+                <div class="hp-bar" aria-label="아군 펫 체력"><span id="mathPetHpBar"></span></div>
+                <span id="mathPetName" class="actor-name">모모</span>
+              </div>
+              <div class="battle-actor actor-enemy">
+                <img id="mathEnemyImage" src="assets/math-pet-battle/enemies/enemy-number-jelly.png" alt="">
+                <div class="hp-bar" aria-label="상대 체력"><span id="mathEnemyHpBar"></span></div>
+                <span id="mathEnemyName" class="actor-name">숫자젤리</span>
+              </div>
+            </div>
+
+            <div class="math-command">
+              <div class="math-question">
+                <div>
+                  <span id="mathPrompt">정답을 골라 펫에게 명령하세요.</span>
+                  <strong id="mathQuestion">8 + 6 = ?</strong>
+                </div>
+                <span id="mathCombo" class="trait-chip">연속 정답 0</span>
+              </div>
+              <div id="mathChoices" class="math-choices"></div>
+              <div class="math-log">
+                <span id="mathLog">전투를 시작해요.</span>
+                <button id="mathNextTurn" type="button">다음 문제</button>
+              </div>
+            </div>
+          </div>
+
+          <aside class="math-side" aria-label="수학펫 정보와 상점">
+            <section class="math-panel">
+              <h3>현재 펫</h3>
+              <div class="active-pet-card">
+                <img id="mathActivePetIcon" src="assets/math-pet-battle/pets/pet-momo.png" alt="">
+                <div>
+                  <strong id="mathActivePetName">모모 Lv.1</strong>
+                  <div id="mathActivePetTrait" class="trait-chip">두번톡톡</div>
+                  <p id="mathActivePetDesc">정답 시 가끔 두 번 공격해요.</p>
+                  <button id="mathEquipButton" class="equip-button" type="button">장비 장착</button>
+                </div>
+              </div>
+              <div id="mathTeam" class="team-grid"></div>
+            </section>
+
+            <section class="math-panel">
+              <h3>아이템</h3>
+              <div id="mathItems" class="item-grid"></div>
+            </section>
+
+            <section class="math-shop">
+              <h3>상점</h3>
+              <div class="shop-tabs" role="tablist" aria-label="상점 분류">
+                <button class="shop-tab active" type="button" data-shop-tab="pets">펫</button>
+                <button class="shop-tab" type="button" data-shop-tab="gear">장비</button>
+                <button class="shop-tab" type="button" data-shop-tab="items">아이템</button>
+              </div>
+              <div id="mathShopGrid" class="shop-grid"></div>
+            </section>
+          </aside>
         </div>
       </section>
 
@@ -2413,13 +3503,15 @@
       moves: 0,
       matches: 0,
       startedAt: null,
-      timerId: null
+      timerId: null,
+      math: null
     };
 
     const els = {
       board: document.querySelector("#board"),
       memoryWrap: document.querySelector("#memoryWrap"),
       quizWrap: document.querySelector("#quizWrap"),
+      mathBattleWrap: document.querySelector("#mathBattleWrap"),
       boardTitle: document.querySelector("#boardTitle"),
       hint: document.querySelector("#hint"),
       quizTitle: document.querySelector("#quizTitle"),
@@ -2473,7 +3565,30 @@
       quizResultHanja: document.querySelector("#quizResultHanja"),
       quizResultReading: document.querySelector("#quizResultReading"),
       quizResultNote: document.querySelector("#quizResultNote"),
-      quizResultNext: document.querySelector("#quizResultNext")
+      quizResultNext: document.querySelector("#quizResultNext"),
+      mathCoins: document.querySelector("#mathCoins"),
+      mathGems: document.querySelector("#mathGems"),
+      mathStage: document.querySelector("#mathStage"),
+      mathPetImage: document.querySelector("#mathPetImage"),
+      mathPetHpBar: document.querySelector("#mathPetHpBar"),
+      mathPetName: document.querySelector("#mathPetName"),
+      mathEnemyImage: document.querySelector("#mathEnemyImage"),
+      mathEnemyHpBar: document.querySelector("#mathEnemyHpBar"),
+      mathEnemyName: document.querySelector("#mathEnemyName"),
+      mathPrompt: document.querySelector("#mathPrompt"),
+      mathQuestion: document.querySelector("#mathQuestion"),
+      mathCombo: document.querySelector("#mathCombo"),
+      mathChoices: document.querySelector("#mathChoices"),
+      mathLog: document.querySelector("#mathLog"),
+      mathNextTurn: document.querySelector("#mathNextTurn"),
+      mathActivePetIcon: document.querySelector("#mathActivePetIcon"),
+      mathActivePetName: document.querySelector("#mathActivePetName"),
+      mathActivePetTrait: document.querySelector("#mathActivePetTrait"),
+      mathActivePetDesc: document.querySelector("#mathActivePetDesc"),
+      mathEquipButton: document.querySelector("#mathEquipButton"),
+      mathTeam: document.querySelector("#mathTeam"),
+      mathItems: document.querySelector("#mathItems"),
+      mathShopGrid: document.querySelector("#mathShopGrid")
     };
 
     const MODE_META = {
@@ -2481,7 +3596,8 @@
       meaning: { title: "뜻 고르기", prompt: "한자를 보고 맞는 뜻·음을 골라요." },
       hanja: { title: "한자 고르기", prompt: "뜻·음을 보고 맞는 한자를 찾아요." },
       ox: { title: "OX 퀴즈", prompt: "한자와 뜻·음이 맞는 짝인지 판단해요." },
-      review: { title: "복습함", prompt: "틀렸던 단어를 다시 확인해요." }
+      review: { title: "복습함", prompt: "틀렸던 단어를 다시 확인해요." },
+      "math-battle": { title: "수학펫 배틀", prompt: "정답을 골라 펫에게 명령해요." }
     };
 
     const REWARD_ASSETS = {
@@ -2495,6 +3611,529 @@
 
     function rewardIcon(type, className = "reward-icon") {
       return `<img class="${className}" src="${REWARD_ASSETS[type]}" alt="" aria-hidden="true">`;
+    }
+
+    const MATH_SAVE_KEY = "learning-play-bombom-math-v2";
+    const MATH_ASSETS = {
+      trainer: "assets/math-pet-battle/characters/trainer-arin.png",
+      coin: "assets/math-pet-battle/currency/currency-star-coin.png",
+      gem: "assets/math-pet-battle/currency/currency-answer-gem.png",
+      gear: {
+        starCollar: "assets/math-pet-battle/items/item-star-collar.png",
+        shieldBadge: "assets/math-pet-battle/items/item-shield-badge.png"
+      },
+      items: {
+        focusCookie: "assets/math-pet-battle/items/item-focus-cookie.png",
+        hintCompass: "assets/math-pet-battle/items/item-hint-compass.png"
+      }
+    };
+
+    const MATH_PETS = [
+      {
+        id: "momo",
+        name: "모모",
+        element: "물별",
+        trait: "두번톡톡",
+        desc: "정답 시 일정 확률로 두 번 공격해요.",
+        asset: "assets/math-pet-battle/pets/pet-momo.png",
+        maxHp: 62,
+        attack: 15,
+        priceGem: 0
+      },
+      {
+        id: "lulu",
+        name: "루루",
+        element: "잎방울",
+        trait: "보호잎",
+        desc: "오답 시 보호막으로 피해를 줄여요.",
+        asset: "assets/math-pet-battle/pets/pet-lulu.png",
+        maxHp: 74,
+        attack: 11,
+        priceGem: 0
+      },
+      {
+        id: "tori",
+        name: "토리",
+        element: "번개씨",
+        trait: "빠른발",
+        desc: "연속 정답이 쌓이면 추가 공격해요.",
+        asset: "assets/math-pet-battle/pets/pet-tori.png",
+        maxHp: 58,
+        attack: 13,
+        priceGem: 6
+      },
+      {
+        id: "popo",
+        name: "포포",
+        element: "구름솜",
+        trait: "포근회복",
+        desc: "정답 시 체력을 조금 회복해요.",
+        asset: "assets/math-pet-battle/pets/pet-popo.png",
+        maxHp: 68,
+        attack: 10,
+        priceGem: 8
+      }
+    ];
+
+    const MATH_ENEMIES = [
+      {
+        id: "numberJelly",
+        name: "숫자젤리",
+        asset: "assets/math-pet-battle/enemies/enemy-number-jelly.png",
+        maxHp: 44,
+        attack: 8,
+        rewardCoins: 48,
+        rewardGems: 1
+      },
+      {
+        id: "plusAcorn",
+        name: "덧셈도토리",
+        asset: "assets/math-pet-battle/enemies/enemy-plus-acorn.png",
+        maxHp: 52,
+        attack: 9,
+        rewardCoins: 62,
+        rewardGems: 2
+      },
+      {
+        id: "minusCrab",
+        name: "뺄셈게",
+        asset: "assets/math-pet-battle/enemies/enemy-minus-crab.png",
+        maxHp: 60,
+        attack: 11,
+        rewardCoins: 74,
+        rewardGems: 2
+      }
+    ];
+
+    const MATH_SHOP = {
+      pets: [
+        { type: "pet", id: "tori", name: "토리", cost: 6, currency: "gems", desc: "연속 정답 추가 공격 펫" },
+        { type: "pet", id: "popo", name: "포포", cost: 8, currency: "gems", desc: "정답 회복형 펫" }
+      ],
+      gear: [
+        { type: "gear", id: "starCollar", name: "별목걸이", cost: 180, currency: "coins", asset: MATH_ASSETS.gear.starCollar, desc: "공격 +3, 모모의 두번톡톡 확률 증가" },
+        { type: "gear", id: "shieldBadge", name: "방패배지", cost: 140, currency: "coins", asset: MATH_ASSETS.gear.shieldBadge, desc: "오답 피해를 3 줄여요" }
+      ],
+      items: [
+        { type: "item", id: "focusCookie", name: "집중쿠키", cost: 60, currency: "coins", asset: MATH_ASSETS.items.focusCookie, desc: "오답 선택지 하나 제거" },
+        { type: "item", id: "hintCompass", name: "힌트나침반", cost: 80, currency: "coins", asset: MATH_ASSETS.items.hintCompass, desc: "정답 후보를 반짝 표시" }
+      ]
+    };
+
+    function baseMathState() {
+      const pets = {};
+      MATH_PETS.forEach(pet => {
+        pets[pet.id] = {
+          hp: pet.maxHp,
+          xp: 0,
+          level: 1,
+          unlocked: pet.priceGem === 0
+        };
+      });
+      return {
+        stage: 1,
+        wins: 0,
+        coins: 520,
+        gems: 10,
+        activePetId: "momo",
+        pets,
+        inventory: { focusCookie: 1, hintCompass: 1 },
+        ownedGear: [],
+        equippedGear: {},
+        enemy: null,
+        question: null,
+        choices: [],
+        answered: false,
+        combo: 0,
+        shield: 0,
+        removedChoices: [],
+        highlightedChoice: null,
+        shopTab: "pets",
+        log: "정답을 골라 모모에게 명령해요."
+      };
+    }
+
+    function normalizeMathState(saved) {
+      const next = baseMathState();
+      if (!saved || typeof saved !== "object") return next;
+      Object.assign(next, saved);
+      next.pets = { ...next.pets, ...(saved.pets || {}) };
+      MATH_PETS.forEach(pet => {
+        next.pets[pet.id] = {
+          hp: Math.min(pet.maxHp, Math.max(1, next.pets[pet.id]?.hp ?? pet.maxHp)),
+          xp: next.pets[pet.id]?.xp ?? 0,
+          level: next.pets[pet.id]?.level ?? 1,
+          unlocked: Boolean(next.pets[pet.id]?.unlocked ?? pet.priceGem === 0)
+        };
+      });
+      next.inventory = { focusCookie: 0, hintCompass: 0, ...(saved.inventory || {}) };
+      next.ownedGear = Array.isArray(saved.ownedGear) ? saved.ownedGear : [];
+      next.equippedGear = saved.equippedGear || {};
+      next.shopTab = ["pets", "gear", "items"].includes(saved.shopTab) ? saved.shopTab : "pets";
+      return next;
+    }
+
+    function loadMathState() {
+      try {
+        return normalizeMathState(JSON.parse(localStorage.getItem(MATH_SAVE_KEY)));
+      } catch {
+        return baseMathState();
+      }
+    }
+
+    function saveMathState() {
+      if (!state.math) return;
+      localStorage.setItem(MATH_SAVE_KEY, JSON.stringify(state.math));
+    }
+
+    function getMathPet(id = state.math.activePetId) {
+      return MATH_PETS.find(pet => pet.id === id) || MATH_PETS[0];
+    }
+
+    function getMathEnemySpec(id) {
+      return MATH_ENEMIES.find(enemy => enemy.id === id) || MATH_ENEMIES[0];
+    }
+
+    function activeMathPetState() {
+      return state.math.pets[state.math.activePetId];
+    }
+
+    function activeMathGear() {
+      return state.math.equippedGear[state.math.activePetId] || null;
+    }
+
+    function mathCurrencyLabel(currency) {
+      return currency === "gems" ? "정답보석" : "별코인";
+    }
+
+    function makeMathEnemy() {
+      const spec = MATH_ENEMIES[(state.math.stage - 1) % MATH_ENEMIES.length];
+      const bonus = Math.floor((state.math.stage - 1) * 6);
+      return {
+        id: spec.id,
+        hp: spec.maxHp + bonus,
+        maxHp: spec.maxHp + bonus,
+        attack: spec.attack + Math.floor(state.math.stage / 3)
+      };
+    }
+
+    function makeMathQuestion() {
+      const max = Math.min(18 + state.math.stage * 4, 70);
+      const useMinus = state.math.stage > 1 && Math.random() > .48;
+      let left = Math.floor(Math.random() * max) + 4;
+      let right = Math.floor(Math.random() * Math.min(max, 24)) + 2;
+      if (useMinus && right > left) [left, right] = [right, left];
+      const answer = useMinus ? left - right : left + right;
+      const text = `${left} ${useMinus ? "-" : "+"} ${right} = ?`;
+      const values = new Set([answer]);
+      while (values.size < 3) {
+        const offset = [-8, -6, -4, -3, -2, -1, 1, 2, 3, 4, 6, 8][Math.floor(Math.random() * 12)];
+        const candidate = Math.max(0, answer + offset);
+        values.add(candidate);
+      }
+      state.math.question = { text, answer };
+      state.math.choices = shuffle([...values]);
+      state.math.answered = false;
+      state.math.removedChoices = [];
+      state.math.highlightedChoice = null;
+    }
+
+    function ensureMathBattle() {
+      if (!state.math) state.math = loadMathState();
+      if (!state.math.enemy || state.math.enemy.hp <= 0) state.math.enemy = makeMathEnemy();
+      if (!state.math.question) makeMathQuestion();
+    }
+
+    function mathHpPercent(value, max) {
+      return `${Math.max(0, Math.min(100, Math.round((value / max) * 100)))}%`;
+    }
+
+    function renderMathBattle() {
+      ensureMathBattle();
+      const math = state.math;
+      const pet = getMathPet();
+      const petState = activeMathPetState();
+      const enemySpec = getMathEnemySpec(math.enemy.id);
+      const gear = activeMathGear();
+      els.mathCoins.textContent = math.coins;
+      els.mathGems.textContent = math.gems;
+      els.mathStage.textContent = `스테이지 ${math.stage}`;
+      els.mathPetImage.src = pet.asset;
+      els.mathPetImage.alt = `${pet.name} 펫`;
+      els.mathPetHpBar.style.setProperty("--hp", mathHpPercent(petState.hp, pet.maxHp));
+      els.mathPetName.textContent = `${pet.name} HP ${petState.hp}/${pet.maxHp}`;
+      els.mathEnemyImage.src = enemySpec.asset;
+      els.mathEnemyImage.alt = `${enemySpec.name} 상대`;
+      els.mathEnemyHpBar.style.setProperty("--hp", mathHpPercent(math.enemy.hp, math.enemy.maxHp));
+      els.mathEnemyName.textContent = `${enemySpec.name} HP ${Math.max(0, math.enemy.hp)}/${math.enemy.maxHp}`;
+      els.mathQuestion.textContent = math.question.text;
+      els.mathPrompt.textContent = math.answered ? "결과를 확인하고 다음 문제로 넘어가요." : "정답을 골라 펫에게 명령하세요.";
+      els.mathCombo.textContent = `연속 정답 ${math.combo}`;
+      els.mathLog.textContent = math.log;
+      els.mathNextTurn.textContent = math.enemy.hp <= 0 ? "다음 스테이지" : "다음 문제";
+      els.mathNextTurn.disabled = !math.answered && math.enemy.hp > 0;
+      els.mathActivePetIcon.src = pet.asset;
+      els.mathActivePetIcon.alt = pet.name;
+      els.mathActivePetName.textContent = `${pet.name} Lv.${petState.level}`;
+      els.mathActivePetTrait.textContent = `${pet.element} · ${pet.trait}`;
+      els.mathActivePetDesc.textContent = `${pet.desc}${gear ? ` · 장비: ${gearName(gear)}` : ""}`;
+      els.mathEquipButton.textContent = gear ? `${gearName(gear)} 해제` : "장비 장착";
+      els.moves.textContent = state.moves;
+      els.matches.textContent = `${state.matches}/${math.stage}`;
+      renderMathChoices();
+      renderMathTeam();
+      renderMathItems();
+      renderMathShop();
+      saveMathState();
+    }
+
+    function renderMathChoices() {
+      const math = state.math;
+      els.mathChoices.replaceChildren(...math.choices.map(value => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "math-choice";
+        button.textContent = value;
+        if (math.removedChoices.includes(value)) button.classList.add("removed");
+        if (math.highlightedChoice === value) button.classList.add("hint-choice");
+        if (math.answered) {
+          button.disabled = true;
+          if (value === math.question.answer) button.classList.add("correct");
+        }
+        button.addEventListener("click", () => answerMath(value));
+        return button;
+      }));
+    }
+
+    function renderMathTeam() {
+      els.mathTeam.replaceChildren(...MATH_PETS.map(pet => {
+        const petState = state.math.pets[pet.id];
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `pet-button${pet.id === state.math.activePetId ? " active" : ""}${petState.unlocked ? "" : " locked"}`;
+        button.innerHTML = `
+          <img src="${pet.asset}" alt="" aria-hidden="true">
+          <span><b>${pet.name}</b><span>${petState.unlocked ? `${pet.trait} · HP ${petState.hp}/${pet.maxHp}` : `잠김 · ${pet.priceGem}보석`}</span></span>
+        `;
+        button.addEventListener("click", () => switchMathPet(pet.id));
+        return button;
+      }));
+    }
+
+    function renderMathItems() {
+      const items = MATH_SHOP.items;
+      els.mathItems.replaceChildren(...items.map(item => {
+        const count = state.math.inventory[item.id] || 0;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "item-button";
+        button.disabled = count <= 0 || state.math.answered;
+        button.innerHTML = `<img src="${item.asset}" alt="" aria-hidden="true"><span><b>${item.name} x${count}</b><span>${item.desc}</span></span>`;
+        button.addEventListener("click", () => useMathItem(item.id));
+        return button;
+      }));
+    }
+
+    function gearName(id) {
+      const gear = MATH_SHOP.gear.find(item => item.id === id);
+      return gear ? gear.name : "장비";
+    }
+
+    function shopAsset(item) {
+      if (item.type === "pet") return getMathPet(item.id).asset;
+      return item.asset;
+    }
+
+    function renderMathShop() {
+      document.querySelectorAll(".shop-tab").forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.shopTab === state.math.shopTab);
+      });
+      const list = MATH_SHOP[state.math.shopTab];
+      els.mathShopGrid.replaceChildren(...list.map(item => {
+        const owned = item.type === "pet"
+          ? state.math.pets[item.id].unlocked
+          : item.type === "gear"
+            ? state.math.ownedGear.includes(item.id)
+            : false;
+        const canBuy = item.currency === "gems" ? state.math.gems >= item.cost : state.math.coins >= item.cost;
+        const card = document.createElement("div");
+        card.className = "shop-card";
+        card.innerHTML = `
+          <img src="${shopAsset(item)}" alt="" aria-hidden="true">
+          <span><b>${item.name}</b><span>${item.desc}</span></span>
+          <span class="shop-actions">
+            <b>${owned ? "보유중" : `${item.cost} ${mathCurrencyLabel(item.currency)}`}</b>
+            <button class="shop-buy" type="button" ${owned || !canBuy ? "disabled" : ""}>${owned ? "완료" : "구매"}</button>
+          </span>
+        `;
+        card.querySelector(".shop-buy").addEventListener("click", () => buyMathShopItem(item));
+        return card;
+      }));
+    }
+
+    function setMathShopTab(tab) {
+      state.math.shopTab = tab;
+      renderMathBattle();
+    }
+
+    function switchMathPet(id) {
+      if (!state.math.pets[id]?.unlocked) {
+        state.math.log = "잠긴 펫은 상점에서 정답보석으로 데려올 수 있어요.";
+        renderMathBattle();
+        return;
+      }
+      state.math.activePetId = id;
+      state.math.log = `${getMathPet(id).name}에게 전투를 맡겼어요.`;
+      renderMathBattle();
+    }
+
+    function useMathItem(id) {
+      if (state.math.answered || (state.math.inventory[id] || 0) <= 0) return;
+      if (id === "focusCookie") {
+        const wrong = state.math.choices.find(value => value !== state.math.question.answer && !state.math.removedChoices.includes(value));
+        if (wrong == null) return;
+        state.math.removedChoices.push(wrong);
+        state.math.inventory[id] -= 1;
+        state.math.log = "집중쿠키를 사용해서 오답 하나를 치웠어요.";
+      }
+      if (id === "hintCompass") {
+        state.math.highlightedChoice = state.math.question.answer;
+        state.math.inventory[id] -= 1;
+        state.math.log = "힌트나침반이 정답 후보를 반짝였어요.";
+      }
+      renderMathBattle();
+    }
+
+    function buyMathShopItem(item) {
+      const enough = item.currency === "gems" ? state.math.gems >= item.cost : state.math.coins >= item.cost;
+      if (!enough) return;
+      if (item.currency === "gems") state.math.gems -= item.cost;
+      else state.math.coins -= item.cost;
+      if (item.type === "pet") {
+        state.math.pets[item.id].unlocked = true;
+        state.math.log = `${getMathPet(item.id).name}가 팀에 합류했어요.`;
+      } else if (item.type === "gear") {
+        state.math.ownedGear.push(item.id);
+        state.math.equippedGear[state.math.activePetId] = item.id;
+        state.math.log = `${item.name}를 구매하고 ${getMathPet().name}에게 장착했어요.`;
+      } else {
+        state.math.inventory[item.id] = (state.math.inventory[item.id] || 0) + 1;
+        state.math.log = `${item.name}을 가방에 넣었어요.`;
+      }
+      renderMathBattle();
+    }
+
+    function toggleMathGear() {
+      const current = activeMathGear();
+      if (current) {
+        delete state.math.equippedGear[state.math.activePetId];
+        state.math.log = `${gearName(current)}을 해제했어요.`;
+      } else if (state.math.ownedGear.length > 0) {
+        state.math.equippedGear[state.math.activePetId] = state.math.ownedGear[0];
+        state.math.log = `${gearName(state.math.ownedGear[0])}을 장착했어요.`;
+      } else {
+        state.math.log = "상점에서 장비를 먼저 구매해 주세요.";
+      }
+      renderMathBattle();
+    }
+
+    function answerMath(value) {
+      if (state.math.answered || state.math.removedChoices.includes(value)) return;
+      startTimer();
+      state.math.answered = true;
+      state.moves += 1;
+      const pet = getMathPet();
+      const petState = activeMathPetState();
+      const gear = activeMathGear();
+      const correct = value === state.math.question.answer;
+      if (correct) {
+        state.matches += 1;
+        state.math.combo += 1;
+        let damage = pet.attack + (gear === "starCollar" ? 3 : 0) + Math.floor((petState.level - 1) * 2);
+        const messages = [`정답! ${pet.name}가 ${damage} 피해를 줬어요.`];
+        const doubleChance = pet.id === "momo" ? (gear === "starCollar" ? .5 : .32) : 0;
+        if (doubleChance && Math.random() < doubleChance) {
+          damage += pet.attack;
+          messages.push("두번톡톡 발동! 한 번 더 공격했어요.");
+        }
+        if (pet.id === "tori" && state.math.combo >= 2) {
+          damage += 8;
+          messages.push("빠른발 발동! 번개처럼 추가 공격했어요.");
+        }
+        if (pet.id === "popo") {
+          petState.hp = Math.min(pet.maxHp, petState.hp + 8);
+          messages.push("포근회복으로 체력을 회복했어요.");
+        }
+        state.math.enemy.hp -= damage;
+        state.math.log = messages.join(" ");
+        if (state.math.enemy.hp <= 0) winMathBattle();
+      } else {
+        state.math.combo = 0;
+        let damage = state.math.enemy.attack;
+        const messages = [`오답이에요. 정답은 ${state.math.question.answer}였어요.`];
+        if (pet.id === "lulu") {
+          damage = Math.max(0, damage - 7);
+          messages.push("보호잎이 피해를 줄였어요.");
+        }
+        if (gear === "shieldBadge") {
+          damage = Math.max(0, damage - 3);
+          messages.push("방패배지가 한 번 더 막아줬어요.");
+        }
+        petState.hp = Math.max(1, petState.hp - damage);
+        state.math.log = `${messages.join(" ")} ${pet.name}가 ${damage} 피해를 받았어요.`;
+      }
+      renderMathBattle();
+    }
+
+    function winMathBattle() {
+      const enemySpec = getMathEnemySpec(state.math.enemy.id);
+      const coinReward = enemySpec.rewardCoins + state.math.stage * 6;
+      const gemReward = enemySpec.rewardGems + (state.math.combo >= 3 ? 1 : 0);
+      const pet = getMathPet();
+      const petState = activeMathPetState();
+      state.math.coins += coinReward;
+      state.math.gems += gemReward;
+      state.math.wins += 1;
+      petState.xp += 35;
+      if (petState.xp >= 100) {
+        petState.xp -= 100;
+        petState.level += 1;
+        petState.hp = pet.maxHp;
+        state.math.log += ` ${pet.name}가 Lv.${petState.level}이 되었어요!`;
+      }
+      state.math.log += ` ${enemySpec.name} 승리! 별코인 ${coinReward}, 정답보석 ${gemReward} 획득.`;
+    }
+
+    function nextMathTurn() {
+      if (state.math.enemy?.hp <= 0) {
+        state.math.stage += 1;
+        state.math.enemy = makeMathEnemy();
+        state.math.log = `스테이지 ${state.math.stage} 시작! 새 상대가 나타났어요.`;
+      }
+      makeMathQuestion();
+      renderMathBattle();
+    }
+
+    function startMathBattle(resetRun = false) {
+      stopTimer();
+      state.mode = "math-battle";
+      if (resetRun || !state.math) {
+        state.math = resetRun ? baseMathState() : loadMathState();
+      }
+      state.deck = [];
+      state.quizItems = [];
+      state.selected = [];
+      state.locked = false;
+      state.moves = 0;
+      state.matches = 0;
+      state.startedAt = null;
+      els.timer.textContent = "00:00";
+      els.memoryWrap.classList.add("hidden");
+      els.quizWrap.classList.add("hidden");
+      els.mathBattleWrap.classList.remove("hidden");
+      els.win.classList.remove("open");
+      ensureMathBattle();
+      renderMathBattle();
     }
 
     function shuffle(items) {
@@ -2575,19 +4214,19 @@
     }
 
     function cardButton(card) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = `card ${card.type}${card.open ? " flipped" : ""}${card.matched ? " matched" : ""}`;
-      button.dataset.cardId = card.cardId;
-      button.setAttribute("aria-label", card.open || card.matched ? cardLabel(card) : "닫힌 카드");
-      button.innerHTML = `
-        <span class="card-inner">
-          <span class="face front"></span>
-          <span class="face back">${card.type === "hanja" ? hanjaMarkup(card.word) : readingMarkup(card.word)}</span>
-        </span>
-      `;
-      button.addEventListener("click", () => chooseCard(card.cardId));
-      return button;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `card ${card.type}${card.open ? " flipped" : ""}${card.matched ? " matched" : ""}`;
+        button.dataset.cardId = card.cardId;
+        button.setAttribute("aria-label", card.open || card.matched ? cardLabel(card) : "닫힌 카드");
+        button.innerHTML = `
+          <span class="card-inner">
+            <span class="face front"></span>
+            <span class="face back">${card.type === "hanja" ? hanjaMarkup(card.word) : readingMarkup(card.word)}</span>
+          </span>
+        `;
+        button.addEventListener("click", () => chooseCard(card.cardId));
+        return button;
     }
 
     function hanjaMarkup(word) {
@@ -2628,6 +4267,7 @@
     }
 
     function activeGoalTotal() {
+      if (state.mode === "math-battle") return Math.max(1, state.math?.stage || 1);
       return state.mode === "memory" ? state.pairCount : Math.max(1, state.quizItems.length || state.pairCount);
     }
 
@@ -2636,6 +4276,7 @@
     }
 
     function updateQuestPanel(percent = 0) {
+      if (state.mode === "math-battle") return;
       if (els.jewelCount) els.jewelCount.textContent = rewardCount();
       if (els.jewelGoal) els.jewelGoal.textContent = rewardGoals(activeGoalTotal()).length;
       if (els.missionText) {
@@ -2798,8 +4439,8 @@
       const meta = MODE_META[state.mode] || MODE_META.meaning;
       const item = state.quizItems[state.quizIndex];
       if (!item) return;
-      closeQuizResult();
 
+      closeQuizResult();
       state.quizAnswered = false;
       state.currentQuiz = makeQuiz(item, state.mode);
       els.quizTitle.textContent = meta.title;
@@ -2914,6 +4555,7 @@
       els.timer.textContent = "00:00";
       els.memoryWrap.classList.add("hidden");
       els.quizWrap.classList.remove("hidden");
+      els.mathBattleWrap.classList.add("hidden");
       els.hint.textContent = meta.prompt;
       if (els.listTitle) els.listTitle.textContent = mode === "review" ? "복습할 단어" : "이번 퀴즈 단어";
       if (els.message) {
@@ -2929,9 +4571,15 @@
     }
 
     function setMode(mode) {
+      document.body.classList.toggle("math-active", mode === "math-battle");
       document.body.classList.remove("home-active");
       els.homeView.classList.add("hidden");
       els.gameView.classList.remove("hidden");
+      if (mode === "math-battle") {
+        closeQuizResult();
+        startMathBattle();
+        return;
+      }
       if (mode === "memory") {
         newGame();
         return;
@@ -2942,6 +4590,7 @@
     function newGame() {
       stopTimer();
       closeQuizResult();
+      document.body.classList.remove("math-active");
       const levelInfo = LEVELS[state.level];
       const pool = poolForLevel(state.level);
       const words = shuffle(pool).slice(0, state.pairCount);
@@ -2962,6 +4611,7 @@
       els.timer.textContent = "00:00";
       els.memoryWrap.classList.remove("hidden");
       els.quizWrap.classList.add("hidden");
+      els.mathBattleWrap.classList.add("hidden");
       els.boardTitle.textContent = `${levelInfo.label} ${levelInfo.total}자 중 ${state.pairCount}짝`;
       if (els.listTitle) els.listTitle.textContent = "이번 판 단어";
       if (els.message) els.message.textContent = `${levelInfo.label} 배정한자에서 무작위로 ${state.pairCount}개를 골랐습니다.`;
@@ -2999,12 +4649,17 @@
       els.level80.setAttribute("aria-pressed", String(level === "80"));
       els.level72.setAttribute("aria-pressed", String(level === "72"));
       els.level70.setAttribute("aria-pressed", String(level === "70"));
+      if (state.mode === "math-battle") {
+        startMathBattle();
+        return;
+      }
       if (state.mode === "memory") newGame();
       else startQuizMode(state.mode);
     }
 
     function showHome() {
       closeQuizResult();
+      document.body.classList.remove("math-active");
       document.body.classList.add("home-active");
       els.homeView.classList.remove("hidden");
       els.gameView.classList.add("hidden");
@@ -3020,21 +4675,30 @@
     els.pairCount.addEventListener("change", event => {
       state.pairCount = Number(event.target.value);
       if (state.mode === "memory") newGame();
+      else if (state.mode === "math-battle") startMathBattle();
       else startQuizMode(state.mode);
     });
     els.homeButton.addEventListener("click", showHome);
-    els.startLearning.addEventListener("click", showGame);
-    els.openModes.addEventListener("click", () => document.querySelector("#modeGrid").scrollIntoView({ behavior: "smooth", block: "center" }));
-    els.subjectGrid.addEventListener("click", event => {
+    els.openModes?.addEventListener("click", () => document.querySelector("#subjectGrid")?.scrollIntoView({ behavior: "smooth", block: "center" }));
+    els.homeView.addEventListener("click", event => {
+      const action = event.target.closest("[data-home-mode]");
+      if (!action) return;
+      setMode(action.dataset.homeMode);
+    });
+    els.subjectGrid?.addEventListener("click", event => {
       const card = event.target.closest(".subject-card");
       if (!card) return;
       if (card.dataset.pack === "hanja") {
         setMode("memory");
         return;
       }
+      if (card.dataset.pack === "math") {
+        setMode("math-battle");
+        return;
+      }
       if (els.tipText) els.tipText.textContent = "새 콘텐츠팩은 같은 게임 모드 구조로 추가할 예정입니다.";
     });
-    els.modeGrid.addEventListener("click", event => {
+    els.modeGrid?.addEventListener("click", event => {
       const card = event.target.closest(".mode-card");
       if (!card) return;
       if (card.dataset.ready === "false") return;
@@ -3043,14 +4707,21 @@
     els.newGame.addEventListener("click", () => {
       if (els.gameView.classList.contains("hidden")) showGame();
       else if (state.mode === "memory") newGame();
+      else if (state.mode === "math-battle") startMathBattle(true);
       else startQuizMode(state.mode);
     });
     els.playAgain.addEventListener("click", () => {
       if (state.mode === "memory") newGame();
+      else if (state.mode === "math-battle") startMathBattle(true);
       else startQuizMode(state.mode);
     });
     els.nextQuestion.addEventListener("click", nextQuiz);
     els.quizResultNext.addEventListener("click", nextQuiz);
+    els.mathNextTurn.addEventListener("click", nextMathTurn);
+    els.mathEquipButton.addEventListener("click", toggleMathGear);
+    document.querySelectorAll(".shop-tab").forEach(tab => {
+      tab.addEventListener("click", () => setMathShopTab(tab.dataset.shopTab));
+    });
     els.hintButton.addEventListener("click", useHint);
     els.shuffleButton.addEventListener("click", shuffleUnmatched);
     window.addEventListener("resize", () => setColumns(state.deck.length));
