@@ -272,13 +272,56 @@
     }
 
     .board {
-      --cols: 4;
+      --lane-cols: 3;
       display: grid;
-      grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-      gap: clamp(8px, 1.25vw, 14px);
-      align-content: center;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(10px, 1.5vw, 18px);
+      align-content: stretch;
       min-height: 0;
       padding: clamp(12px, 1.8vw, 24px);
+    }
+
+    .memory-lane {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid #efd9d3;
+      border-radius: 8px;
+      background: rgba(255, 253, 248, .9);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.7);
+    }
+
+    .memory-lane.hanja-lane {
+      border-color: #cde1c8;
+      background: rgba(245, 255, 244, .9);
+    }
+
+    .lane-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 2px;
+      font-weight: 950;
+    }
+
+    .lane-head span {
+      color: #6b7770;
+      font-size: 12px;
+      line-height: 1.2;
+      text-align: right;
+      word-break: keep-all;
+    }
+
+    .memory-column {
+      display: grid;
+      grid-template-columns: repeat(var(--lane-cols), minmax(0, 1fr));
+      gap: clamp(8px, 1vw, 12px);
+      align-content: center;
+      min-width: 0;
     }
 
     .card {
@@ -330,12 +373,41 @@
         var(--paper);
     }
 
+    .card.meaning .front {
+      border-color: #ff9db4;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, .76), transparent),
+        radial-gradient(circle at 18% 78%, rgba(255, 128, 158, .14) 0 7px, transparent 8px),
+        radial-gradient(circle at 82% 20%, rgba(255, 128, 158, .16) 0 8px, transparent 9px),
+        #fff6f8;
+    }
+
+    .card.hanja .front {
+      border-color: #9ed8bf;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, .76), transparent),
+        repeating-linear-gradient(45deg, rgba(30, 138, 114, .08) 0 1px, transparent 1px 10px),
+        #f4fff8;
+    }
+
     .front::after {
       content: "漢";
       color: rgba(31, 37, 35, .18);
       font-family: "Songti SC", "Noto Serif CJK KR", serif;
       font-size: clamp(30px, 5vw, 64px);
       font-weight: 900;
+    }
+
+    .card.meaning .front::after {
+      content: "음";
+      color: rgba(239, 79, 123, .2);
+      font-family: inherit;
+      font-size: clamp(28px, 4vw, 54px);
+    }
+
+    .card.hanja .front::after {
+      content: "?";
+      color: rgba(30, 138, 114, .2);
     }
 
     .back {
@@ -490,7 +562,7 @@
       padding: 24px;
       background: rgba(31, 37, 35, .34);
       backdrop-filter: blur(10px);
-      z-index: 10;
+      z-index: 100;
     }
 
     .win.open { display: grid; }
@@ -525,6 +597,76 @@
       color: white;
       font-weight: 900;
       cursor: pointer;
+    }
+
+    .quiz-result-box {
+      width: min(460px, 100%);
+      text-align: left;
+    }
+
+    .quiz-result-box h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .result-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #f3fff6;
+      color: #149067;
+      font-size: 22px;
+      font-weight: 950;
+    }
+
+    .result-mark.wrong {
+      background: #fff0f3;
+      color: #ef4f77;
+    }
+
+    .result-word {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin: 16px 0;
+      padding: 14px;
+      border: 1px solid #efe2dc;
+      border-radius: 8px;
+      background: #fffdfa;
+    }
+
+    .result-word b {
+      display: grid;
+      place-items: center;
+      min-height: 78px;
+      border-radius: 8px;
+      background: #fff2f5;
+      color: var(--ink);
+      font-family: "Songti SC", "Noto Serif CJK KR", "Batang", serif;
+      font-size: 48px;
+      line-height: 1;
+    }
+
+    .result-word span {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .result-word strong {
+      color: var(--ink);
+      font-size: 20px;
+    }
+
+    .result-actions {
+      display: flex;
+      justify-content: flex-end;
     }
 
     .asset-icon,
@@ -1774,8 +1916,23 @@
       }
 
       .board {
+        --lane-cols: 2;
         gap: 8px;
         padding: 10px;
+      }
+
+      .memory-lane {
+        padding: 8px;
+      }
+
+      .lane-head {
+        display: grid;
+        gap: 2px;
+        align-content: center;
+      }
+
+      .lane-head span {
+        text-align: left;
       }
 
       .play-tools {
@@ -2175,6 +2332,23 @@
     </div>
   </div>
 
+  <div id="quizResult" class="win" role="dialog" aria-modal="true" aria-labelledby="quizResultTitle">
+    <div class="win-box quiz-result-box">
+      <h2 id="quizResultTitle"><span id="quizResultMark" class="result-mark">O</span><span id="quizResultHeading">정답입니다</span></h2>
+      <p id="quizResultText">답안 결과를 확인해요.</p>
+      <div class="result-word">
+        <b id="quizResultHanja">字</b>
+        <span>
+          <strong id="quizResultReading">뜻·음</strong>
+          <span id="quizResultNote">다음 문제로 넘어갈 수 있어요.</span>
+        </span>
+      </div>
+      <div class="result-actions">
+        <button id="quizResultNext" type="button">다음 문제</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const OFFICIAL_HANJA = [
       ["家","집 가","72"],["歌","노래 가","70"],["間","사이 간","72"],["江","강 강","72"],["車","수레 거 | 수레 차","72"],
@@ -2291,7 +2465,15 @@
       tipText: document.querySelector("#tipText"),
       win: document.querySelector("#win"),
       winText: document.querySelector("#winText"),
-      playAgain: document.querySelector("#playAgain")
+      playAgain: document.querySelector("#playAgain"),
+      quizResult: document.querySelector("#quizResult"),
+      quizResultMark: document.querySelector("#quizResultMark"),
+      quizResultHeading: document.querySelector("#quizResultHeading"),
+      quizResultText: document.querySelector("#quizResultText"),
+      quizResultHanja: document.querySelector("#quizResultHanja"),
+      quizResultReading: document.querySelector("#quizResultReading"),
+      quizResultNote: document.querySelector("#quizResultNote"),
+      quizResultNext: document.querySelector("#quizResultNext")
     };
 
     const MODE_META = {
@@ -2349,38 +2531,63 @@
     }
 
     function setColumns(cardCount) {
-      let cols = 4;
-      if (cardCount >= 40) cols = 8;
-      else if (cardCount >= 32) cols = 8;
-      else if (cardCount >= 24) cols = 6;
-      if (window.innerWidth < 720) cols = cardCount >= 24 ? 4 : 3;
-      els.board.style.setProperty("--cols", cols);
+      const pairCount = Math.max(1, Math.floor(cardCount / 2));
+      let cols = 2;
+      if (pairCount >= 20) cols = 4;
+      else if (pairCount >= 10) cols = 3;
+      if (window.innerWidth < 720) cols = 2;
+      els.board.style.setProperty("--lane-cols", cols);
     }
 
     function makeDeck(words) {
-      return shuffle(words.flatMap(word => ([
-        { cardId: `${word.id}-hanja`, pairId: word.id, type: "hanja", word, matched: false, open: false },
+      const meaningCards = shuffle(words.map(word => (
         { cardId: `${word.id}-meaning`, pairId: word.id, type: "meaning", word, matched: false, open: false }
-      ])));
+      )));
+      const hanjaCards = shuffle(words.map(word => (
+        { cardId: `${word.id}-hanja`, pairId: word.id, type: "hanja", word, matched: false, open: false }
+      )));
+      return [...meaningCards, ...hanjaCards];
     }
 
     function renderBoard() {
       setColumns(state.deck.length);
-      els.board.replaceChildren(...state.deck.map(card => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = `card ${card.type}${card.open ? " flipped" : ""}${card.matched ? " matched" : ""}`;
-        button.dataset.cardId = card.cardId;
-        button.setAttribute("aria-label", card.open || card.matched ? cardLabel(card) : "닫힌 카드");
-        button.innerHTML = `
-          <span class="card-inner">
-            <span class="face front"></span>
-            <span class="face back">${card.type === "hanja" ? hanjaMarkup(card.word) : readingMarkup(card.word)}</span>
-          </span>
+      const lane = (title, description, cards, className) => {
+        const section = document.createElement("section");
+        section.className = `memory-lane ${className}`;
+        section.innerHTML = `
+          <div class="lane-head">
+            <strong>${title}</strong>
+            <span>${description}</span>
+          </div>
         `;
-        button.addEventListener("click", () => chooseCard(card.cardId));
-        return button;
-      }));
+        const column = document.createElement("div");
+        column.className = "memory-column";
+        column.replaceChildren(...cards.map(cardButton));
+        section.append(column);
+        return section;
+      };
+      const meaningCards = state.deck.filter(card => card.type === "meaning");
+      const hanjaCards = state.deck.filter(card => card.type === "hanja");
+      els.board.replaceChildren(
+        lane("뜻·음 카드", "왼쪽에서 먼저 뜻을 고르고", meaningCards, "meaning-lane"),
+        lane("한자 카드", "오른쪽에서 짝 한자를 찾아요", hanjaCards, "hanja-lane")
+      );
+    }
+
+    function cardButton(card) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `card ${card.type}${card.open ? " flipped" : ""}${card.matched ? " matched" : ""}`;
+      button.dataset.cardId = card.cardId;
+      button.setAttribute("aria-label", card.open || card.matched ? cardLabel(card) : "닫힌 카드");
+      button.innerHTML = `
+        <span class="card-inner">
+          <span class="face front"></span>
+          <span class="face back">${card.type === "hanja" ? hanjaMarkup(card.word) : readingMarkup(card.word)}</span>
+        </span>
+      `;
+      button.addEventListener("click", () => chooseCard(card.cardId));
+      return button;
     }
 
     function hanjaMarkup(word) {
@@ -2591,6 +2798,7 @@
       const meta = MODE_META[state.mode] || MODE_META.meaning;
       const item = state.quizItems[state.quizIndex];
       if (!item) return;
+      closeQuizResult();
 
       state.quizAnswered = false;
       state.currentQuiz = makeQuiz(item, state.mode);
@@ -2610,6 +2818,26 @@
         button.addEventListener("click", () => answerQuiz(choice.value));
         return button;
       }));
+    }
+
+    function openQuizResult(correct, pickedValue) {
+      const word = state.currentQuiz.word;
+      const isLast = state.quizIndex === state.quizItems.length - 1;
+      els.quizResultMark.textContent = correct ? "O" : "!";
+      els.quizResultMark.classList.toggle("wrong", !correct);
+      els.quizResultHeading.textContent = correct ? "정답입니다" : "다시 기억해봐요";
+      els.quizResultText.textContent = correct
+        ? "잘 골랐어요. 맞힌 단어는 복습함에서 빠집니다."
+        : `선택한 답: ${pickedValue}. 정답은 아래 카드입니다.`;
+      els.quizResultHanja.textContent = word.hanja;
+      els.quizResultReading.textContent = word.reading;
+      els.quizResultNote.textContent = correct ? "다음 문제로 이어서 풀어볼까요?" : "이 단어는 복습함에 담아 다시 연습할게요.";
+      els.quizResultNext.textContent = isLast ? "결과 보기" : "다음 문제";
+      els.quizResult.classList.add("open");
+    }
+
+    function closeQuizResult() {
+      if (els.quizResult) els.quizResult.classList.remove("open");
     }
 
     function answerQuiz(value) {
@@ -2639,10 +2867,12 @@
       els.nextQuestion.disabled = false;
       if (els.tipText) els.tipText.textContent = correct ? "좋아요. 맞힌 단어는 복습함에서 빠져요." : "틀린 단어는 복습함에서 다시 연습해요.";
       updateStats();
+      openQuizResult(correct, value);
     }
 
     function nextQuiz() {
       if (!state.quizAnswered) return;
+      closeQuizResult();
       if (state.quizIndex >= state.quizItems.length - 1) {
         finishQuiz();
         return;
@@ -2653,6 +2883,7 @@
     }
 
     function finishQuiz() {
+      closeQuizResult();
       stopTimer();
       const elapsed = state.startedAt ? formatTime(Math.floor((Date.now() - state.startedAt) / 1000)) : "00:00";
       const meta = MODE_META[state.mode] || MODE_META.meaning;
@@ -2662,6 +2893,7 @@
 
     function startQuizMode(mode) {
       stopTimer();
+      closeQuizResult();
       const meta = MODE_META[mode] || MODE_META.meaning;
       const levelInfo = LEVELS[state.level];
       const basePool = mode === "review" && state.reviewWords.size > 0 ? [...state.reviewWords.values()] : poolForLevel(state.level);
@@ -2709,6 +2941,7 @@
 
     function newGame() {
       stopTimer();
+      closeQuizResult();
       const levelInfo = LEVELS[state.level];
       const pool = poolForLevel(state.level);
       const words = shuffle(pool).slice(0, state.pairCount);
@@ -2771,6 +3004,7 @@
     }
 
     function showHome() {
+      closeQuizResult();
       document.body.classList.add("home-active");
       els.homeView.classList.remove("hidden");
       els.gameView.classList.add("hidden");
@@ -2816,6 +3050,7 @@
       else startQuizMode(state.mode);
     });
     els.nextQuestion.addEventListener("click", nextQuiz);
+    els.quizResultNext.addEventListener("click", nextQuiz);
     els.hintButton.addEventListener("click", useHint);
     els.shuffleButton.addEventListener("click", shuffleUnmatched);
     window.addEventListener("resize", () => setColumns(state.deck.length));
