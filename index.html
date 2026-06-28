@@ -693,6 +693,342 @@
       justify-items: end;
     }
 
+    .math-battle {
+      min-height: min(820px, calc(100vh - 128px));
+      align-content: start;
+      background:
+        radial-gradient(circle at 16% 10%, rgba(255, 222, 107, .28), transparent 30%),
+        radial-gradient(circle at 86% 24%, rgba(91, 194, 182, .24), transparent 34%),
+        linear-gradient(180deg, #dff6ff 0%, #f7fff0 48%, #fff7da 100%);
+    }
+
+    .math-head {
+      background: rgba(255, 255, 255, .76);
+      backdrop-filter: blur(8px);
+    }
+
+    .math-view.hidden {
+      display: none;
+    }
+
+    .math-world-view {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+      gap: 14px;
+      min-height: 570px;
+    }
+
+    .math-world-board {
+      position: relative;
+      min-height: 570px;
+      overflow: hidden;
+      border: 1px solid rgba(93, 145, 121, .42);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02)),
+        url("assets/math-pet-battle/world/world-map-hub.png") center / cover no-repeat;
+      box-shadow: inset 0 -72px 96px rgba(39, 94, 75, .18), 0 18px 34px rgba(50, 91, 78, .14);
+    }
+
+    .world-node,
+    .world-trainer {
+      position: absolute;
+      display: grid;
+      justify-items: center;
+      gap: 2px;
+      border: 0;
+      background: transparent;
+      color: #23352e;
+      font-weight: 950;
+      text-shadow: 0 1px 0 rgba(255,255,255,.92), 0 2px 8px rgba(255,255,255,.78);
+    }
+
+    .world-node {
+      width: clamp(92px, 12vw, 150px);
+      min-height: 100px;
+      cursor: pointer;
+      transition: transform .18s ease, filter .18s ease;
+    }
+
+    .world-node:hover,
+    .world-node:focus-visible {
+      outline: none;
+      transform: translateY(-5px) scale(1.04);
+      filter: drop-shadow(0 12px 10px rgba(15, 83, 62, .22));
+    }
+
+    .world-node img {
+      width: 100%;
+      height: clamp(78px, 11vw, 132px);
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .world-node span,
+    .world-trainer span {
+      padding: 5px 8px;
+      border: 1px solid rgba(121, 152, 107, .5);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .82);
+      font-size: 13px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .node-battle { left: 11%; top: 12%; }
+    .node-ranch { left: 54%; top: 12%; }
+    .node-gear { left: 28%; top: 42%; }
+    .node-items { right: 9%; top: 38%; }
+    .node-practice { left: 10%; bottom: 10%; }
+    .node-reward { right: 24%; bottom: 8%; }
+
+    .world-trainer {
+      left: 45%;
+      bottom: 20%;
+      width: clamp(70px, 9vw, 110px);
+    }
+
+    .world-trainer img {
+      width: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 10px rgba(25, 58, 48, .22));
+    }
+
+    .math-world-status {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      min-height: 0;
+      padding: 14px;
+      border: 1px solid rgba(190, 219, 174, .9);
+      border-radius: 8px;
+      background: rgba(255, 253, 248, .82);
+      box-shadow: 0 14px 28px rgba(52, 92, 75, .14);
+      backdrop-filter: blur(8px);
+    }
+
+    .math-world-status .stage-badge {
+      position: static;
+      justify-self: start;
+    }
+
+    .world-active-pet {
+      grid-template-columns: 96px 1fr;
+      padding: 10px;
+      border: 1px solid #dce8d2;
+      border-radius: 8px;
+      background: rgba(255,255,255,.86);
+    }
+
+    .world-route-card {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid #e8ddd0;
+      border-radius: 8px;
+      background: #fffaf1;
+      color: #435249;
+      font-weight: 900;
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
+    .world-route-card img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+    }
+
+    .math-back-button {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 5;
+      min-height: 36px;
+      border: 1px solid rgba(48, 94, 79, .22);
+      border-radius: 8px;
+      padding: 0 12px;
+      background: rgba(255,255,255,.88);
+      color: #24443a;
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(31, 73, 60, .12);
+    }
+
+    .math-arena {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.16) 72%, rgba(247, 251, 245, .74) 100%),
+        url("assets/math-pet-battle/backgrounds/bg-forest-academy-vivid.png") center / cover no-repeat;
+    }
+
+    .math-battle-effect {
+      position: absolute;
+      top: 62px;
+      left: 50%;
+      z-index: 4;
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      transform: translateX(-50%);
+      pointer-events: none;
+      animation: mathEffectPop .58s ease both;
+    }
+
+    .math-battle-effect img {
+      width: clamp(108px, 16vw, 176px);
+      height: clamp(108px, 16vw, 176px);
+      object-fit: contain;
+      filter: drop-shadow(0 14px 18px rgba(36, 70, 62, .2));
+    }
+
+    .math-battle-effect span {
+      max-width: min(520px, 72vw);
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,.78);
+      border-radius: 8px;
+      background: rgba(33, 52, 44, .86);
+      color: #fff;
+      font-weight: 950;
+      line-height: 1.25;
+      text-align: center;
+      word-break: keep-all;
+      box-shadow: 0 12px 20px rgba(34, 54, 45, .18);
+    }
+
+    .math-battle-view[data-feedback="correct"] .actor-pet img {
+      animation: petAttack .42s ease both;
+    }
+
+    .math-battle-view[data-feedback="wrong"] .actor-enemy img {
+      animation: enemyNudge .42s ease both;
+    }
+
+    .math-choice.wrong-selected {
+      border-color: #df6b57;
+      background: #fff0ec;
+      box-shadow: 0 0 0 5px rgba(223, 107, 87, .18);
+    }
+
+    .math-location-view {
+      min-height: 570px;
+    }
+
+    .math-location-scene {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 14px;
+      min-height: 570px;
+      padding: 72px 18px 18px;
+      overflow: hidden;
+      border: 1px solid rgba(93, 145, 121, .42);
+      border-radius: 8px;
+      background: #f7fff0;
+      box-shadow: 0 18px 34px rgba(50, 91, 78, .14);
+    }
+
+    .math-location-scene::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: center / cover no-repeat;
+      opacity: .98;
+    }
+
+    .math-location-scene::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(90deg, rgba(255,255,255,.88), rgba(255,255,255,.58) 46%, rgba(255,255,255,.18));
+    }
+
+    .math-location-scene.location-ranch::before { background-image: url("assets/math-pet-battle/backgrounds/bg-pet-ranch.png"); }
+    .math-location-scene.location-gear::before { background-image: url("assets/math-pet-battle/backgrounds/bg-equipment-shop.png"); }
+    .math-location-scene.location-items::before { background-image: url("assets/math-pet-battle/backgrounds/bg-item-shop.png"); }
+    .math-location-scene.location-reward::before { background-image: url("assets/math-pet-battle/world/world-map-hub.png"); }
+
+    .math-location-hero,
+    .math-location-panel {
+      position: relative;
+      z-index: 2;
+      max-width: 720px;
+      border: 1px solid rgba(220, 232, 210, .9);
+      border-radius: 8px;
+      background: rgba(255, 253, 248, .86);
+      box-shadow: 0 12px 28px rgba(60, 90, 73, .12);
+      backdrop-filter: blur(8px);
+    }
+
+    .math-location-hero {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+    }
+
+    .math-location-hero img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+    }
+
+    .math-location-hero h3 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1;
+    }
+
+    .math-location-hero p {
+      margin: 8px 0 0;
+      color: #59655f;
+      font-weight: 850;
+      word-break: keep-all;
+    }
+
+    .math-location-panel {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      padding: 14px;
+    }
+
+    .math-location-panel.hidden {
+      display: none;
+    }
+
+    .math-location-panel .team-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .math-location-panel .shop-grid {
+      max-height: 310px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    @keyframes mathEffectPop {
+      0% { opacity: 0; transform: translate(-50%, 8px) scale(.82); }
+      18% { opacity: 1; transform: translate(-50%, 0) scale(1.06); }
+      100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    }
+
+    @keyframes petAttack {
+      0% { transform: translateX(0); }
+      45% { transform: translateX(34px) translateY(-8px) scale(1.08); }
+      100% { transform: translateX(0); }
+    }
+
+    @keyframes enemyNudge {
+      0% { transform: translateX(0); }
+      45% { transform: translateX(-20px) rotate(-3deg); }
+      100% { transform: translateX(0); }
+    }
+
     .equip-button {
       background: #31433c;
     }
@@ -2887,6 +3223,22 @@
         grid-template-columns: 1fr;
       }
 
+      .math-world-view {
+        grid-template-columns: 1fr;
+      }
+
+      .math-world-board {
+        min-height: 520px;
+      }
+
+      .math-world-status {
+        grid-template-columns: minmax(0, .6fr) minmax(0, 1.4fr);
+      }
+
+      .world-route-card {
+        grid-column: 1 / -1;
+      }
+
       .actor-trainer img {
         width: min(20vw, 120px);
       }
@@ -2994,6 +3346,50 @@
         min-height: 560px;
       }
 
+      .math-world-board,
+      .math-location-view,
+      .math-location-scene {
+        min-height: 560px;
+      }
+
+      .world-node {
+        width: 92px;
+      }
+
+      .world-node img {
+        height: 84px;
+      }
+
+      .node-battle { left: 5%; top: 8%; }
+      .node-ranch { left: 56%; top: 9%; }
+      .node-gear { left: 18%; top: 39%; }
+      .node-items { right: 4%; top: 38%; }
+      .node-practice { left: 6%; bottom: 13%; }
+      .node-reward { right: 12%; bottom: 10%; }
+
+      .world-trainer {
+        left: 41%;
+        bottom: 27%;
+        width: 78px;
+      }
+
+      .math-world-status {
+        grid-template-columns: 1fr;
+      }
+
+      .math-location-scene {
+        padding: 64px 12px 12px;
+      }
+
+      .math-location-hero {
+        grid-template-columns: 86px 1fr;
+      }
+
+      .math-location-hero img {
+        width: 86px;
+        height: 86px;
+      }
+
       .battle-field {
         min-height: 330px;
       }
@@ -3003,7 +3399,7 @@
       }
 
       .actor-trainer {
-        left: 2%;
+        left: 4%;
       }
 
       .actor-trainer img {
@@ -3291,7 +3687,7 @@
         <div class="math-head">
           <div>
             <h2>수학펫 배틀</h2>
-            <p>조련사는 명령을 내리고, 정답을 고르면 펫이 공격해요. 보상으로 펫과 장비를 키워보세요.</p>
+            <p>월드맵에서 지역을 고르고, 문제의 정답으로 펫에게 명령해요. 별코인과 정답보석으로 펫과 장비를 키울 수 있어요.</p>
           </div>
           <div class="math-wallet" aria-label="수학모드 재화">
             <span class="wallet-chip"><img src="assets/math-pet-battle/currency/currency-star-coin.png" alt="" aria-hidden="true">별코인 <b id="mathCoins">0</b></span>
@@ -3299,72 +3695,125 @@
           </div>
         </div>
 
-        <div class="math-shell">
-          <div class="math-arena">
-            <div class="battle-field">
-              <span id="mathStage" class="stage-badge math-pill">스테이지 1</span>
-              <div class="battle-actor actor-trainer">
-                <img src="assets/math-pet-battle/characters/trainer-arin.png" alt="조련사 아린">
-                <span class="actor-name">조련사 아린</span>
-              </div>
-              <div class="battle-actor actor-pet">
-                <img id="mathPetImage" src="assets/math-pet-battle/pets/pet-momo.png" alt="">
-                <div class="hp-bar" aria-label="아군 펫 체력"><span id="mathPetHpBar"></span></div>
-                <span id="mathPetName" class="actor-name">모모</span>
-              </div>
-              <div class="battle-actor actor-enemy">
-                <img id="mathEnemyImage" src="assets/math-pet-battle/enemies/enemy-number-jelly.png" alt="">
-                <div class="hp-bar" aria-label="상대 체력"><span id="mathEnemyHpBar"></span></div>
-                <span id="mathEnemyName" class="actor-name">숫자젤리</span>
-              </div>
-            </div>
-
-            <div class="math-command">
-              <div class="math-question">
-                <div>
-                  <span id="mathPrompt">정답을 골라 펫에게 명령하세요.</span>
-                  <strong id="mathQuestion">8 + 6 = ?</strong>
-                </div>
-                <span id="mathCombo" class="trait-chip">연속 정답 0</span>
-              </div>
-              <div id="mathChoices" class="math-choices"></div>
-              <div class="math-log">
-                <span id="mathLog">전투를 시작해요.</span>
-                <button id="mathNextTurn" type="button">다음 문제</button>
-              </div>
+        <div id="mathWorldView" class="math-view math-world-view">
+          <div class="math-world-board" aria-label="수학 월드맵">
+            <button class="world-node node-battle" type="button" data-math-destination="battle">
+              <img src="assets/math-pet-battle/locations/single/battle-forest-gate.png" alt="" aria-hidden="true">
+              <span>전투 숲길</span>
+            </button>
+            <button class="world-node node-ranch" type="button" data-math-destination="ranch">
+              <img src="assets/math-pet-battle/locations/single/pet-ranch.png" alt="" aria-hidden="true">
+              <span>펫 목장</span>
+            </button>
+            <button class="world-node node-gear" type="button" data-math-destination="gear">
+              <img src="assets/math-pet-battle/locations/single/equipment-shop.png" alt="" aria-hidden="true">
+              <span>장비 상점</span>
+            </button>
+            <button class="world-node node-items" type="button" data-math-destination="items">
+              <img src="assets/math-pet-battle/locations/single/item-shop.png" alt="" aria-hidden="true">
+              <span>아이템샵</span>
+            </button>
+            <button class="world-node node-practice" type="button" data-math-destination="battle">
+              <img src="assets/math-pet-battle/locations/single/practice-yard.png" alt="" aria-hidden="true">
+              <span>연습 마당</span>
+            </button>
+            <button class="world-node node-reward" type="button" data-math-destination="reward">
+              <img src="assets/math-pet-battle/locations/single/reward-chest.png" alt="" aria-hidden="true">
+              <span>보상 상자</span>
+            </button>
+            <div class="world-trainer">
+              <img src="assets/math-pet-battle/characters/trainer-arin.png" alt="" aria-hidden="true">
+              <span>조련사 아린</span>
             </div>
           </div>
 
-          <aside class="math-side" aria-label="수학펫 정보와 상점">
-            <section class="math-panel">
-              <h3>현재 펫</h3>
-              <div class="active-pet-card">
-                <img id="mathActivePetIcon" src="assets/math-pet-battle/pets/pet-momo.png" alt="">
-                <div>
-                  <strong id="mathActivePetName">모모 Lv.1</strong>
-                  <div id="mathActivePetTrait" class="trait-chip">두번톡톡</div>
-                  <p id="mathActivePetDesc">정답 시 가끔 두 번 공격해요.</p>
-                  <button id="mathEquipButton" class="equip-button" type="button">장비 장착</button>
+          <aside class="math-world-status">
+            <span id="mathStage" class="stage-badge math-pill">스테이지 1</span>
+            <div class="active-pet-card world-active-pet">
+              <img id="mathActivePetIcon" src="assets/math-pet-battle/pets/pet-momo.png" alt="">
+              <div>
+                <strong id="mathActivePetName">모모 Lv.1</strong>
+                <div id="mathActivePetTrait" class="trait-chip">물결 · 두번톡톡</div>
+                <p id="mathActivePetDesc">정답 시 일정 확률로 두 번 공격해요.</p>
+                <button id="mathEquipButton" class="equip-button" type="button">장비 장착</button>
+              </div>
+            </div>
+            <div class="world-route-card">
+              <img src="assets/math-pet-battle/locations/single/signpost.png" alt="" aria-hidden="true">
+              <span id="mathWorldMessage">전투 숲길에서 문제를 풀고 보상을 모아보세요.</span>
+            </div>
+          </aside>
+        </div>
+
+        <div id="mathBattleView" class="math-view math-battle-view hidden">
+          <div class="math-shell">
+            <div class="math-arena">
+              <div class="battle-field">
+                <button class="math-back-button" type="button" data-math-destination="world">월드맵</button>
+                <div id="mathBattleEffect" class="math-battle-effect hidden" aria-live="polite"></div>
+                <div class="battle-actor actor-trainer">
+                  <img src="assets/math-pet-battle/characters/trainer-arin.png" alt="조련사 아린">
+                  <span class="actor-name">조련사 아린</span>
+                </div>
+                <div class="battle-actor actor-pet">
+                  <img id="mathPetImage" src="assets/math-pet-battle/pets/pet-momo.png" alt="">
+                  <div class="hp-bar" aria-label="아군 펫 체력"><span id="mathPetHpBar"></span></div>
+                  <span id="mathPetName" class="actor-name">모모</span>
+                </div>
+                <div class="battle-actor actor-enemy">
+                  <img id="mathEnemyImage" src="assets/math-pet-battle/enemies/enemy-number-jelly.png" alt="">
+                  <div class="hp-bar" aria-label="상대 체력"><span id="mathEnemyHpBar"></span></div>
+                  <span id="mathEnemyName" class="actor-name">숫자젤리</span>
                 </div>
               </div>
+
+              <div class="math-command">
+                <div class="math-question">
+                  <div>
+                    <span id="mathPrompt">정답을 골라 펫에게 명령하세요.</span>
+                    <strong id="mathQuestion">8 + 6 = ?</strong>
+                  </div>
+                  <span id="mathCombo" class="trait-chip">연속 정답 0</span>
+                </div>
+                <div id="mathChoices" class="math-choices"></div>
+                <div class="math-log">
+                  <span id="mathLog">전투를 시작해요.</span>
+                  <button id="mathNextTurn" type="button">다음 문제</button>
+                </div>
+              </div>
+            </div>
+
+            <aside class="math-side" aria-label="전투 아이템">
+              <section class="math-panel">
+                <h3>전투 가방</h3>
+                <div id="mathItems" class="item-grid"></div>
+              </section>
+            </aside>
+          </div>
+        </div>
+
+        <div id="mathLocationView" class="math-view math-location-view hidden">
+          <div id="mathLocationScene" class="math-location-scene location-ranch">
+            <button class="math-back-button" type="button" data-math-destination="world">월드맵</button>
+            <div class="math-location-hero">
+              <img id="mathLocationArt" src="assets/math-pet-battle/locations/single/pet-ranch.png" alt="" aria-hidden="true">
+              <div>
+                <h3 id="mathLocationTitle">펫 목장</h3>
+                <p id="mathLocationDesc">함께할 펫을 고르고 특성을 확인해요.</p>
+              </div>
+            </div>
+            <div id="mathRanchPanel" class="math-location-panel">
               <div id="mathTeam" class="team-grid"></div>
-            </section>
-
-            <section class="math-panel">
-              <h3>아이템</h3>
-              <div id="mathItems" class="item-grid"></div>
-            </section>
-
-            <section class="math-shop">
-              <h3>상점</h3>
+            </div>
+            <div id="mathShopPanel" class="math-location-panel">
               <div class="shop-tabs" role="tablist" aria-label="상점 분류">
                 <button class="shop-tab active" type="button" data-shop-tab="pets">펫</button>
                 <button class="shop-tab" type="button" data-shop-tab="gear">장비</button>
                 <button class="shop-tab" type="button" data-shop-tab="items">아이템</button>
               </div>
               <div id="mathShopGrid" class="shop-grid"></div>
-            </section>
-          </aside>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -3566,6 +4015,17 @@
       quizResultReading: document.querySelector("#quizResultReading"),
       quizResultNote: document.querySelector("#quizResultNote"),
       quizResultNext: document.querySelector("#quizResultNext"),
+      mathWorldView: document.querySelector("#mathWorldView"),
+      mathBattleView: document.querySelector("#mathBattleView"),
+      mathLocationView: document.querySelector("#mathLocationView"),
+      mathLocationScene: document.querySelector("#mathLocationScene"),
+      mathLocationArt: document.querySelector("#mathLocationArt"),
+      mathLocationTitle: document.querySelector("#mathLocationTitle"),
+      mathLocationDesc: document.querySelector("#mathLocationDesc"),
+      mathRanchPanel: document.querySelector("#mathRanchPanel"),
+      mathShopPanel: document.querySelector("#mathShopPanel"),
+      mathBattleEffect: document.querySelector("#mathBattleEffect"),
+      mathWorldMessage: document.querySelector("#mathWorldMessage"),
       mathCoins: document.querySelector("#mathCoins"),
       mathGems: document.querySelector("#mathGems"),
       mathStage: document.querySelector("#mathStage"),
@@ -3625,6 +4085,21 @@
       items: {
         focusCookie: "assets/math-pet-battle/items/item-focus-cookie.png",
         hintCompass: "assets/math-pet-battle/items/item-hint-compass.png"
+      },
+      effects: {
+        correct: "assets/math-pet-battle/effects/single/correct-burst.png",
+        wrong: "assets/math-pet-battle/effects/single/wrong-puff.png",
+        double: "assets/math-pet-battle/effects/single/double-hit-water-star.png",
+        shield: "assets/math-pet-battle/effects/single/leaf-shield-barrier.png",
+        heal: "assets/math-pet-battle/effects/single/healing-sparkle.png",
+        reward: "assets/math-pet-battle/effects/single/reward-coin-sparkle.png",
+        portal: "assets/math-pet-battle/effects/single/next-stage-portal.png"
+      },
+      locations: {
+        ranch: "assets/math-pet-battle/locations/single/pet-ranch.png",
+        gear: "assets/math-pet-battle/locations/single/equipment-shop.png",
+        items: "assets/math-pet-battle/locations/single/item-shop.png",
+        reward: "assets/math-pet-battle/locations/single/reward-chest.png"
       }
     };
 
@@ -3744,12 +4219,16 @@
         question: null,
         choices: [],
         answered: false,
+        screen: "world",
+        selectedChoice: null,
+        feedback: null,
         combo: 0,
         shield: 0,
         removedChoices: [],
         highlightedChoice: null,
         shopTab: "pets",
-        log: "정답을 골라 모모에게 명령해요."
+        claimedRewardStage: 0,
+        log: "월드맵에서 전투 숲길을 선택해 시작해요."
       };
     }
 
@@ -3770,6 +4249,10 @@
       next.ownedGear = Array.isArray(saved.ownedGear) ? saved.ownedGear : [];
       next.equippedGear = saved.equippedGear || {};
       next.shopTab = ["pets", "gear", "items"].includes(saved.shopTab) ? saved.shopTab : "pets";
+      next.screen = ["world", "battle", "ranch", "gear", "items", "reward"].includes(saved.screen) ? saved.screen : "world";
+      next.selectedChoice = saved.selectedChoice ?? null;
+      next.feedback = saved.feedback || null;
+      next.claimedRewardStage = Number(saved.claimedRewardStage || 0);
       return next;
     }
 
@@ -3806,6 +4289,37 @@
       return currency === "gems" ? "정답보석" : "별코인";
     }
 
+    const MATH_LOCATION_META = {
+      ranch: {
+        title: "펫 목장",
+        desc: "함께할 펫을 고르고 특성을 확인해요. 잠긴 펫은 정답보석으로 데려올 수 있어요.",
+        art: MATH_ASSETS.locations.ranch,
+        className: "location-ranch",
+        shopTab: "pets"
+      },
+      gear: {
+        title: "장비 상점",
+        desc: "펫의 공격과 방어를 도와주는 장비를 구매하고 장착해요.",
+        art: MATH_ASSETS.locations.gear,
+        className: "location-gear",
+        shopTab: "gear"
+      },
+      items: {
+        title: "아이템샵",
+        desc: "전투 중 사용할 집중쿠키와 힌트나침반을 준비해요.",
+        art: MATH_ASSETS.locations.items,
+        className: "location-items",
+        shopTab: "items"
+      },
+      reward: {
+        title: "보상 상자",
+        desc: "오늘의 보상을 확인했어요. 전투에서 승리하면 더 많은 별코인과 정답보석을 얻어요.",
+        art: MATH_ASSETS.locations.reward,
+        className: "location-reward",
+        shopTab: "items"
+      }
+    };
+
     function makeMathEnemy() {
       const spec = MATH_ENEMIES[(state.math.stage - 1) % MATH_ENEMIES.length];
       const bonus = Math.floor((state.math.stage - 1) * 6);
@@ -3834,6 +4348,8 @@
       state.math.question = { text, answer };
       state.math.choices = shuffle([...values]);
       state.math.answered = false;
+      state.math.selectedChoice = null;
+      state.math.feedback = null;
       state.math.removedChoices = [];
       state.math.highlightedChoice = null;
     }
@@ -3878,13 +4394,46 @@
       els.mathActivePetTrait.textContent = `${pet.element} · ${pet.trait}`;
       els.mathActivePetDesc.textContent = `${pet.desc}${gear ? ` · 장비: ${gearName(gear)}` : ""}`;
       els.mathEquipButton.textContent = gear ? `${gearName(gear)} 해제` : "장비 장착";
+      els.mathWorldMessage.textContent = math.log;
       els.moves.textContent = state.moves;
       els.matches.textContent = `${state.matches}/${math.stage}`;
+      renderMathScreen();
+      renderMathFeedback();
       renderMathChoices();
       renderMathTeam();
       renderMathItems();
       renderMathShop();
       saveMathState();
+    }
+
+    function renderMathScreen() {
+      const screen = state.math.screen || "world";
+      els.mathWorldView.classList.toggle("hidden", screen !== "world");
+      els.mathBattleView.classList.toggle("hidden", screen !== "battle");
+      els.mathLocationView.classList.toggle("hidden", !["ranch", "gear", "items", "reward"].includes(screen));
+      if (screen === "battle") {
+        els.mathBattleView.dataset.feedback = state.math.feedback?.type || "";
+      }
+      if (["ranch", "gear", "items", "reward"].includes(screen)) {
+        const meta = MATH_LOCATION_META[screen] || MATH_LOCATION_META.ranch;
+        els.mathLocationScene.className = `math-location-scene ${meta.className}`;
+        els.mathLocationArt.src = meta.art;
+        els.mathLocationTitle.textContent = meta.title;
+        els.mathLocationDesc.textContent = meta.desc;
+        els.mathRanchPanel.classList.toggle("hidden", screen !== "ranch");
+        els.mathShopPanel.classList.toggle("hidden", screen === "ranch" && state.math.shopTab !== "pets");
+      }
+    }
+
+    function renderMathFeedback() {
+      const feedback = state.math.feedback;
+      if (!feedback || !feedback.asset) {
+        els.mathBattleEffect.classList.add("hidden");
+        els.mathBattleEffect.replaceChildren();
+        return;
+      }
+      els.mathBattleEffect.classList.remove("hidden");
+      els.mathBattleEffect.innerHTML = `<img src="${feedback.asset}" alt="" aria-hidden="true"><span>${feedback.text}</span>`;
     }
 
     function renderMathChoices() {
@@ -3899,6 +4448,7 @@
         if (math.answered) {
           button.disabled = true;
           if (value === math.question.answer) button.classList.add("correct");
+          if (value === math.selectedChoice && value !== math.question.answer) button.classList.add("wrong-selected");
         }
         button.addEventListener("click", () => answerMath(value));
         return button;
@@ -3973,6 +4523,37 @@
 
     function setMathShopTab(tab) {
       state.math.shopTab = tab;
+      if (tab === "gear") state.math.screen = "gear";
+      if (tab === "items") state.math.screen = "items";
+      if (tab === "pets") state.math.screen = "ranch";
+      renderMathBattle();
+    }
+
+    function setMathScreen(screen) {
+      ensureMathBattle();
+      if (screen === "world") {
+        state.math.screen = "world";
+        state.math.feedback = null;
+        state.math.log = "월드맵에서 다음 목적지를 선택해요.";
+      } else if (screen === "battle") {
+        state.math.screen = "battle";
+        state.math.log = state.math.answered ? state.math.log : "정답을 골라 펫에게 명령하세요.";
+      } else if (["ranch", "gear", "items", "reward"].includes(screen)) {
+        const meta = MATH_LOCATION_META[screen] || MATH_LOCATION_META.ranch;
+        state.math.screen = screen;
+        state.math.shopTab = meta.shopTab;
+        state.math.log = `${meta.title}에 도착했어요.`;
+        if (screen === "reward") {
+          if (state.math.claimedRewardStage < state.math.stage) {
+            state.math.coins += 20;
+            state.math.inventory.focusCookie = (state.math.inventory.focusCookie || 0) + 1;
+            state.math.claimedRewardStage = state.math.stage;
+            state.math.log = "보상 상자에서 별코인 20개와 집중쿠키 1개를 받았어요.";
+          } else {
+            state.math.log = "이번 스테이지의 보상 상자는 이미 열었어요.";
+          }
+        }
+      }
       renderMathBattle();
     }
 
@@ -3995,11 +4576,21 @@
         state.math.removedChoices.push(wrong);
         state.math.inventory[id] -= 1;
         state.math.log = "집중쿠키를 사용해서 오답 하나를 치웠어요.";
+        state.math.feedback = {
+          type: "item",
+          asset: MATH_ASSETS.effects.correct,
+          text: "집중쿠키가 오답 하나를 치웠어요."
+        };
       }
       if (id === "hintCompass") {
         state.math.highlightedChoice = state.math.question.answer;
         state.math.inventory[id] -= 1;
         state.math.log = "힌트나침반이 정답 후보를 반짝였어요.";
+        state.math.feedback = {
+          type: "item",
+          asset: "assets/math-pet-battle/ui/single/hint-compass.png",
+          text: "힌트나침반이 정답 후보를 알려줘요."
+        };
       }
       renderMathBattle();
     }
@@ -4041,6 +4632,7 @@
       if (state.math.answered || state.math.removedChoices.includes(value)) return;
       startTimer();
       state.math.answered = true;
+      state.math.selectedChoice = value;
       state.moves += 1;
       const pet = getMathPet();
       const petState = activeMathPetState();
@@ -4066,11 +4658,16 @@
         }
         state.math.enemy.hp -= damage;
         state.math.log = messages.join(" ");
+        state.math.feedback = {
+          type: "correct",
+          asset: MATH_ASSETS.effects.correct,
+          text: messages.join(" ")
+        };
         if (state.math.enemy.hp <= 0) winMathBattle();
       } else {
         state.math.combo = 0;
         let damage = state.math.enemy.attack;
-        const messages = [`오답이에요. 정답은 ${state.math.question.answer}였어요.`];
+        const messages = [`오답이에요. 정답은 ${state.math.question.answer}이에요.`];
         if (pet.id === "lulu") {
           damage = Math.max(0, damage - 7);
           messages.push("보호잎이 피해를 줄였어요.");
@@ -4081,6 +4678,11 @@
         }
         petState.hp = Math.max(1, petState.hp - damage);
         state.math.log = `${messages.join(" ")} ${pet.name}가 ${damage} 피해를 받았어요.`;
+        state.math.feedback = {
+          type: "wrong",
+          asset: MATH_ASSETS.effects.wrong,
+          text: state.math.log
+        };
       }
       renderMathBattle();
     }
@@ -4102,6 +4704,11 @@
         state.math.log += ` ${pet.name}가 Lv.${petState.level}이 되었어요!`;
       }
       state.math.log += ` ${enemySpec.name} 승리! 별코인 ${coinReward}, 정답보석 ${gemReward} 획득.`;
+      state.math.feedback = {
+        type: "correct",
+        asset: MATH_ASSETS.effects.reward,
+        text: `${enemySpec.name} 승리! 별코인 ${coinReward}, 정답보석 ${gemReward} 획득.`
+      };
     }
 
     function nextMathTurn() {
@@ -4109,6 +4716,11 @@
         state.math.stage += 1;
         state.math.enemy = makeMathEnemy();
         state.math.log = `스테이지 ${state.math.stage} 시작! 새 상대가 나타났어요.`;
+        state.math.feedback = {
+          type: "correct",
+          asset: MATH_ASSETS.effects.portal,
+          text: `스테이지 ${state.math.stage}로 이동했어요.`
+        };
       }
       makeMathQuestion();
       renderMathBattle();
@@ -4133,7 +4745,9 @@
       els.mathBattleWrap.classList.remove("hidden");
       els.win.classList.remove("open");
       ensureMathBattle();
+      state.math.screen = "world";
       renderMathBattle();
+      window.scrollTo({ top: 0, behavior: "auto" });
     }
 
     function shuffle(items) {
@@ -4721,6 +5335,9 @@
     els.mathEquipButton.addEventListener("click", toggleMathGear);
     document.querySelectorAll(".shop-tab").forEach(tab => {
       tab.addEventListener("click", () => setMathShopTab(tab.dataset.shopTab));
+    });
+    document.querySelectorAll("[data-math-destination]").forEach(button => {
+      button.addEventListener("click", () => setMathScreen(button.dataset.mathDestination));
     });
     els.hintButton.addEventListener("click", useHint);
     els.shuffleButton.addEventListener("click", shuffleUnmatched);
