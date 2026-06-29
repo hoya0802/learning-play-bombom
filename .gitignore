@@ -1,4 +1,6 @@
 .omx/
+.omo/
+codex-backup-before-lazycodex-*/
 assets/hanja-stickers-source.png
 assets/learning-kit-sprite-source.png
 concept-*.png

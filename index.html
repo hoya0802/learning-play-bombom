@@ -367,8 +367,10 @@
 
     .math-active .app {
       width: min(1640px, 100%);
+      height: 100svh;
       gap: 10px;
       padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+      overflow: hidden;
     }
 
     .math-active .topbar {
@@ -406,8 +408,26 @@
       display: none;
     }
 
+    body.math-battle-screen {
+      overflow: hidden;
+    }
+
     .math-active #gameView {
+      height: calc(100svh - 20px);
       min-height: calc(100svh - 20px);
+    }
+
+    .math-active.math-battle-screen .app {
+      width: 100%;
+      height: 100svh;
+      gap: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .math-active.math-battle-screen #gameView {
+      height: 100%;
+      min-height: 0;
     }
 
     .math-active .side {
@@ -595,12 +615,16 @@
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 12px;
       align-items: center;
+      min-width: 0;
     }
 
     .math-question strong {
+      min-width: 0;
       font-size: clamp(34px, 5vw, 58px);
       line-height: 1;
       letter-spacing: 0;
+      overflow-wrap: anywhere;
+      word-break: keep-all;
     }
 
     .math-question span {
@@ -616,12 +640,21 @@
 
     .math-choice {
       min-height: 70px;
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
       border: 2px solid #d9e7ce;
       border-radius: 8px;
       background: #fff;
       color: #21342c;
       font-size: clamp(24px, 3.2vw, 36px);
       font-weight: 950;
+      line-height: 1.08;
+      text-align: center;
+      overflow-wrap: anywhere;
+      word-break: keep-all;
       cursor: pointer;
       box-shadow: 0 10px 18px rgba(58, 85, 70, .1);
     }
@@ -649,6 +682,11 @@
     .math-choice.removed {
       opacity: .28;
       pointer-events: none;
+    }
+
+    .math-choice:disabled {
+      cursor: default;
+      transform: none;
     }
 
     .math-log {
@@ -730,26 +768,56 @@
     }
 
     .pet-button {
+      position: relative;
       min-height: 72px;
       display: grid;
       grid-template-columns: 44px 1fr;
       gap: 8px;
       align-items: center;
       padding: 8px;
-      border: 1px solid #dce8d2;
-      background: #fff;
-      color: #31433c;
+      border: 0;
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-slot-frame.svg") center / 100% 100% no-repeat,
+        linear-gradient(180deg, rgba(255, 253, 239, .94), rgba(235, 255, 242, .9));
+      color: #fff7d3;
       text-align: left;
+      text-shadow: 0 2px 0 rgba(0,0,0,.2);
     }
 
     .pet-button.active {
-      border-color: #1e8a72;
-      background: #effff6;
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-slot-active.svg") center / 100% 100% no-repeat,
+        linear-gradient(180deg, rgba(255, 253, 220, .96), rgba(224, 250, 255, .9));
+      filter: drop-shadow(0 8px 8px rgba(21, 117, 106, .18));
     }
 
     .pet-button.locked {
-      opacity: .55;
-      cursor: default;
+      color: #d8ded8;
+      cursor: not-allowed;
+      filter: grayscale(.7) saturate(.62);
+    }
+
+    .pet-button.locked::after,
+    .shop-card::after {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      min-width: 42px;
+      padding: 4px 7px;
+      border-radius: 6px;
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-status-badge.svg") center / 100% 100% no-repeat,
+        rgba(7, 25, 29, .86);
+      color: #fff7d3;
+      font-size: 10px;
+      font-weight: 950;
+      line-height: 1;
+      text-align: center;
+      text-shadow: none;
+    }
+
+    .pet-button.locked::after {
+      content: attr(data-state-label);
     }
 
     .pet-button img {
@@ -771,6 +839,11 @@
       font-size: 12px;
       font-weight: 850;
       line-height: 1.2;
+    }
+
+    .pet-button span,
+    .pet-button span span {
+      color: rgba(255, 247, 211, .82);
     }
 
     .item-grid {
@@ -811,30 +884,70 @@
 
     .shop-tab {
       min-height: 36px;
-      border: 1px solid #dce8d2;
-      border-radius: 8px;
-      background: #fff;
-      color: #53635c;
+      border: 0;
+      border-radius: 0;
+      background: url("assets/math-pet-battle/ui/single/pixel-button-blue.svg") center / 100% 100% no-repeat;
+      color: #ffffff;
       font-weight: 950;
       cursor: pointer;
+      text-shadow: 0 2px 0 rgba(0,0,0,.24);
     }
 
     .shop-tab.active {
-      background: #1e8a72;
+      background-image: url("assets/math-pet-battle/ui/single/pixel-button-green.svg");
       color: #fff;
-      border-color: #1e8a72;
+      filter: drop-shadow(0 7px 8px rgba(36, 129, 91, .22));
     }
 
     .shop-card {
+      position: relative;
       display: grid;
-      grid-template-columns: 56px 1fr auto;
-      gap: 10px;
+      grid-template-columns: 58px minmax(0, 1fr) 76px;
+      gap: 12px;
       align-items: center;
-      min-height: 78px;
-      padding: 10px;
-      border: 1px solid #e2ddd2;
-      border-radius: 8px;
-      background: #fff;
+      min-height: 84px;
+      padding: 11px 18px 11px 14px;
+      border: 0;
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-shop-card-frame.svg") center / 100% 100% no-repeat,
+        linear-gradient(180deg, rgba(255, 253, 239, .95), rgba(236, 255, 241, .91));
+      color: #253a34;
+    }
+
+    .shop-card[data-state="equipped"],
+    .shop-card[data-state="owned"] {
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-shop-card-active.svg") center / 100% 100% no-repeat,
+        linear-gradient(180deg, rgba(255, 250, 210, .96), rgba(226, 252, 255, .9));
+      color: #fff7d3;
+      text-shadow: 0 2px 0 rgba(0,0,0,.22);
+    }
+
+    .shop-card[data-state="equipped"] span,
+    .shop-card[data-state="owned"] span {
+      color: rgba(255, 247, 211, .82);
+    }
+
+    .shop-card[data-state="locked"],
+    .shop-card[data-state="unaffordable"] {
+      filter: grayscale(.56) saturate(.76);
+    }
+
+    .shop-card::after {
+      content: attr(data-state-label);
+      top: 6px;
+      right: 12px;
+      min-width: 56px;
+      border-radius: 0;
+    }
+
+    .shop-card[data-state="affordable"]::after {
+      background: rgba(18, 101, 79, .9);
+    }
+
+    .shop-card[data-state="locked"]::after,
+    .shop-card[data-state="unaffordable"]::after {
+      background: rgba(73, 82, 82, .9);
     }
 
     .shop-card img {
@@ -845,8 +958,36 @@
 
     .shop-actions {
       display: grid;
-      gap: 6px;
-      justify-items: end;
+      gap: 4px;
+      justify-items: stretch;
+      align-items: center;
+      min-width: 68px;
+    }
+
+    .shop-actions b {
+      min-height: 16px;
+      color: #42504a;
+      font-size: 10px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .shop-buy {
+      min-width: 64px;
+      min-height: 36px;
+      border: 0;
+      border-radius: 0;
+      padding: 0 8px;
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-button-green.svg") center / 100% 100% no-repeat,
+        #1e8a72;
+      color: #fff;
+      text-shadow: 0 2px 0 rgba(0,0,0,.24);
+    }
+
+    .shop-buy:disabled {
+      background-image: url("assets/math-pet-battle/ui/single/pixel-button-blue.svg");
+      filter: grayscale(.55) saturate(.65);
     }
 
     .math-battle {
@@ -884,7 +1025,8 @@
       font-size: 13px;
     }
 
-    .math-exit-button {
+    .math-exit-button,
+    .math-reset-button {
       min-height: 34px;
       border: 1px solid rgba(255, 229, 160, .46);
       border-radius: 8px;
@@ -896,7 +1038,9 @@
     }
 
     .math-exit-button:hover,
-    .math-exit-button:focus-visible {
+    .math-exit-button:focus-visible,
+    .math-reset-button:hover,
+    .math-reset-button:focus-visible {
       outline: none;
       background: rgba(255,255,255,.22);
     }
@@ -907,6 +1051,12 @@
       background: rgba(255,255,255,.94);
       color: #264139;
       box-shadow: 0 8px 16px rgba(5, 29, 23, .14);
+    }
+
+    .math-save-status,
+    .math-progress-status {
+      min-width: 92px;
+      justify-content: center;
     }
 
     .math-battle[data-screen="battle"] .math-head,
@@ -935,6 +1085,31 @@
       font-size: clamp(20px, 2vw, 26px);
     }
 
+    .math-battle[data-screen="battle"] {
+      min-height: calc(100svh - 20px);
+      gap: 0;
+      padding: 5px;
+      background:
+        linear-gradient(180deg, #082f32 0%, #0d4238 46%, #071f22 100%);
+    }
+
+    .math-active.math-battle-screen .math-battle[data-screen="battle"] {
+      min-height: 100svh;
+      padding: 5px;
+      border: 0;
+      border-radius: 0;
+    }
+
+    .math-active.math-battle-screen .math-battle[data-screen="battle"] .math-shell,
+    .math-active.math-battle-screen .math-battle[data-screen="battle"] .math-arena,
+    .math-active.math-battle-screen .math-battle[data-screen="battle"] .battle-field {
+      min-height: calc(100svh - 10px);
+    }
+
+    .math-battle[data-screen="battle"] > .math-head {
+      display: none;
+    }
+
     .math-view.hidden {
       display: none;
     }
@@ -950,9 +1125,10 @@
       position: relative;
       min-height: min(760px, calc(100svh - 116px));
       overflow: hidden;
-      border: 1px solid rgba(93, 145, 121, .42);
+      border: 0;
       border-radius: 8px;
       background:
+        url("assets/math-pet-battle/ui/single/pixel-panel-frame.svg") center / 100% 100% no-repeat,
         linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02)),
         url("assets/math-pet-battle/world/world-map-hub.png") center / cover no-repeat;
       box-shadow: inset 0 -72px 96px rgba(39, 94, 75, .18), 0 18px 34px rgba(50, 91, 78, .14);
@@ -973,22 +1149,27 @@
 
     .world-node {
       width: auto;
-      min-width: 92px;
-      min-height: 42px;
+      min-width: 112px;
+      min-height: 118px;
+      z-index: 2;
       cursor: pointer;
       transition: transform .18s ease, filter .18s ease;
       transform: translate(-50%, -50%);
     }
 
-    .world-node:hover,
-    .world-node:focus-visible {
+    .world-node:not(:disabled):hover,
+    .world-node:not(:disabled):focus-visible {
       outline: none;
       transform: translate(-50%, calc(-50% - 5px)) scale(1.04);
       filter: drop-shadow(0 12px 10px rgba(15, 83, 62, .22));
     }
 
     .world-node img {
-      display: none;
+      display: block;
+      width: clamp(76px, 9vw, 116px);
+      height: clamp(76px, 9vw, 116px);
+      object-fit: contain;
+      filter: drop-shadow(0 14px 10px rgba(8, 45, 37, .24));
     }
 
     .world-node span,
@@ -1007,6 +1188,61 @@
       white-space: nowrap;
     }
 
+    .world-node::after {
+      content: attr(data-state-label);
+      min-height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -1px;
+      padding: 4px 7px;
+      border: 2px solid rgba(255,255,255,.8);
+      border-radius: 7px;
+      background: rgba(8, 45, 39, .84);
+      color: #fff7d3;
+      font-size: 10px;
+      font-weight: 950;
+      line-height: 1;
+      text-shadow: none;
+      box-shadow: 0 4px 8px rgba(12, 55, 43, .2);
+    }
+
+    .world-node[data-state="current"] span,
+    .world-node[data-state="available"] span {
+      border-color: rgba(255, 238, 160, .92);
+    }
+
+    .world-node[data-state="current"]::after {
+      background: rgba(26, 129, 91, .94);
+    }
+
+    .world-node[data-state="available"]::after {
+      background: rgba(23, 92, 134, .9);
+    }
+
+    .world-node[data-state="locked"],
+    .world-node[data-state="unavailable"] {
+      cursor: not-allowed;
+      filter: grayscale(.75) saturate(.58);
+    }
+
+    .world-node[data-state="locked"] img,
+    .world-node[data-state="unavailable"] img {
+      opacity: .64;
+    }
+
+    .world-node[data-state="locked"] span,
+    .world-node[data-state="unavailable"] span {
+      border-color: rgba(170, 186, 184, .72);
+      background: linear-gradient(180deg, rgba(244, 247, 244, .92), rgba(210, 224, 220, .86));
+      color: #53635f;
+    }
+
+    .world-node[data-state="locked"]::after,
+    .world-node[data-state="unavailable"]::after {
+      background: rgba(73, 82, 82, .9);
+    }
+
     .world-node span::before,
     .world-trainer span::before {
       content: "";
@@ -1020,17 +1256,19 @@
       box-shadow: 0 0 0 2px rgba(30, 138, 114, .26);
     }
 
-    .node-battle { left: 47%; top: 34%; }
-    .node-ranch { left: 14%; top: 56%; }
-    .node-gear { left: 58%; top: 58%; }
-    .node-items { left: 77%; top: 58%; }
-    .node-practice { left: 73%; top: 82%; }
-    .node-reward { left: 86%; top: 61%; }
+    .node-battle { left: 48%; top: 31%; }
+    .node-ranch { left: 17%; top: 59%; }
+    .node-gear { left: 50%; top: 61%; }
+    .node-items { left: 84%; top: 47%; }
+    .node-practice { left: 72%; top: 80%; }
+    .node-reward { left: 88%; top: 70%; }
 
     .world-trainer {
       left: 45%;
       top: 66%;
       width: clamp(70px, 8vw, 98px);
+      z-index: 1;
+      pointer-events: none;
       transform: translate(-50%, -50%);
     }
 
@@ -1054,11 +1292,43 @@
       align-content: start;
       min-height: 0;
       padding: 14px;
-      border: 1px solid rgba(255, 224, 143, .35);
+      border: 0;
       border-radius: 8px;
-      background: linear-gradient(180deg, rgba(255, 253, 239, .94), rgba(236, 255, 239, .9));
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-panel-frame.svg") center / 100% 100% no-repeat,
+        linear-gradient(180deg, rgba(255, 253, 239, .94), rgba(236, 255, 239, .9));
       box-shadow: 0 16px 28px rgba(5, 29, 23, .18);
       backdrop-filter: blur(8px);
+    }
+
+    .math-battle[data-screen="world"] .math-head {
+      grid-template-columns: minmax(320px, .92fr) minmax(520px, 1.08fr);
+      gap: 12px;
+    }
+
+    .math-battle[data-screen="world"] .math-wallet {
+      display: grid;
+      grid-template-columns: repeat(6, max-content);
+      justify-content: end;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .math-battle[data-screen="world"] .wallet-chip,
+    .math-battle[data-screen="world"] .math-exit-button,
+    .math-battle[data-screen="world"] .math-reset-button {
+      white-space: nowrap;
+    }
+
+    .math-battle[data-screen="world"] .math-world-view {
+      height: calc(100svh - 146px);
+      min-height: 0;
+    }
+
+    .math-battle[data-screen="world"] .math-world-board,
+    .math-battle[data-screen="world"] .math-world-status {
+      height: 100%;
+      min-height: 0;
     }
 
     .math-world-status .stage-badge {
@@ -1069,9 +1339,17 @@
     .world-active-pet {
       grid-template-columns: 96px 1fr;
       padding: 10px;
-      border: 1px solid #dce8d2;
-      border-radius: 8px;
-      background: rgba(255,255,255,.86);
+      border: 0;
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-pet-card-frame.svg") center / 100% 100% no-repeat,
+        linear-gradient(180deg, rgba(255,255,255,.9), rgba(236,255,244,.86));
+      color: #fff7d3;
+      text-shadow: 0 2px 0 rgba(0,0,0,.22);
+    }
+
+    .world-active-pet p,
+    .world-active-pet .trait-chip {
+      color: rgba(255, 247, 211, .82);
     }
 
     .world-route-card {
@@ -1080,9 +1358,10 @@
       gap: 10px;
       align-items: center;
       padding: 12px;
-      border: 1px solid #e8ddd0;
-      border-radius: 8px;
-      background: #fffaf1;
+      border: 0;
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-panel-frame.svg") center / 100% 100% no-repeat,
+        linear-gradient(180deg, #fffaf1, #edfcef);
       color: #435249;
       font-weight: 900;
       line-height: 1.35;
@@ -1130,8 +1409,49 @@
       gap: 10px;
     }
 
+    .math-battle[data-screen="battle"] .math-shell {
+      grid-template-columns: minmax(0, 1fr) minmax(270px, 310px);
+      gap: 0;
+      min-height: calc(100svh - 30px);
+      overflow: hidden;
+      border: 3px solid #08262b;
+      border-radius: 8px;
+      background: #0f372f;
+      box-shadow:
+        inset 0 0 0 2px rgba(255, 224, 143, .38),
+        0 18px 42px rgba(6, 28, 24, .26);
+    }
+
+    .math-battle[data-screen="battle"] .math-arena {
+      min-height: calc(100svh - 30px);
+      border: 0;
+      border-radius: 0;
+      box-shadow:
+        inset 0 -120px 100px rgba(5, 31, 28, .42),
+        inset -28px 0 36px rgba(5, 31, 28, .26);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,.08) 42%, rgba(7, 38, 31, .46) 100%),
+        url("assets/math-pet-battle/backgrounds/bg-forest-academy-vivid.png") center / cover no-repeat;
+    }
+
     .battle-field {
       min-height: min(760px, calc(100svh - 116px));
+    }
+
+    .math-battle[data-screen="battle"] .battle-field {
+      min-height: calc(100svh - 30px);
+    }
+
+    .math-battle[data-screen="battle"] .battle-field::before {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      inset: 92px 0 250px;
+      background:
+        radial-gradient(ellipse at 34% 78%, rgba(255, 245, 176, .28), transparent 32%),
+        radial-gradient(ellipse at 74% 76%, rgba(255, 245, 176, .24), transparent 30%),
+        linear-gradient(180deg, rgba(9, 48, 39, .08), rgba(9, 48, 39, .22));
+      pointer-events: none;
     }
 
     .battle-hud {
@@ -1145,6 +1465,80 @@
       gap: 8px;
       flex-wrap: wrap;
       pointer-events: none;
+    }
+
+    .math-battle[data-screen="battle"] .battle-hud {
+      top: 14px;
+      left: 86px;
+      right: 14px;
+      display: grid;
+      grid-template-columns: auto minmax(260px, 1fr) auto auto auto;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+    }
+
+    .battle-title-chip,
+    .battle-stage-track {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 3px solid #072833;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(27, 76, 90, .96), rgba(9, 39, 52, .96));
+      background-image:
+        url("assets/math-pet-battle/ui/single/pixel-panel-frame.svg"),
+        linear-gradient(180deg, rgba(27, 76, 90, .96), rgba(9, 39, 52, .96));
+      background-size: 100% 100%;
+      color: #fff7d3;
+      font-weight: 950;
+      text-shadow: 0 2px 0 rgba(0,0,0,.3);
+      box-shadow:
+        inset 0 0 0 2px rgba(255, 224, 143, .5),
+        0 10px 16px rgba(4, 23, 25, .28);
+    }
+
+    .battle-title-chip {
+      padding: 5px 16px 5px 8px;
+      font-size: clamp(18px, 1.9vw, 27px);
+    }
+
+    .battle-title-chip img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+    }
+
+    .battle-stage-track {
+      justify-content: start;
+      padding: 6px 14px;
+      font-size: 18px;
+    }
+
+    .battle-stage-track b {
+      white-space: nowrap;
+    }
+
+    .battle-stage-track img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .battle-stage-track i {
+      width: clamp(28px, 4vw, 58px);
+      height: 8px;
+      border: 2px solid #08262b;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #68d279, #e6f06c);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.44);
+    }
+
+    .battle-stage-track i.locked {
+      background: #6e7478;
+      opacity: .7;
     }
 
     .battle-hud-chip {
@@ -1162,9 +1556,84 @@
       box-shadow: 0 8px 14px rgba(5, 29, 23, .2);
     }
 
+    .math-battle[data-screen="battle"] .battle-hud-chip {
+      min-height: 44px;
+      border: 3px solid #072833;
+      background: linear-gradient(180deg, rgba(24, 91, 107, .96), rgba(7, 43, 59, .96));
+      background-image:
+        url("assets/math-pet-battle/ui/single/pixel-panel-frame.svg"),
+        linear-gradient(180deg, rgba(24, 91, 107, .96), rgba(7, 43, 59, .96));
+      background-size: 100% 100%;
+      box-shadow:
+        inset 0 0 0 2px rgba(67, 199, 255, .28),
+        0 10px 16px rgba(4, 23, 25, .28);
+      color: #fff7d3;
+      font-size: 15px;
+    }
+
     .battle-hud-chip img {
       width: 22px;
       height: 22px;
+      object-fit: contain;
+    }
+
+    .battle-hud > [hidden] {
+      display: none !important;
+    }
+
+    .battle-top-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .battle-top-actions button {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border: 3px solid #072833;
+      border-radius: 8px;
+      background-image:
+        url("assets/math-pet-battle/ui/single/pixel-panel-frame.svg"),
+        linear-gradient(180deg, rgba(24, 91, 107, .96), rgba(7, 43, 59, .96));
+      background-size: 100% 100%;
+      cursor: pointer;
+      box-shadow: 0 10px 16px rgba(4, 23, 25, .28);
+    }
+
+    .battle-top-actions .battle-reset-button {
+      width: auto;
+      min-width: 78px;
+      padding: 0 12px;
+      color: #fff7d3;
+      font-size: 13px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .battle-top-actions img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      filter: drop-shadow(0 3px 2px rgba(0,0,0,.24));
+    }
+
+    .math-battle[data-screen="battle"] .math-back-button {
+      top: 16px;
+      left: 16px;
+      min-height: 44px;
+      border: 3px solid #072833;
+      background: linear-gradient(180deg, rgba(255, 246, 218, .96), rgba(219, 199, 152, .96));
+      color: #17352e;
+      box-shadow:
+        inset 0 0 0 2px rgba(255,255,255,.38),
+        0 10px 16px rgba(4, 23, 25, .24);
+    }
+
+    .math-back-button img {
+      width: 20px;
+      height: 20px;
       object-fit: contain;
     }
 
@@ -1176,26 +1645,255 @@
       z-index: 2;
     }
 
-    .math-battle-view .actor-trainer {
-      left: 4%;
-      bottom: clamp(230px, 31svh, 320px);
+    @media (min-width: 721px) {
+      .math-battle-view .battle-actor img {
+        width: clamp(230px, 20vw, 268px);
+        max-height: 268px;
+      }
+
+      .math-battle-view .actor-trainer {
+        left: clamp(30px, 3.5%, 48px);
+        bottom: clamp(300px, 39svh, 365px);
+        opacity: .9;
+      }
+
+      .math-battle-view .actor-trainer img {
+        width: clamp(96px, 9vw, 118px);
+        max-height: 118px;
+        filter: drop-shadow(0 10px 10px rgba(9, 38, 31, .22));
+      }
+
+      .math-battle-view .actor-trainer .actor-name {
+        transform: scale(.92);
+      }
+
+      .math-battle-view .actor-pet {
+        left: clamp(190px, 20%, 228px);
+        bottom: clamp(292px, 38svh, 356px);
+      }
+
+      .math-battle-view .actor-enemy {
+        right: clamp(74px, 8%, 100px);
+        bottom: clamp(292px, 38svh, 356px);
+      }
+
+      .math-battle-view .actor-pet .hp-bar,
+      .math-battle-view .actor-enemy .hp-bar {
+        width: clamp(190px, 17vw, 232px);
+      }
     }
 
-    .math-battle-view .actor-pet {
-      left: 22%;
-      bottom: clamp(250px, 34svh, 350px);
+    @media (min-width: 721px) and (max-width: 1100px) {
+      .math-battle[data-screen="battle"] .battle-hud {
+        left: 76px;
+        right: 10px;
+        grid-template-columns: minmax(136px, auto) minmax(180px, 1fr) max-content;
+        grid-auto-rows: minmax(40px, auto);
+        gap: 6px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-title-chip {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 42px;
+        padding: 4px 10px 4px 6px;
+        font-size: 16px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-title-chip img {
+        width: 30px;
+        height: 30px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-stage-track {
+        grid-column: 2;
+        grid-row: 1;
+        min-width: 0;
+        min-height: 42px;
+        padding: 5px 8px;
+        gap: 6px;
+        font-size: 15px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-stage-track img {
+        width: 24px;
+        height: 24px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-stage-track i {
+        width: clamp(18px, 2.8vw, 30px);
+      }
+
+      .math-battle[data-screen="battle"] .battle-hud-chip {
+        min-height: 40px;
+        padding: 4px 8px;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      .math-battle[data-screen="battle"] .battle-hud-chip img {
+        width: 20px;
+        height: 20px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-top-actions {
+        grid-column: 3;
+        grid-row: 1;
+        justify-self: end;
+        gap: 6px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-top-actions button {
+        width: 44px;
+        height: 44px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-top-actions .battle-reset-button {
+        min-width: 70px;
+        padding: 0 8px;
+        font-size: 12px;
+      }
+
+      .math-battle-view .battle-actor img {
+        width: clamp(188px, 19vw, 220px);
+        max-height: 220px;
+      }
+
+      .math-battle-view .actor-trainer {
+        left: clamp(12px, 2%, 24px);
+        bottom: clamp(304px, 38svh, 342px);
+      }
+
+      .math-battle-view .actor-trainer img {
+        width: clamp(82px, 9vw, 104px);
+        max-height: 104px;
+      }
+
+      .math-battle-view .actor-pet {
+        left: clamp(136px, 18%, 170px);
+        bottom: clamp(290px, 37svh, 330px);
+      }
+
+      .math-battle-view .actor-enemy {
+        right: clamp(34px, 5%, 58px);
+        bottom: clamp(290px, 37svh, 330px);
+      }
+
+      .math-battle-view .actor-pet .hp-bar,
+      .math-battle-view .actor-enemy .hp-bar {
+        width: clamp(168px, 17vw, 190px);
+      }
     }
 
-    .math-battle-view .actor-enemy {
-      right: 10%;
-      bottom: clamp(250px, 34svh, 350px);
+    @media (min-width: 1101px) and (max-width: 1280px) {
+      .math-battle[data-screen="battle"] .battle-hud {
+        left: 78px;
+        right: 10px;
+        grid-template-columns: minmax(136px, auto) minmax(220px, 1fr) max-content;
+        grid-auto-rows: minmax(40px, auto);
+        gap: 7px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-title-chip {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 42px;
+        padding: 4px 10px 4px 6px;
+        font-size: 17px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-stage-track {
+        grid-column: 2;
+        grid-row: 1;
+        min-width: 0;
+        min-height: 42px;
+        padding: 5px 10px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-hud-chip {
+        min-height: 40px;
+        padding: 4px 9px;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      .math-battle[data-screen="battle"] .battle-currency:nth-of-type(3) {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .math-battle[data-screen="battle"] .battle-currency:nth-of-type(4) {
+        grid-column: 2;
+        grid-row: 2;
+      }
+
+      .math-battle[data-screen="battle"] #mathBattleSaveStatus {
+        grid-column: 3;
+        grid-row: 2;
+        max-width: 176px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .math-battle[data-screen="battle"] .battle-top-actions {
+        grid-column: 3;
+        grid-row: 1;
+        justify-self: end;
+      }
+
+      .math-battle[data-screen="world"] .math-head {
+        grid-template-columns: minmax(290px, .82fr) minmax(0, 1.18fr);
+        min-height: 88px;
+      }
+
+      .math-battle[data-screen="world"] .math-wallet {
+        grid-template-columns: repeat(3, max-content);
+        gap: 6px;
+      }
+
+      .math-battle[data-screen="world"] .math-world-view {
+        grid-template-columns: minmax(0, 1fr) minmax(286px, 318px);
+        height: calc(100svh - 142px);
+      }
+
+      .math-battle[data-screen="world"] .world-node {
+        min-width: 92px;
+        min-height: 98px;
+      }
+
+      .math-battle[data-screen="world"] .world-node img {
+        width: clamp(62px, 7vw, 88px);
+        height: clamp(62px, 7vw, 88px);
+      }
+
+      .math-location-hero,
+      .math-location-panel {
+        max-width: 760px;
+      }
+
+      .math-location-panel .shop-grid {
+        max-height: min(330px, 39svh);
+      }
+
+      .math-location-panel .shop-card {
+        min-height: 82px;
+      }
     }
 
     .actor-name {
-      border-color: rgba(255, 224, 143, .48);
-      background: rgba(24, 52, 45, .84);
+      min-width: 112px;
+      min-height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px 7px;
+      border: 0;
+      background-image: url("assets/math-pet-battle/ui/single/pixel-hp-nameplate.svg");
+      background-size: 100% 100%;
       color: #fff;
-      box-shadow: 0 8px 14px rgba(5, 29, 23, .18);
+      text-shadow: 0 2px 0 rgba(0,0,0,.28);
+      box-shadow: none;
     }
 
     .hp-bar {
@@ -1207,34 +1905,82 @@
 
     .math-command {
       position: absolute;
-      left: clamp(10px, 2vw, 22px);
-      right: clamp(10px, 2vw, 22px);
-      bottom: clamp(10px, 2vw, 18px);
+      left: clamp(18px, 2vw, 30px);
+      right: clamp(18px, 2vw, 30px);
+      bottom: clamp(14px, 2vw, 22px);
       z-index: 3;
+      grid-template-rows: auto auto;
       gap: 10px;
       margin: 0;
-      padding: 14px;
-      border: 3px solid rgba(51, 77, 67, .92);
+      padding: 18px 16px 14px;
+      border: 4px solid #432f1c;
       border-radius: 8px;
-      background: linear-gradient(180deg, rgba(255, 239, 203, .98), rgba(236, 209, 164, .98));
-      box-shadow: 0 18px 24px rgba(5, 29, 23, .28), inset 0 0 0 2px rgba(255,255,255,.38);
+      background:
+        radial-gradient(circle at 0 0, rgba(255,255,255,.68), transparent 20%),
+        linear-gradient(180deg, rgba(255, 239, 199, .99), rgba(241, 213, 164, .99));
+      background-image:
+        url("assets/math-pet-battle/ui/single/pixel-command-frame.svg"),
+        radial-gradient(circle at 0 0, rgba(255,255,255,.68), transparent 20%),
+        linear-gradient(180deg, rgba(255, 239, 199, .99), rgba(241, 213, 164, .99));
+      background-size: 100% 100%;
+      box-shadow:
+        inset 0 0 0 2px rgba(255,255,255,.6),
+        inset 0 -8px 0 rgba(120, 75, 36, .15),
+        0 18px 24px rgba(5, 29, 23, .34);
+    }
+
+    .math-command::before,
+    .math-command::after {
+      content: none;
     }
 
     .math-question {
-      grid-template-columns: minmax(0, 1fr) minmax(140px, auto);
+      grid-template-columns: minmax(0, 1fr);
+      gap: 5px;
       padding: 0;
+      text-align: center;
     }
 
     .math-question strong {
       display: block;
-      margin-top: 4px;
+      margin-top: 0;
+      padding: 0 10px;
       color: #182f29;
-      font-size: clamp(42px, 6vw, 76px);
-      text-shadow: 0 2px 0 rgba(255,255,255,.9);
+      font-size: clamp(38px, 4.2vw, 58px);
+      line-height: 1.5;
+      text-shadow: none;
+    }
+
+    .math-question strong.long-prompt {
+      font-size: clamp(22px, 2.2vw, 32px);
+      line-height: 1.4;
     }
 
     .math-question span {
       color: #4b655a;
+    }
+
+    .math-battle[data-screen="battle"] #mathPrompt {
+      display: block;
+      color: #5d4d32;
+      font-size: clamp(12px, 1vw, 15px);
+      font-weight: 950;
+      line-height: 1.1;
+      text-shadow: 0 1px 0 rgba(255,255,255,.72);
+    }
+
+    .math-kind-legend {
+      display: block;
+      margin-top: 3px;
+      color: #6d5c3d;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.25;
+      word-break: keep-all;
+    }
+
+    .math-battle[data-screen="battle"] #mathCombo {
+      display: none;
     }
 
     .math-question .trait-chip,
@@ -1248,27 +1994,39 @@
 
     .math-choices {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
+      gap: 10px;
+      align-items: stretch;
     }
 
     .math-choice {
-      min-height: 82px;
-      border: 3px solid rgba(255,255,255,.62);
+      min-height: 84px;
+      max-height: 104px;
+      padding: 12px 16px 16px;
+      border: 4px solid rgba(255,255,255,.72);
       color: #fff;
+      font-size: clamp(30px, 3.8vw, 48px);
+      line-height: 1.04;
       text-shadow: 0 2px 0 rgba(0,0,0,.2);
-      box-shadow: inset 0 -7px 0 rgba(0,0,0,.18), 0 8px 14px rgba(5, 29, 23, .18);
+      transition: transform .16s ease, filter .16s ease, opacity .16s ease, box-shadow .16s ease;
+      box-shadow: inset 0 -8px 0 rgba(0,0,0,.2), 0 8px 14px rgba(5, 29, 23, .2);
     }
 
     .math-choice:nth-child(1) {
       background: linear-gradient(180deg, #4eb8ff, #176ac7);
+      background-image: url("assets/math-pet-battle/ui/single/pixel-button-blue.svg");
+      background-size: 100% 100%;
     }
 
     .math-choice:nth-child(2) {
       background: linear-gradient(180deg, #77cc6a, #2e944d);
+      background-image: url("assets/math-pet-battle/ui/single/pixel-button-green.svg");
+      background-size: 100% 100%;
     }
 
     .math-choice:nth-child(3) {
       background: linear-gradient(180deg, #ff9a6c, #db493c);
+      background-image: url("assets/math-pet-battle/ui/single/pixel-button-red.svg");
+      background-size: 100% 100%;
     }
 
     .math-choice:hover,
@@ -1280,18 +2038,72 @@
     .math-choice.correct {
       border-color: #fff7d3;
       background: linear-gradient(180deg, #8ce37a, #2e944d);
+      background-image: url("assets/math-pet-battle/ui/single/pixel-button-green.svg");
+      background-size: 100% 100%;
+      box-shadow: inset 0 -8px 0 rgba(0,0,0,.18), 0 0 0 5px rgba(37, 166, 109, .25), 0 10px 16px rgba(5, 29, 23, .18);
     }
 
     .math-choice.wrong-selected,
     .math-choice.wrong {
       border-color: #fff7d3;
       background: linear-gradient(180deg, #ff9a6c, #cf4036);
+      background-image: url("assets/math-pet-battle/ui/single/pixel-button-red.svg");
+      background-size: 100% 100%;
+      box-shadow: inset 0 -8px 0 rgba(0,0,0,.18), 0 0 0 5px rgba(223, 107, 87, .25), 0 8px 14px rgba(5, 29, 23, .18);
+    }
+
+    .math-choice:disabled {
+      filter: saturate(.7);
+    }
+
+    .math-choice:disabled:not(.correct):not(.wrong-selected):not(.wrong) {
+      opacity: .52;
+      border-color: rgba(255, 247, 211, .55);
+      box-shadow: inset 0 -6px 0 rgba(0,0,0,.16), 0 5px 9px rgba(5, 29, 23, .12);
     }
 
     .math-log {
       border-color: #ead08b;
       background: rgba(255, 248, 218, .9);
       color: #33463e;
+      min-height: 40px;
+      padding: 7px 10px;
+    }
+
+    .math-battle-view .math-log {
+      display: none;
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      z-index: 2;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .math-battle-view[data-feedback="correct"] .math-log,
+    .math-battle-view[data-feedback="wrong"] .math-log {
+      display: flex;
+    }
+
+    .math-battle-view .math-log span {
+      display: none;
+    }
+
+    .math-battle-view .math-log button:disabled {
+      display: none;
+    }
+
+    .math-battle[data-screen="battle"] .math-log button {
+      min-width: 96px;
+      min-height: 44px;
+      border: 0;
+      background-image: url("assets/math-pet-battle/ui/single/pixel-button-green.svg");
+      background-size: 100% 100%;
+      color: #fff;
+      text-shadow: 0 2px 0 rgba(0,0,0,.22);
     }
 
     .math-log button,
@@ -1306,11 +2118,509 @@
       gap: 10px;
     }
 
+    .math-battle[data-screen="battle"] .math-side {
+      gap: 8px;
+      padding: 12px;
+      border-left: 3px solid #08262b;
+      background:
+        linear-gradient(180deg, rgba(13, 58, 49, .98), rgba(7, 35, 32, .98)),
+        #0e3f36;
+      box-shadow: inset 2px 0 0 rgba(255, 224, 143, .25);
+    }
+
     .math-panel,
     .math-shop {
       border-color: rgba(255, 224, 143, .36);
       background: linear-gradient(180deg, rgba(255, 253, 239, .94), rgba(234, 255, 241, .9));
       box-shadow: 0 14px 26px rgba(5, 29, 23, .18);
+    }
+
+    .math-battle[data-screen="battle"] .math-panel {
+      padding: 10px;
+      border: 0;
+      background:
+        linear-gradient(180deg, rgba(47, 53, 40, .88), rgba(22, 35, 31, .92));
+      background-image:
+        url("assets/math-pet-battle/ui/single/pixel-panel-frame.svg"),
+        linear-gradient(180deg, rgba(47, 53, 40, .88), rgba(22, 35, 31, .92));
+      background-size: 100% 100%;
+      color: #fff7d3;
+      box-shadow:
+        inset 0 0 0 2px rgba(255, 224, 143, .34),
+        0 12px 20px rgba(3, 18, 18, .24);
+    }
+
+    .math-battle[data-screen="battle"] .math-panel h3 {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff7d3;
+      font-size: 17px;
+      text-shadow: 0 2px 0 rgba(0,0,0,.28);
+    }
+
+    .math-battle[data-screen="battle"] .math-panel h3 img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .battle-side-pet {
+      display: grid;
+      grid-template-columns: 1fr;
+      justify-items: center;
+      gap: 6px;
+      min-height: 158px;
+      padding: 10px 10px 8px;
+      background-image: url("assets/math-pet-battle/ui/single/pixel-pet-card-frame.svg");
+      background-size: 100% 100%;
+      text-align: center;
+    }
+
+    .battle-side-pet > img {
+      width: 108px;
+      height: 84px;
+      object-fit: contain;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      filter: drop-shadow(0 8px 8px rgba(0,0,0,.22));
+    }
+
+    .battle-side-pet strong,
+    .battle-side-pet span {
+      display: block;
+    }
+
+    .battle-side-pet strong {
+      font-size: 22px;
+      line-height: 1.05;
+    }
+
+    .battle-side-pet span {
+      margin-top: 4px;
+      color: rgba(255, 247, 211, .78);
+      font-weight: 900;
+    }
+
+    .battle-skill-chip {
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      border: 0;
+      background-image: url("assets/math-pet-battle/ui/single/pixel-skill-slot.svg");
+      background-size: 100% 100%;
+      color: #fff;
+      font-weight: 950;
+      line-height: 1.3;
+      word-break: keep-all;
+    }
+
+    .battle-roster {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .battle-roster-slot {
+      min-height: 76px;
+      display: grid;
+      place-items: center;
+      gap: 4px;
+      padding: 7px 5px 6px;
+      border: 0;
+      background-image: url("assets/math-pet-battle/ui/single/pixel-slot-frame.svg");
+      background-size: 100% 100%;
+      color: rgba(255,255,255,.74);
+      font-size: 11px;
+      font-weight: 950;
+      text-align: center;
+    }
+
+    .battle-roster-slot.active {
+      background-image: url("assets/math-pet-battle/ui/single/pixel-slot-active.svg");
+      box-shadow: 0 0 0 3px rgba(97, 208, 255, .12);
+      color: #fff;
+    }
+
+    .battle-roster-slot.locked {
+      opacity: .42;
+      filter: grayscale(.5);
+    }
+
+    .battle-roster-slot img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+
+    .math-battle[data-screen="battle"] .item-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .math-battle[data-screen="battle"] .item-button {
+      min-height: 78px;
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      padding: 9px 6px 7px;
+      border: 0;
+      background-image: url("assets/math-pet-battle/ui/single/pixel-slot-frame.svg");
+      background-size: 100% 100%;
+      color: #fff;
+    }
+
+    .math-battle[data-screen="battle"] .item-button img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .math-battle[data-screen="battle"] .item-button span {
+      display: grid;
+      gap: 2px;
+      max-width: 84px;
+      font-size: 11px;
+      line-height: 1.15;
+      text-align: center;
+      word-break: keep-all;
+    }
+
+    .math-battle[data-screen="battle"] .item-button span span {
+      display: none;
+    }
+
+    .math-battle[data-screen="battle"] .battle-pet-panel,
+    .math-battle[data-screen="battle"] .battle-team-panel,
+    .math-battle[data-screen="battle"] .battle-gear-panel,
+    .math-battle[data-screen="battle"] .battle-item-panel {
+      padding: 8px 10px;
+    }
+
+    .math-battle[data-screen="battle"] .battle-side-pet {
+      grid-template-columns: 82px minmax(0, 1fr);
+      align-items: center;
+      justify-items: stretch;
+      gap: 9px;
+      min-height: 112px;
+      padding: 9px 10px;
+      text-align: left;
+    }
+
+    .side-pet-portrait {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-width: 0;
+    }
+
+    .side-pet-portrait img {
+      width: 82px;
+      height: 72px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 8px rgba(0,0,0,.22));
+    }
+
+    .side-state-badge {
+      position: absolute;
+      right: -4px;
+      bottom: -5px;
+      padding: 3px 6px;
+      border: 2px solid rgba(255,255,255,.76);
+      border-radius: 4px;
+      background: #2e944d;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 950;
+      line-height: 1;
+      text-shadow: 0 1px 0 rgba(0,0,0,.24);
+    }
+
+    .battle-side-pet[data-status="low"] .side-state-badge {
+      background: #cf4036;
+    }
+
+    .side-pet-copy {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+      color: #fff7d3;
+    }
+
+    .side-pet-copy strong {
+      font-size: 18px;
+      line-height: 1.05;
+    }
+
+    .side-pet-copy strong small {
+      color: #96f0c0;
+      font-size: 12px;
+    }
+
+    .side-pet-trait {
+      color: #ccefe2;
+      font-size: 11px;
+      font-weight: 950;
+      line-height: 1.15;
+    }
+
+    .side-hp-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 950;
+    }
+
+    .side-hp-track,
+    .roster-hp {
+      display: block;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,.55);
+      background: rgba(8, 26, 25, .72);
+    }
+
+    .side-hp-track {
+      height: 11px;
+      border-radius: 4px;
+    }
+
+    .side-hp-track i,
+    .roster-hp::before {
+      display: block;
+      width: var(--hp, 100%);
+      height: 100%;
+      background: linear-gradient(90deg, #77cc6a, #ffe07d);
+      content: "";
+    }
+
+    .math-battle[data-screen="battle"] .battle-skill-chip {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 7px;
+      min-height: 44px;
+      padding: 8px 10px;
+    }
+
+    .math-battle[data-screen="battle"] .battle-skill-chip img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+    }
+
+    .battle-skill-chip span,
+    .battle-skill-chip small {
+      display: grid;
+      min-width: 0;
+    }
+
+    .battle-skill-chip b {
+      color: #ffe07d;
+      font-size: 11px;
+      line-height: 1.05;
+    }
+
+    .battle-skill-chip small {
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .battle-gear-status {
+      margin-top: 6px;
+      padding: 5px 7px;
+      border: 2px solid rgba(255,255,255,.45);
+      border-radius: 4px;
+      background: rgba(8, 26, 25, .58);
+      color: #fff7d3;
+      font-size: 11px;
+      font-weight: 950;
+      line-height: 1.15;
+      text-align: center;
+    }
+
+    .battle-gear-status[data-state="equipped"] {
+      border-color: #ffe07d;
+      background: rgba(83, 71, 25, .72);
+    }
+
+    .math-battle[data-screen="battle"] .battle-roster {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .math-battle[data-screen="battle"] .battle-roster-slot {
+      min-height: 66px;
+      align-content: center;
+      gap: 2px;
+      padding: 6px 4px 5px;
+      color: rgba(255,255,255,.86);
+    }
+
+    .battle-roster-slot img {
+      width: 34px;
+      height: 30px;
+    }
+
+    .battle-roster-slot small {
+      display: block;
+      max-width: 100%;
+      color: rgba(255,247,211,.78);
+      font-size: 9px;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+    }
+
+    .battle-roster-slot.available {
+      filter: saturate(.92);
+    }
+
+    .battle-roster-slot.active {
+      color: #fff;
+      box-shadow: 0 0 0 3px rgba(255, 224, 125, .22), 0 8px 12px rgba(0,0,0,.18);
+    }
+
+    .battle-roster-slot.locked {
+      opacity: .74;
+      filter: grayscale(.65) saturate(.55);
+    }
+
+    .battle-roster-slot.locked small {
+      color: #ffc7b8;
+    }
+
+    .battle-roster-slot.empty {
+      opacity: .62;
+      filter: grayscale(.8);
+      color: #c2d2cc;
+    }
+
+    .roster-empty-mark {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border: 2px dashed rgba(255,255,255,.45);
+      border-radius: 4px;
+      color: rgba(255,255,255,.72);
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .roster-hp {
+      width: min(46px, 90%);
+      height: 6px;
+      border-width: 1px;
+      border-radius: 3px;
+    }
+
+    .battle-gear-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .gear-button {
+      position: relative;
+      min-height: 58px;
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      align-items: center;
+      gap: 6px;
+      padding: 6px;
+      border: 0;
+      background-image: url("assets/math-pet-battle/ui/single/pixel-slot-frame.svg");
+      background-size: 100% 100%;
+      color: #fff7d3;
+      font-weight: 950;
+      text-align: left;
+    }
+
+    .gear-button img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+    }
+
+    .gear-button span {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .gear-button b,
+    .gear-button small {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .gear-button b {
+      font-size: 10px;
+    }
+
+    .gear-button small {
+      color: rgba(255,247,211,.75);
+      font-size: 9px;
+    }
+
+    .gear-button.equipped {
+      background-image: url("assets/math-pet-battle/ui/single/pixel-slot-active.svg");
+      box-shadow: 0 0 0 3px rgba(255, 224, 125, .2);
+    }
+
+    .gear-button.equipped small {
+      color: #ffe07d;
+    }
+
+    .gear-button.locked {
+      opacity: .62;
+      filter: grayscale(.75) saturate(.5);
+    }
+
+    .math-battle[data-screen="battle"] .item-button {
+      position: relative;
+      min-height: 70px;
+    }
+
+    .math-battle[data-screen="battle"] .item-button.usable {
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,.16), 0 0 0 3px rgba(97, 240, 156, .18);
+    }
+
+    .math-battle[data-screen="battle"] .item-button.zero,
+    .math-battle[data-screen="battle"] .item-button.turn-locked {
+      opacity: .66;
+      filter: grayscale(.72) saturate(.55);
+      color: #c2d2cc;
+      cursor: not-allowed;
+    }
+
+    .item-count-badge {
+      position: absolute;
+      top: 6px;
+      right: 7px;
+      min-width: 24px;
+      padding: 2px 4px;
+      border: 2px solid rgba(255,255,255,.62);
+      border-radius: 4px;
+      background: #113b35;
+      color: #fff7d3;
+      font-size: 10px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .item-button.usable .item-count-badge {
+      background: #2e944d;
+      color: #fff;
+    }
+
+    .item-button.zero .item-count-badge,
+    .item-button.turn-locked .item-count-badge {
+      background: #485a5a;
     }
 
     .math-panel h3,
@@ -1335,44 +2645,159 @@
 
     .math-battle-effect {
       position: absolute;
-      top: 62px;
+      top: 68px;
       left: 50%;
       z-index: 4;
+      width: min(720px, 76vw);
       display: grid;
-      justify-items: center;
-      gap: 4px;
+      gap: 8px;
       transform: translateX(-50%);
       pointer-events: none;
       animation: mathEffectPop .58s ease both;
     }
 
-    .math-battle-effect img {
-      width: clamp(108px, 16vw, 176px);
-      height: clamp(108px, 16vw, 176px);
-      object-fit: contain;
-      filter: drop-shadow(0 14px 18px rgba(36, 70, 62, .2));
-    }
-
-    .math-battle-effect span {
-      max-width: min(520px, 72vw);
+    .feedback-hero {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+      justify-self: center;
+      max-width: min(620px, 100%);
       padding: 8px 12px;
-      border: 1px solid rgba(255,255,255,.78);
+      border: 2px solid rgba(255,255,255,.78);
       border-radius: 8px;
-      background: rgba(33, 52, 44, .86);
+      background: rgba(33, 52, 44, .88);
       color: #fff;
-      font-weight: 950;
-      line-height: 1.25;
-      text-align: center;
-      word-break: keep-all;
       box-shadow: 0 12px 20px rgba(34, 54, 45, .18);
     }
 
-    .math-battle-view[data-feedback="correct"] .actor-pet img {
+    .feedback-hero img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 14px rgba(36, 70, 62, .24));
+    }
+
+    .feedback-hero span {
+      font-weight: 950;
+      line-height: 1.25;
+      word-break: keep-all;
+    }
+
+    .feedback-sequence {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .feedback-step {
+      min-height: 58px;
+      display: grid;
+      grid-template-columns: 28px 34px minmax(0, 1fr);
+      align-items: center;
+      gap: 6px;
+      padding: 7px 8px;
+      border: 2px solid rgba(255, 247, 211, .76);
+      border-radius: 8px;
+      background: rgba(14, 41, 42, .9);
+      color: #fff;
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,.14), 0 8px 14px rgba(4, 23, 25, .18);
+    }
+
+    .feedback-order {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #fff7d3;
+      color: #17352e;
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .feedback-step img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 4px rgba(0,0,0,.22));
+    }
+
+    .feedback-step b,
+    .feedback-step span:last-child {
+      display: block;
+      min-width: 0;
+      line-height: 1.18;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
+    .feedback-step b {
+      color: #fff7d3;
+      font-size: 12px;
+    }
+
+    .feedback-step span:last-child {
+      margin-top: 2px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .feedback-step[data-step="damage"] {
+      border-color: rgba(255, 186, 116, .9);
+    }
+
+    .feedback-step[data-step="trait"],
+    .feedback-step[data-step="item"],
+    .feedback-step[data-step="reward"] {
+      border-color: rgba(255, 226, 103, .9);
+    }
+
+    .feedback-step[data-step="shield"],
+    .feedback-step[data-step="heal"],
+    .feedback-step[data-step="speed"],
+    .feedback-step[data-step="next"] {
+      border-color: rgba(126, 224, 255, .86);
+    }
+
+    .math-battle-view[data-feedback="correct"] .actor-pet img,
+    .math-battle-view[data-feedback="item"] .actor-pet img {
       animation: petAttack .42s ease both;
     }
 
     .math-battle-view[data-feedback="wrong"] .actor-enemy img {
       animation: enemyNudge .42s ease both;
+    }
+
+    .math-battle-view[data-feedback="correct"] .battle-field::after,
+    .math-battle-view[data-feedback="wrong"] .battle-field::after {
+      content: "";
+      position: absolute;
+      top: clamp(232px, 34svh, 318px);
+      z-index: 1;
+      height: 16px;
+      border-radius: 999px;
+      clip-path: polygon(0 28%, 78% 28%, 78% 0, 100% 50%, 78% 100%, 78% 72%, 0 72%);
+      pointer-events: none;
+      animation: battleActionTrail .44s ease both;
+    }
+
+    .math-battle-view[data-feedback="correct"] .battle-field::after {
+      left: 39%;
+      width: 25%;
+      background: linear-gradient(90deg, rgba(104, 245, 207, 0), rgba(104, 245, 207, .88), rgba(255, 247, 184, .95));
+      box-shadow: 0 0 18px rgba(104, 245, 207, .38);
+    }
+
+    .math-battle-view[data-feedback="wrong"] .battle-field::after {
+      right: 39%;
+      width: 25%;
+      transform: scaleX(-1);
+      background: linear-gradient(90deg, rgba(255, 151, 105, 0), rgba(255, 151, 105, .88), rgba(255, 235, 184, .95));
+      box-shadow: 0 0 18px rgba(255, 151, 105, .34);
     }
 
     .math-choice.wrong-selected {
@@ -1393,9 +2818,11 @@
       min-height: min(760px, calc(100svh - 116px));
       padding: 72px 18px 18px;
       overflow: hidden;
-      border: 1px solid rgba(93, 145, 121, .42);
+      border: 0;
       border-radius: 8px;
-      background: #f7fff0;
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-panel-frame.svg") center / 100% 100% no-repeat,
+        #f7fff0;
       box-shadow: 0 18px 34px rgba(50, 91, 78, .14);
     }
 
@@ -1426,9 +2853,11 @@
       position: relative;
       z-index: 2;
       max-width: 820px;
-      border: 1px solid rgba(255, 224, 143, .42);
+      border: 0;
       border-radius: 8px;
-      background: linear-gradient(180deg, rgba(255, 253, 239, .94), rgba(236, 255, 241, .9));
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-panel-frame.svg") center / 100% 100% no-repeat,
+        linear-gradient(180deg, rgba(255, 253, 239, .94), rgba(236, 255, 241, .9));
       box-shadow: 0 16px 30px rgba(5, 29, 23, .22);
       backdrop-filter: blur(8px);
     }
@@ -1483,13 +2912,37 @@
 
     .math-location-panel .pet-button,
     .math-location-panel .shop-card {
-      border-color: #e6cf88;
       background: rgba(255,255,255,.92);
     }
 
+    .math-location-panel .pet-button {
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-slot-frame.svg") center / 100% 100% no-repeat,
+        linear-gradient(180deg, rgba(255, 253, 239, .94), rgba(235, 255, 242, .9));
+    }
+
+    .math-location-panel .pet-button.active {
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-slot-active.svg") center / 100% 100% no-repeat,
+        linear-gradient(180deg, rgba(255, 253, 220, .96), rgba(224, 250, 255, .9));
+    }
+
     .math-location-panel .shop-card {
-      grid-template-columns: 64px minmax(0, 1fr) minmax(112px, auto);
-      min-height: 92px;
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-shop-card-frame.svg") center / 100% 100% no-repeat,
+        linear-gradient(180deg, rgba(255, 253, 239, .95), rgba(236, 255, 241, .91));
+    }
+
+    .math-location-panel .shop-card[data-state="equipped"],
+    .math-location-panel .shop-card[data-state="owned"] {
+      background:
+        url("assets/math-pet-battle/ui/single/pixel-shop-card-active.svg") center / 100% 100% no-repeat,
+        linear-gradient(180deg, rgba(255, 250, 210, .96), rgba(226, 252, 255, .9));
+    }
+
+    .math-location-panel .shop-card {
+      grid-template-columns: 64px minmax(0, 1fr) 78px;
+      min-height: 88px;
     }
 
     .math-location-panel .shop-card img {
@@ -1505,14 +2958,20 @@
 
     @keyframes petAttack {
       0% { transform: translateX(0); }
-      45% { transform: translateX(34px) translateY(-8px) scale(1.08); }
+      45% { transform: translateX(72px) translateY(-10px) scale(1.08); }
       100% { transform: translateX(0); }
     }
 
     @keyframes enemyNudge {
       0% { transform: translateX(0); }
-      45% { transform: translateX(-20px) rotate(-3deg); }
+      45% { transform: translateX(-58px) translateY(-6px) rotate(-3deg) scale(1.04); }
       100% { transform: translateX(0); }
+    }
+
+    @keyframes battleActionTrail {
+      0% { opacity: 0; filter: blur(2px); }
+      26% { opacity: 1; filter: blur(0); }
+      100% { opacity: 0; filter: blur(4px); }
     }
 
     .equip-button {
@@ -2660,6 +4119,355 @@
       display: none !important;
     }
 
+    .hanja-home {
+      display: grid;
+      gap: 16px;
+      padding: 8px 0 0;
+    }
+
+    .hanja-arcade {
+      display: grid;
+      gap: 16px;
+      padding: clamp(12px, 1.8vw, 20px);
+      border: 1px solid #f0d7ca;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,250,242,.96)),
+        radial-gradient(circle at 12% 6%, rgba(255, 185, 202, .2), transparent 24%),
+        radial-gradient(circle at 88% 16%, rgba(255, 207, 83, .22), transparent 24%);
+      box-shadow: 0 18px 44px rgba(108, 71, 65, .11);
+    }
+
+    .hanja-arcade-top {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .hanja-back,
+    .hanja-profile,
+    .hanja-count-select {
+      min-height: 52px;
+      border: 1px solid #f2cbd1;
+      border-radius: 8px;
+      background: rgba(255,255,255,.92);
+      color: #5a403b;
+      font-weight: 950;
+      box-shadow: 0 8px 18px rgba(122, 82, 72, .08);
+    }
+
+    .hanja-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+      cursor: pointer;
+    }
+
+    .hanja-title {
+      margin: 0;
+      color: #ef4f77;
+      text-align: center;
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.05;
+    }
+
+    .hanja-profile {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px 6px 8px;
+    }
+
+    .hanja-profile img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #fff0f3;
+    }
+
+    .hanja-profile span {
+      display: grid;
+      gap: 2px;
+      font-size: 13px;
+      line-height: 1.1;
+    }
+
+    .hanja-profile b {
+      color: #ef4f77;
+      font-size: 15px;
+    }
+
+    .hanja-toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 14px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid #f1dccf;
+      border-radius: 8px;
+      background: rgba(255,255,255,.72);
+    }
+
+    .hanja-grade-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      padding: 4px;
+      border: 1px solid #eadbd2;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .hanja-grade-tabs button {
+      min-height: 48px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: #6d5f58;
+      font-size: 20px;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .hanja-grade-tabs button[aria-pressed="true"] {
+      background: #fff0f4;
+      color: #ef4f77;
+      box-shadow: inset 0 0 0 2px #ff7fa0;
+    }
+
+    .hanja-count-select {
+      width: 100%;
+      padding: 0 16px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .hanja-mode-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .hanja-mode-card {
+      position: relative;
+      min-height: 212px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 46%;
+      gap: 12px;
+      align-items: center;
+      padding: 22px;
+      border: 1px solid var(--mode-line, #f3c8c8);
+      border-radius: 8px;
+      background: var(--mode-bg, #fff6f8);
+      text-align: left;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 14px 28px rgba(108, 71, 65, .09);
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+
+    .hanja-mode-card:hover,
+    .hanja-mode-card:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 32px rgba(108, 71, 65, .13);
+      outline: none;
+    }
+
+    .hanja-mode-card[data-ready="false"] {
+      cursor: default;
+      filter: grayscale(.2);
+      opacity: .74;
+    }
+
+    .hanja-mode-card h3 {
+      margin: 0;
+      color: var(--mode-accent, #ef4f77);
+      font-size: clamp(25px, 3vw, 34px);
+      line-height: 1.08;
+    }
+
+    .hanja-mode-card p {
+      margin: 10px 0 18px;
+      color: #594b47;
+      font-size: 16px;
+      font-weight: 850;
+      line-height: 1.42;
+      word-break: keep-all;
+    }
+
+    .hanja-mode-badge {
+      min-height: 34px;
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      border-radius: 7px;
+      background: rgba(255,255,255,.82);
+      color: var(--mode-accent, #ef4f77);
+      font-size: 13px;
+      font-weight: 950;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.7);
+    }
+
+    .hanja-mode-art {
+      justify-self: end;
+      width: min(178px, 100%);
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 14px rgba(83, 61, 49, .1));
+    }
+
+    .hanja-mode-card.meaning {
+      --mode-accent: #2f9b4f;
+      --mode-line: #bde2ba;
+      --mode-bg: #f2fff1;
+    }
+
+    .hanja-mode-card.hanja {
+      --mode-accent: #f18416;
+      --mode-line: #f6d393;
+      --mode-bg: #fff9e8;
+    }
+
+    .hanja-mode-card.ox {
+      --mode-accent: #287ad7;
+      --mode-line: #b9d9f8;
+      --mode-bg: #f0f8ff;
+    }
+
+    .hanja-mode-card.review-mode {
+      --mode-accent: #7854c8;
+      --mode-line: #d8c8f8;
+      --mode-bg: #faf6ff;
+    }
+
+    .hanja-mode-card.write {
+      --mode-accent: #6f6b67;
+      --mode-line: #d4d0ca;
+      --mode-bg: #f8f6f2;
+    }
+
+    .hanja-mission {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .hanja-mission-card,
+    .hanja-recent-card,
+    .hanja-order-card {
+      border: 1px solid #f0d7ca;
+      border-radius: 8px;
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 12px 24px rgba(108, 71, 65, .08);
+    }
+
+    .hanja-mission-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 18px 22px;
+    }
+
+    .hanja-mission-card h3,
+    .hanja-recent-card h3,
+    .hanja-order-card h3 {
+      margin: 0;
+      color: #5a403b;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .hanja-mission-card strong {
+      display: block;
+      margin-top: 6px;
+      color: #ef4f77;
+      font-size: 28px;
+      line-height: 1.05;
+      word-break: keep-all;
+    }
+
+    .mission-dots {
+      display: inline-grid;
+      grid-auto-flow: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .mission-dots span {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 2px dashed #ff9bb3;
+      color: #ef4f77;
+      font-weight: 950;
+    }
+
+    .mission-dots span.done {
+      border: 0;
+      background: #ef4f77;
+      color: white;
+    }
+
+    .hanja-recent-card {
+      padding: 16px;
+    }
+
+    .hanja-chip-row {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .hanja-chip-row span {
+      min-height: 58px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d8e8c2;
+      border-radius: 8px;
+      background: #fbfff6;
+      color: #35251f;
+      font-family: "Songti SC", "Noto Serif CJK KR", "Batang", serif;
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .hanja-order-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 14px 18px;
+      color: #75675d;
+      font-weight: 950;
+    }
+
+    .order-mini {
+      min-height: 58px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid #eadbd2;
+      border-radius: 8px;
+      background: #fff;
+      color: #5a403b;
+    }
+
+    .order-mini img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+
     .home-button {
       min-height: 52px;
       border: 1px solid #eadbd2;
@@ -3777,6 +5585,249 @@
       }
     }
 
+    @media (min-width: 721px) and (max-width: 1100px) {
+      .math-battle[data-screen="world"] {
+        gap: 8px;
+        padding: 8px;
+      }
+
+      .math-battle[data-screen="world"] .math-head {
+        grid-template-columns: minmax(260px, .8fr) minmax(0, 1.2fr);
+        min-height: 92px;
+        padding: 10px 12px;
+      }
+
+      .math-battle[data-screen="world"] .math-head h2 {
+        font-size: clamp(24px, 3vw, 30px);
+      }
+
+      .math-battle[data-screen="world"] .math-head p {
+        max-width: 460px;
+        font-size: 12px;
+        line-height: 1.25;
+      }
+
+      .math-battle[data-screen="world"] .math-wallet {
+        grid-template-columns: repeat(3, minmax(0, max-content));
+        justify-content: end;
+        gap: 6px;
+      }
+
+      .math-battle[data-screen="world"] .wallet-chip,
+      .math-battle[data-screen="world"] .math-exit-button,
+      .math-battle[data-screen="world"] .math-reset-button {
+        min-height: 34px;
+        padding-inline: 9px;
+        font-size: 12px;
+      }
+
+      .math-battle[data-screen="world"] .math-world-view {
+        grid-template-columns: minmax(0, 1fr) minmax(252px, 292px);
+        gap: 8px;
+        height: calc(100svh - 136px);
+        min-height: 0;
+      }
+
+      .math-battle[data-screen="world"] .math-world-board,
+      .math-battle[data-screen="world"] .math-world-status {
+        height: 100%;
+        min-height: 0;
+      }
+
+      .math-battle[data-screen="world"] .math-world-board {
+        background-position: center;
+      }
+
+      .math-battle[data-screen="world"] .math-world-status {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto minmax(0, 1fr);
+        gap: 8px;
+        padding: 10px;
+        overflow: hidden;
+      }
+
+      .math-battle[data-screen="world"] .world-active-pet {
+        grid-template-columns: 68px minmax(0, 1fr);
+        gap: 8px;
+        padding: 8px;
+      }
+
+      .math-battle[data-screen="world"] .world-active-pet img {
+        width: 66px;
+        height: 66px;
+        object-fit: contain;
+      }
+
+      .math-battle[data-screen="world"] .world-active-pet p {
+        margin: 5px 0;
+        font-size: 12px;
+        line-height: 1.3;
+      }
+
+      .math-battle[data-screen="world"] .world-route-card {
+        grid-template-columns: 52px 1fr;
+        gap: 8px;
+        padding: 9px;
+        align-self: start;
+      }
+
+      .math-battle[data-screen="world"] .world-route-card img {
+        width: 52px;
+        height: 52px;
+      }
+
+      .math-battle[data-screen="world"] .world-node {
+        min-width: 78px;
+        min-height: 88px;
+      }
+
+      .math-battle[data-screen="world"] .world-node img {
+        width: clamp(54px, 7vw, 78px);
+        height: clamp(54px, 7vw, 78px);
+      }
+
+      .math-battle[data-screen="world"] .world-node span,
+      .math-battle[data-screen="world"] .world-trainer span {
+        min-height: 26px;
+        padding: 5px 7px 5px 22px;
+        font-size: 11px;
+      }
+
+      .math-battle[data-screen="world"] .world-node::after {
+        min-height: 18px;
+        padding: 3px 6px;
+        font-size: 9px;
+      }
+
+      .math-battle[data-screen="world"] .world-trainer {
+        width: 70px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-hud {
+        left: 78px;
+        right: 10px;
+        grid-template-columns: minmax(128px, auto) minmax(190px, 1fr) max-content;
+        grid-auto-rows: minmax(38px, auto);
+        gap: 6px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-title-chip {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 40px;
+        font-size: 15px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-stage-track {
+        grid-column: 2;
+        grid-row: 1;
+        min-height: 40px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-currency {
+        min-height: 38px;
+      }
+
+      .math-battle[data-screen="battle"] .battle-currency:nth-of-type(3) {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .math-battle[data-screen="battle"] .battle-currency:nth-of-type(4) {
+        grid-column: 2;
+        grid-row: 2;
+      }
+
+      .math-battle[data-screen="battle"] #mathBattleSaveStatus {
+        grid-column: 3;
+        grid-row: 2;
+        min-height: 38px;
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .math-battle[data-screen="battle"] .battle-top-actions {
+        grid-column: 3;
+        grid-row: 1;
+        justify-self: end;
+      }
+
+      .math-battle[data-screen="ranch"],
+      .math-battle[data-screen="gear"],
+      .math-battle[data-screen="items"],
+      .math-battle[data-screen="reward"] {
+        gap: 8px;
+        padding: 8px;
+      }
+
+      .math-battle[data-screen="ranch"] .math-head,
+      .math-battle[data-screen="gear"] .math-head,
+      .math-battle[data-screen="items"] .math-head,
+      .math-battle[data-screen="reward"] .math-head {
+        min-height: 50px;
+      }
+
+      .math-location-view,
+      .math-location-scene {
+        height: calc(100svh - 108px);
+        min-height: 0;
+      }
+
+      .math-location-scene {
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: 10px;
+        padding: 60px 14px 14px;
+      }
+
+      .math-location-hero {
+        grid-template-columns: 88px minmax(0, 1fr);
+        gap: 10px;
+        min-height: 108px;
+        padding: 10px 12px;
+      }
+
+      .math-location-hero img {
+        width: 88px;
+        height: 88px;
+      }
+
+      .math-location-hero h3 {
+        font-size: 28px;
+      }
+
+      .math-location-hero p {
+        margin-top: 5px;
+        font-size: 13px;
+        line-height: 1.25;
+      }
+
+      .math-location-panel {
+        gap: 8px;
+        padding: 10px;
+        overflow: hidden;
+      }
+
+      .math-location-panel .team-grid {
+        gap: 8px;
+      }
+
+      .math-location-panel .pet-button {
+        min-height: 72px;
+        padding: 8px 10px;
+      }
+
+      .math-location-panel .pet-button img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .math-location-panel .shop-grid {
+        max-height: min(250px, 32svh);
+      }
+    }
+
     @media (max-width: 720px) {
       .app {
         padding: 12px;
@@ -4043,6 +6094,47 @@
         min-height: 126px;
       }
 
+      .hanja-arcade {
+        padding: 12px;
+      }
+
+      .hanja-arcade-top,
+      .hanja-toolbar,
+      .hanja-mission,
+      .hanja-order-card {
+        grid-template-columns: 1fr;
+      }
+
+      .hanja-title {
+        text-align: left;
+      }
+
+      .hanja-profile {
+        justify-content: start;
+      }
+
+      .hanja-mode-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hanja-mode-card {
+        min-height: 178px;
+        grid-template-columns: minmax(0, 1fr) 132px;
+        padding: 16px;
+      }
+
+      .hanja-mode-card h3 {
+        font-size: 24px;
+      }
+
+      .hanja-mode-art {
+        width: 132px;
+      }
+
+      .hanja-chip-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
       .progress-ring {
         width: 170px;
       }
@@ -4063,15 +6155,15 @@
   </style>
 </head>
 <body class="auth-locked">
-  <section id="authScreen" class="auth-screen" aria-label="사이트 암호 입력">
+  <section id="authScreen" class="auth-screen" aria-label="로컬 체험 확인">
     <div class="auth-card">
       <img src="assets/learning-logo.png" alt="" aria-hidden="true">
       <div>
         <h1>Learning Play Bombom</h1>
-        <p>학습을 시작하려면 입장 암호를 입력해 주세요.</p>
+        <p>학습을 시작하려면 이 기기에서 로컬 체험을 확인해 주세요.</p>
       </div>
       <form id="authForm" class="auth-form" autocomplete="off">
-        <label for="authPassword">입장 암호</label>
+        <label for="authPassword">로컬 체험 확인</label>
         <div class="auth-input-row">
           <input id="authPassword" name="authPassword" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="12" aria-describedby="authError">
           <button class="auth-submit" type="submit">입장</button>
@@ -4131,7 +6223,7 @@
             </div>
           </div>
           <div class="resume-list">
-            <button id="startLearning" class="resume-card hanja" type="button" data-home-mode="memory">
+            <button id="startLearning" class="resume-card hanja" type="button" data-hanja-entry="true">
               <img class="resume-icon" src="assets/pack-hanja.png" alt="" aria-hidden="true">
               <span><small>한자 학습</small><strong>8급 50자</strong><em><i style="width:60%"></i></em></span>
               <b>이어하기</b>
@@ -4236,6 +6328,113 @@
       </aside>
     </section>
 
+    <section id="hanjaHomeView" class="hanja-home view hidden" aria-label="한자 게임 선택">
+      <div class="hanja-arcade">
+        <div class="hanja-arcade-top">
+          <button id="hanjaBackHome" class="hanja-back" type="button">← 전체 홈</button>
+          <h2 class="hanja-title">한자 게임 선택</h2>
+          <div class="hanja-profile" aria-label="학습자 보상">
+            <img src="assets/learning-logo.png" alt="" aria-hidden="true">
+            <span><b>하나</b><small>별 1,250</small></span>
+          </div>
+        </div>
+
+        <div class="hanja-toolbar" aria-label="한자 학습 설정">
+          <div class="hanja-grade-tabs" aria-label="급수 선택">
+            <button type="button" data-hanja-level="80" aria-pressed="true">8급</button>
+            <button type="button" data-hanja-level="72" aria-pressed="false">준7급</button>
+            <button type="button" data-hanja-level="70" aria-pressed="false">7급</button>
+          </div>
+          <select id="hanjaPairSelect" class="hanja-count-select" aria-label="문제 수 선택">
+            <option value="12" selected>12자</option>
+            <option value="16">16자</option>
+            <option value="20">20자</option>
+            <option value="24">24자</option>
+          </select>
+        </div>
+
+        <div id="modeGrid" class="hanja-mode-grid" aria-label="한자 게임 모드">
+          <button class="hanja-mode-card memory" type="button" data-mode="memory" data-ready="true">
+            <span>
+              <h3>메모리 카드</h3>
+              <p>뜻·음과 한자를 짝 맞춰 기억해요.</p>
+              <span class="hanja-mode-badge">추천</span>
+            </span>
+            <img class="hanja-mode-art" src="assets/hanja-home/mode-memory-cards.png" alt="" aria-hidden="true">
+          </button>
+          <button class="hanja-mode-card meaning" type="button" data-mode="meaning" data-ready="true">
+            <span>
+              <h3>뜻 고르기</h3>
+              <p>한자를 보고 알맞은 뜻·음을 골라요.</p>
+              <span class="hanja-mode-badge">빠른 연습</span>
+            </span>
+            <img class="hanja-mode-art" src="assets/hanja-home/mode-meaning-choice.png" alt="" aria-hidden="true">
+          </button>
+          <button class="hanja-mode-card hanja" type="button" data-mode="hanja" data-ready="true">
+            <span>
+              <h3>한자 고르기</h3>
+              <p>뜻·음을 보고 알맞은 한자를 골라요.</p>
+              <span class="hanja-mode-badge">추천</span>
+            </span>
+            <img class="hanja-mode-art" src="assets/hanja-home/mode-hanja-choice.png" alt="" aria-hidden="true">
+          </button>
+          <button class="hanja-mode-card ox" type="button" data-mode="ox" data-ready="true">
+            <span>
+              <h3>OX 퀴즈</h3>
+              <p>맞으면 O, 틀리면 X로 확인해요.</p>
+              <span class="hanja-mode-badge">빠른 연습</span>
+            </span>
+            <img class="hanja-mode-art" src="assets/hanja-home/mode-ox-paddles.png" alt="" aria-hidden="true">
+          </button>
+          <button class="hanja-mode-card review-mode" type="button" data-mode="review" data-ready="true">
+            <span>
+              <h3>복습함</h3>
+              <p>틀렸던 문제를 모아 다시 풀어요.</p>
+              <span class="hanja-mode-badge">복습 3개</span>
+            </span>
+            <img class="hanja-mode-art" src="assets/hanja-home/mode-review-box.png" alt="" aria-hidden="true">
+          </button>
+          <button class="hanja-mode-card write" type="button" data-mode="write" data-ready="false">
+            <span>
+              <h3>쓰기 연습</h3>
+              <p>바른 순서로 한자를 써 보아요.</p>
+              <span class="hanja-mode-badge">7급부터 이용 가능</span>
+            </span>
+            <img class="hanja-mode-art" src="assets/hanja-home/mode-write-practice.png" alt="" aria-hidden="true">
+          </button>
+        </div>
+
+        <div class="hanja-mission">
+          <div class="hanja-mission-card">
+            <span>
+              <h3>오늘 미션</h3>
+              <strong>3가지 게임 해보기</strong>
+            </span>
+            <span class="mission-dots" aria-label="미션 진행">
+              <span class="done">1</span>
+              <span class="done">2</span>
+              <span>3</span>
+            </span>
+          </div>
+          <div class="hanja-recent-card">
+            <h3>최근에 배운 한자</h3>
+            <div class="hanja-chip-row" aria-label="최근 한자">
+              <span>日</span><span>月</span><span>山</span><span>水</span>
+              <span>火</span><span>木</span><span>田</span><span>人</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hanja-order-card" aria-label="추천 순서">
+          <b>추천 순서</b>
+          <span class="order-mini"><img src="assets/hanja-home/mode-memory-cards.png" alt="" aria-hidden="true">메모리</span>
+          <span>→</span>
+          <span class="order-mini"><img src="assets/hanja-home/mode-meaning-choice.png" alt="" aria-hidden="true">뜻 고르기</span>
+          <span class="order-mini"><img src="assets/hanja-home/mode-ox-paddles.png" alt="" aria-hidden="true">OX 퀴즈</span>
+        </div>
+      </div>
+    </section>
+
     <main id="gameView" class="view hidden">
       <section id="memoryWrap" class="board-wrap mode-panel" aria-label="메모리 게임판">
         <div class="board-header">
@@ -4280,36 +6479,39 @@
             <h2>수학펫 배틀</h2>
             <p>월드맵에서 지역을 고르고, 문제의 정답으로 펫에게 명령해요. 별코인과 정답보석으로 펫과 장비를 키울 수 있어요.</p>
           </div>
-          <div class="math-wallet" aria-label="수학모드 재화">
+          <div class="math-wallet" aria-label="수학 배틀 진행 정보">
             <button id="mathExitButton" class="math-exit-button" type="button">홈</button>
+            <button id="mathResetButton" class="math-reset-button" type="button">처음부터</button>
+            <span id="mathSaveStatus" class="wallet-chip math-save-status">저장됨</span>
+            <span id="mathProgressStatus" class="wallet-chip math-progress-status">진행도 1</span>
             <span class="wallet-chip"><img src="assets/math-pet-battle/currency/currency-star-coin.png" alt="" aria-hidden="true">별코인 <b id="mathCoins">0</b></span>
-            <span class="wallet-chip"><img src="assets/math-pet-battle/currency/currency-answer-gem.png" alt="" aria-hidden="true">정답보석 <b id="mathGems">0</b></span>
+            <span class="wallet-chip"><img src="assets/math-pet-battle/currency/currency-answer-gem.png" alt="" aria-hidden="true">정답 보석 <b id="mathGems">0</b></span>
           </div>
         </div>
 
         <div id="mathWorldView" class="math-view math-world-view">
           <div class="math-world-board" aria-label="수학 월드맵">
-            <button class="world-node node-battle" type="button" data-math-destination="battle">
+            <button class="world-node node-battle" type="button" data-world-node="battle" data-math-destination="battle">
               <img src="assets/math-pet-battle/locations/single/battle-forest-gate.png" alt="" aria-hidden="true">
               <span>전투 숲길</span>
             </button>
-            <button class="world-node node-ranch" type="button" data-math-destination="ranch">
+            <button class="world-node node-ranch" type="button" data-world-node="ranch" data-math-destination="ranch">
               <img src="assets/math-pet-battle/locations/single/pet-ranch.png" alt="" aria-hidden="true">
               <span>펫 목장</span>
             </button>
-            <button class="world-node node-gear" type="button" data-math-destination="gear">
+            <button class="world-node node-gear" type="button" data-world-node="gear" data-math-destination="gear">
               <img src="assets/math-pet-battle/locations/single/equipment-shop.png" alt="" aria-hidden="true">
               <span>장비 상점</span>
             </button>
-            <button class="world-node node-items" type="button" data-math-destination="items">
+            <button class="world-node node-items" type="button" data-world-node="items" data-math-destination="items">
               <img src="assets/math-pet-battle/locations/single/item-shop.png" alt="" aria-hidden="true">
               <span>아이템샵</span>
             </button>
-            <button class="world-node node-practice" type="button" data-math-destination="battle">
+            <button class="world-node node-practice" type="button" data-world-node="practice" data-math-destination="battle">
               <img src="assets/math-pet-battle/locations/single/practice-yard.png" alt="" aria-hidden="true">
               <span>연습 마당</span>
             </button>
-            <button class="world-node node-reward" type="button" data-math-destination="reward">
+            <button class="world-node node-reward" type="button" data-world-node="reward" data-math-destination="reward">
               <img src="assets/math-pet-battle/locations/single/reward-chest.png" alt="" aria-hidden="true">
               <span>보상 상자</span>
             </button>
@@ -4340,14 +6542,30 @@
         <div id="mathBattleView" class="math-view math-battle-view hidden">
           <div class="math-shell">
             <div class="math-arena">
-            <div class="battle-field">
-              <button class="math-back-button" type="button" data-math-destination="world">월드맵</button>
-              <div class="battle-hud" aria-label="전투 상태">
-                <span class="battle-hud-chip"><img src="assets/math-pet-battle/ui/single/stage-flag.png" alt="" aria-hidden="true"><b id="mathBattleStage">스테이지 1</b></span>
-                <span class="battle-hud-chip"><img src="assets/math-pet-battle/ui/single/pet-paw.png" alt="" aria-hidden="true"><b id="mathBattlePet">모모</b></span>
-                <span class="battle-hud-chip"><img src="assets/math-pet-battle/ui/single/attack-burst.png" alt="" aria-hidden="true"><b id="mathBattleEnemy">숫자젤리</b></span>
-              </div>
-              <div id="mathBattleEffect" class="math-battle-effect hidden" aria-live="polite"></div>
+              <div class="battle-field">
+                <button class="math-back-button" type="button" data-math-destination="world">
+                  <img src="assets/math-pet-battle/ui/single/back-arrow.png" alt="" aria-hidden="true">
+                  월드맵
+                </button>
+                <div class="battle-hud" aria-label="전투 상태">
+                  <span class="battle-title-chip"><img src="assets/math-pet-battle/ui/single/shield.png" alt="" aria-hidden="true">수학펫 배틀</span>
+                  <span class="battle-stage-track">
+                    <img src="assets/math-pet-battle/ui/single/stage-flag.png" alt="" aria-hidden="true">
+                    <b id="mathBattleStage">스테이지 1</b>
+                    <i></i><i></i><i class="locked"></i><i class="locked"></i>
+                  </span>
+                  <span class="battle-hud-chip battle-currency"><img src="assets/math-pet-battle/currency/currency-star-coin.png" alt="" aria-hidden="true">별코인 <b id="mathBattleCoins">0</b></span>
+                  <span class="battle-hud-chip battle-currency"><img src="assets/math-pet-battle/currency/currency-answer-gem.png" alt="" aria-hidden="true">정답보석 <b id="mathBattleGems">0</b></span>
+                  <span id="mathBattleSaveStatus" class="battle-hud-chip">저장됨 · 진행도 1</span>
+                  <span class="battle-top-actions">
+                    <button id="mathBattleResetButton" class="math-reset-button battle-reset-button" type="button">처음부터</button>
+                    <button type="button" data-math-destination="items" aria-label="아이템샵"><img src="assets/math-pet-battle/ui/single/bag.png" alt="" aria-hidden="true"></button>
+                    <button type="button" data-math-destination="gear" aria-label="장비 상점"><img src="assets/math-pet-battle/ui/single/shop.png" alt="" aria-hidden="true"></button>
+                  </span>
+                  <span class="battle-hud-chip" hidden style="display:none"><img src="assets/math-pet-battle/ui/single/pet-paw.png" alt="" aria-hidden="true"><b id="mathBattlePet">모모</b></span>
+                  <span class="battle-hud-chip" hidden style="display:none"><img src="assets/math-pet-battle/ui/single/attack-burst.png" alt="" aria-hidden="true"><b id="mathBattleEnemy">숫자젤리</b></span>
+                </div>
+                <div id="mathBattleEffect" class="math-battle-effect hidden" aria-live="polite"></div>
                 <div class="battle-actor actor-trainer">
                   <img src="assets/math-pet-battle/characters/trainer-arin.png" alt="조련사 아린">
                   <span class="actor-name">조련사 아린</span>
@@ -4362,27 +6580,43 @@
                   <div class="hp-bar" aria-label="상대 체력"><span id="mathEnemyHpBar"></span></div>
                   <span id="mathEnemyName" class="actor-name">숫자젤리</span>
                 </div>
-              </div>
 
-              <div class="math-command">
-                <div class="math-question">
-                  <div>
-                    <span id="mathPrompt">정답을 골라 펫에게 명령하세요.</span>
-                    <strong id="mathQuestion">8 + 6 = ?</strong>
+                <div class="math-command">
+                  <div class="math-question">
+                    <div>
+                      <span id="mathPrompt">정답을 골라 펫에게 힘을 주세요.</span>
+                      <span id="mathKindLegend" class="math-kind-legend">더하기 · 빼기 · 10 만들기 · 빈칸 찾기 · 큰 수 / 작은 수 · 이야기 문제 · 자리값</span>
+                      <strong id="mathQuestion">8 + 6 = ?</strong>
+                    </div>
+                    <span id="mathCombo" class="trait-chip">연속 정답 0</span>
                   </div>
-                  <span id="mathCombo" class="trait-chip">연속 정답 0</span>
-                </div>
-                <div id="mathChoices" class="math-choices"></div>
-                <div class="math-log">
-                  <span id="mathLog">전투를 시작해요.</span>
-                  <button id="mathNextTurn" type="button">다음 문제</button>
+                  <div id="mathChoices" class="math-choices"></div>
+                  <div class="math-log">
+                    <span id="mathLog">전투를 시작해요.</span>
+                    <button id="mathNextTurn" type="button">다음 문제</button>
+                  </div>
                 </div>
               </div>
             </div>
 
             <aside class="math-side" aria-label="전투 아이템">
-              <section class="math-panel">
-                <h3>전투 가방</h3>
+              <section class="math-panel battle-pet-panel">
+                <h3><img src="assets/math-pet-battle/ui/single/pet-paw.png" alt="" aria-hidden="true">활성 펫</h3>
+                <div class="battle-side-pet">
+                  <img id="mathBattleSidePetImage" src="assets/math-pet-battle/pets/pet-momo.png" alt="">
+                  <div>
+                    <strong id="mathBattleSidePetName">모모 Lv.1</strong>
+                    <span id="mathBattleSideTrait">물별 · 두번톡톡</span>
+                  </div>
+                </div>
+                <div id="mathBattleSideSkill" class="battle-skill-chip">정답 시 일정 확률로 두 번 공격</div>
+              </section>
+              <section class="math-panel battle-team-panel">
+                <h3><img src="assets/math-pet-battle/ui/single/trait-sparkle.png" alt="" aria-hidden="true">우리 팀</h3>
+                <div id="mathBattleRoster" class="battle-roster"></div>
+              </section>
+              <section class="math-panel battle-item-panel">
+                <h3><img src="assets/math-pet-battle/ui/single/bag.png" alt="" aria-hidden="true">아이템</h3>
                 <div id="mathItems" class="item-grid"></div>
               </section>
             </aside>
@@ -4530,8 +6764,6 @@
       "72": { label: "7급II", codes: ["80", "72"], total: 100 },
       "70": { label: "7급", codes: ["80", "72", "70"], total: 150 }
     };
-
-    const AUTH_PASSWORD = "0802";
     const AUTH_STORAGE_KEY = "learning-play-bombom-auth-v1";
     const AUTH_DURATION_MS = 2 * 24 * 60 * 60 * 1000;
     let authSessionExpiresAt = 0;
@@ -4578,6 +6810,9 @@
       pairCount: document.querySelector("#pairCount"),
       homeButton: document.querySelector("#homeButton"),
       homeView: document.querySelector("#homeView"),
+      hanjaHomeView: document.querySelector("#hanjaHomeView"),
+      hanjaBackHome: document.querySelector("#hanjaBackHome"),
+      hanjaPairSelect: document.querySelector("#hanjaPairSelect"),
       gameView: document.querySelector("#gameView"),
       startLearning: document.querySelector("#startLearning"),
       openModes: document.querySelector("#openModes"),
@@ -4629,9 +6864,21 @@
       mathBattleEffect: document.querySelector("#mathBattleEffect"),
       mathWorldMessage: document.querySelector("#mathWorldMessage"),
       mathExitButton: document.querySelector("#mathExitButton"),
+      mathResetButton: document.querySelector("#mathResetButton"),
+      mathSaveStatus: document.querySelector("#mathSaveStatus"),
+      mathProgressStatus: document.querySelector("#mathProgressStatus"),
       mathBattleStage: document.querySelector("#mathBattleStage"),
       mathBattlePet: document.querySelector("#mathBattlePet"),
       mathBattleEnemy: document.querySelector("#mathBattleEnemy"),
+      mathBattleCoins: document.querySelector("#mathBattleCoins"),
+      mathBattleGems: document.querySelector("#mathBattleGems"),
+      mathBattleSaveStatus: document.querySelector("#mathBattleSaveStatus"),
+      mathBattleResetButton: document.querySelector("#mathBattleResetButton"),
+      mathBattleSidePetImage: document.querySelector("#mathBattleSidePetImage"),
+      mathBattleSidePetName: document.querySelector("#mathBattleSidePetName"),
+      mathBattleSideTrait: document.querySelector("#mathBattleSideTrait"),
+      mathBattleSideSkill: document.querySelector("#mathBattleSideSkill"),
+      mathBattleRoster: document.querySelector("#mathBattleRoster"),
       mathCoins: document.querySelector("#mathCoins"),
       mathGems: document.querySelector("#mathGems"),
       mathStage: document.querySelector("#mathStage"),
@@ -4702,7 +6949,7 @@
           expiresAt: authSessionExpiresAt
         }));
       } catch {
-        // If storage is blocked, keep the current session open after a valid password.
+        // If storage is blocked, keep the current local demo session open after acknowledgement.
       }
     }
 
@@ -4737,13 +6984,8 @@
 
     authEls.form.addEventListener("submit", event => {
       event.preventDefault();
-      if (authEls.password.value.trim() === AUTH_PASSWORD) {
-        saveAuth();
-        unlockApp();
-        return;
-      }
-      authEls.error.textContent = "암호가 맞지 않아요. 다시 입력해 주세요.";
-      authEls.password.select();
+      saveAuth();
+      unlockApp();
     });
 
     window.addEventListener("pageshow", initAuthGate);
@@ -4812,6 +7054,10 @@
         double: "assets/math-pet-battle/effects/single/double-hit-water-star.png",
         shield: "assets/math-pet-battle/effects/single/leaf-shield-barrier.png",
         heal: "assets/math-pet-battle/effects/single/healing-sparkle.png",
+        speed: "assets/math-pet-battle/effects/single/speed-lightning.png",
+        command: "assets/math-pet-battle/effects/single/pet-command-glow.png",
+        damage: "assets/math-pet-battle/effects/single/damage-pop-burst.png",
+        counter: "assets/math-pet-battle/effects/single/counterattack-swipe.png",
         reward: "assets/math-pet-battle/effects/single/reward-coin-sparkle.png",
         portal: "assets/math-pet-battle/effects/single/next-stage-portal.png"
       },
@@ -4956,7 +7202,11 @@
       const next = baseMathState();
       if (!saved || typeof saved !== "object") return next;
       Object.assign(next, saved);
-      next.pets = { ...next.pets, ...(saved.pets || {}) };
+      next.stage = Math.max(1, Number(saved.stage) || 1);
+      next.wins = Math.max(0, Number(saved.wins) || 0);
+      next.coins = Math.max(0, Number(saved.coins) || 0);
+      next.gems = Math.max(0, Number(saved.gems) || 0);
+      next.pets = { ...next.pets, ...(saved.pets && typeof saved.pets === "object" ? saved.pets : {}) };
       MATH_PETS.forEach(pet => {
         next.pets[pet.id] = {
           hp: Math.min(pet.maxHp, Math.max(1, next.pets[pet.id]?.hp ?? pet.maxHp)),
@@ -4965,28 +7215,56 @@
           unlocked: Boolean(next.pets[pet.id]?.unlocked ?? pet.priceGem === 0)
         };
       });
-      next.inventory = { focusCookie: 0, hintCompass: 0, ...(saved.inventory || {}) };
+      next.activePetId = next.pets[next.activePetId] ? next.activePetId : "momo";
+      next.inventory = { focusCookie: 0, hintCompass: 0, ...(saved.inventory && typeof saved.inventory === "object" ? saved.inventory : {}) };
       next.ownedGear = Array.isArray(saved.ownedGear) ? saved.ownedGear : [];
-      next.equippedGear = saved.equippedGear || {};
+      next.equippedGear = saved.equippedGear && typeof saved.equippedGear === "object" ? saved.equippedGear : {};
       next.shopTab = ["pets", "gear", "items"].includes(saved.shopTab) ? saved.shopTab : "pets";
       next.screen = ["world", "battle", "ranch", "gear", "items", "reward"].includes(saved.screen) ? saved.screen : "world";
       next.selectedChoice = saved.selectedChoice ?? null;
       next.feedback = saved.feedback || null;
       next.claimedRewardStage = Number(saved.claimedRewardStage || 0);
+      next.question = normalizeMathQuestion(saved.question, next.choices);
+      next.choices = normalizeMathChoices(next.question, next.choices);
+      if (next.question) next.question.choices = [...next.choices];
       return next;
     }
 
     function loadMathState() {
       try {
-        return normalizeMathState(JSON.parse(localStorage.getItem(MATH_SAVE_KEY)));
+        const raw = localStorage.getItem(MATH_SAVE_KEY);
+        return raw ? normalizeMathState(JSON.parse(raw)) : baseMathState();
       } catch {
+        try {
+          localStorage.removeItem(MATH_SAVE_KEY);
+        } catch {
+          // Ignore storage cleanup failures.
+        }
         return baseMathState();
       }
     }
 
     function saveMathState() {
       if (!state.math) return;
-      localStorage.setItem(MATH_SAVE_KEY, JSON.stringify(state.math));
+      try {
+        localStorage.setItem(MATH_SAVE_KEY, JSON.stringify(state.math));
+        if (els.mathSaveStatus) els.mathSaveStatus.textContent = "저장됨";
+        if (els.mathBattleSaveStatus) els.mathBattleSaveStatus.textContent = `저장됨 · 진행도 ${state.math.stage}단계`;
+      } catch {
+        if (els.mathSaveStatus) els.mathSaveStatus.textContent = "저장 실패";
+        if (els.mathBattleSaveStatus) els.mathBattleSaveStatus.textContent = "저장 실패";
+      }
+    }
+
+    function resetMathBattleState() {
+      try {
+        localStorage.removeItem(MATH_SAVE_KEY);
+      } catch {
+        // Reset remains scoped to in-memory math state if storage is blocked.
+      }
+      state.math = baseMathState();
+      state.math.log = "수학 배틀 저장을 지우고 처음부터 시작해요.";
+      ensureMathBattle();
     }
 
     function getMathPet(id = state.math.activePetId) {
@@ -5003,6 +7281,34 @@
 
     function activeMathGear() {
       return state.math.equippedGear[state.math.activePetId] || null;
+    }
+
+    function mathWorldNodeState(nodeId) {
+      if (nodeId === "practice") {
+        return { state: "locked", label: "준비 중", disabled: true, reason: "연습 마당은 준비 중이에요." };
+      }
+      if (nodeId === "reward" && state.math.claimedRewardStage >= state.math.stage) {
+        return { state: "unavailable", label: "수령 완료", disabled: true, reason: "이번 스테이지 보상은 이미 받았어요." };
+      }
+      if (nodeId === "battle") {
+        return { state: "current", label: "다음 도전", disabled: false, reason: "" };
+      }
+      return { state: "available", label: "이동", disabled: false, reason: "" };
+    }
+
+    function renderMathWorldNodes() {
+      document.querySelectorAll(".world-node").forEach(node => {
+        const nodeId = node.dataset.worldNode || node.dataset.mathDestination;
+        const nodeState = mathWorldNodeState(nodeId);
+        node.dataset.state = nodeState.state;
+        node.dataset.stateLabel = nodeState.label;
+        node.disabled = nodeState.disabled;
+        node.setAttribute("aria-disabled", nodeState.disabled ? "true" : "false");
+        if (nodeState.state === "current") node.setAttribute("aria-current", "step");
+        else node.removeAttribute("aria-current");
+        if (nodeState.reason) node.title = nodeState.reason;
+        else node.removeAttribute("title");
+      });
     }
 
     function mathCurrencyLabel(currency) {
@@ -5051,22 +7357,310 @@
       };
     }
 
+    const MATH_PROBLEM_KINDS = [
+      "add-basic",
+      "sub-basic",
+      "make-10",
+      "missing-addend",
+      "unknown-position",
+      "part-part-whole",
+      "compare-difference",
+      "three-addends",
+      "place-value-tens-ones",
+      "short-story-choice"
+    ];
+
+    const MATH_PROBLEM_LABELS = {
+      "add-basic": "더하기",
+      "sub-basic": "빼기",
+      "make-10": "10 만들기",
+      "missing-addend": "빈칸 찾기",
+      "unknown-position": "빈칸 찾기",
+      "part-part-whole": "전체와 부분",
+      "compare-difference": "큰 수 / 작은 수",
+      "three-addends": "더하기",
+      "place-value-tens-ones": "자리값",
+      "short-story-choice": "이야기 문제",
+      "legacy-choice": "문제"
+    };
+
+    function mathProblemLabel(kind) {
+      return MATH_PROBLEM_LABELS[kind] || "문제";
+    }
+
+    const MATH_SHORT_STORY_TEMPLATES = [
+      {
+        type: "join",
+        generate() {
+          const start = mathRandomInt(3, 12);
+          const more = mathRandomInt(2, 9);
+          return {
+            prompt: `미나가 조개 ${start}개를 가지고 있어요. ${more}개를 더 찾으면 모두 몇 개일까요?`,
+            answer: start + more,
+            payload: { structure: "join", start, change: more }
+          };
+        }
+      },
+      {
+        type: "separate",
+        generate() {
+          const total = mathRandomInt(8, 24);
+          const taken = mathRandomInt(2, total - 2);
+          return {
+            prompt: `진이가 딸기 ${total}개 중 ${taken}개를 나누어 줬어요. 몇 개가 남을까요?`,
+            answer: total - taken,
+            payload: { structure: "separate", total, change: taken }
+          };
+        }
+      },
+      {
+        type: "compare",
+        generate() {
+          const small = mathRandomInt(4, 16);
+          const difference = mathRandomInt(2, 10);
+          const big = small + difference;
+          return {
+            prompt: `리아는 스티커 ${big}개, 나리는 ${small}개가 있어요. 리아가 몇 개 더 많을까요?`,
+            answer: difference,
+            payload: { structure: "compare", big, small }
+          };
+        }
+      },
+      {
+        type: "put-together",
+        generate() {
+          const red = mathRandomInt(3, 12);
+          const blue = mathRandomInt(2, 11);
+          return {
+            prompt: `빨간 블록 ${red}개와 파란 블록 ${blue}개가 있어요. 모두 몇 개일까요?`,
+            answer: red + blue,
+            payload: { structure: "put-together", parts: [red, blue] }
+          };
+        }
+      }
+    ];
+
+    function mathRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function mathProblemDescriptor(kind, prompt, answer, payload = {}, explanation = "") {
+      const scalarAnswer = Number(answer);
+      if (!Number.isInteger(scalarAnswer) || scalarAnswer < 0) {
+        throw new Error(`Invalid math answer for ${kind}`);
+      }
+      return {
+        kind,
+        prompt,
+        text: prompt,
+        answer: scalarAnswer,
+        choices: mathAnswerChoices(scalarAnswer),
+        payload,
+        ...(explanation ? { explanation } : {})
+      };
+    }
+
+    const MATH_PROBLEM_REGISTRY = {
+      "add-basic": {
+        kind: "add-basic",
+        generate({ left, right }) {
+          const answer = left + right;
+          const prompt = `${left} + ${right} = ?`;
+          return mathProblemDescriptor("add-basic", prompt, answer, { operation: "add", left, right }, `${left} + ${right} = ${answer}`);
+        }
+      },
+      "sub-basic": {
+        kind: "sub-basic",
+        generate({ left, right }) {
+          if (right > left) [left, right] = [right, left];
+          const answer = left - right;
+          const prompt = `${left} - ${right} = ?`;
+          return mathProblemDescriptor("sub-basic", prompt, answer, { operation: "subtract", left, right }, `${left} - ${right} = ${answer}`);
+        }
+      },
+      "make-10": {
+        kind: "make-10",
+        generate() {
+          const known = mathRandomInt(1, 9);
+          const answer = 10 - known;
+          const prompt = `${known} + ? = 10`;
+          return mathProblemDescriptor("make-10", prompt, answer, { total: 10, known }, `${known} + ${answer} = 10`);
+        }
+      },
+      "missing-addend": {
+        kind: "missing-addend",
+        generate({ max }) {
+          const total = mathRandomInt(8, Math.min(max + 10, 40));
+          const known = mathRandomInt(2, total - 2);
+          const answer = total - known;
+          const prompt = `${known} + ? = ${total}`;
+          return mathProblemDescriptor("missing-addend", prompt, answer, { operation: "add", known, total }, `${known} + ${answer} = ${total}`);
+        }
+      },
+      "unknown-position": {
+        kind: "unknown-position",
+        generate({ max }) {
+          const template = mathRandomInt(0, 2);
+          if (template === 0) {
+            const known = mathRandomInt(3, 16);
+            const answer = mathRandomInt(2, 18);
+            const total = known + answer;
+            const prompt = `? + ${known} = ${total}`;
+            return mathProblemDescriptor("unknown-position", prompt, answer, { operation: "add", position: "left", known, total }, `${answer} + ${known} = ${total}`);
+          }
+          if (template === 1) {
+            const answer = mathRandomInt(3, Math.min(max, 32));
+            const right = mathRandomInt(2, Math.min(answer - 1, 14));
+            const result = answer - right;
+            const prompt = `? - ${right} = ${result}`;
+            return mathProblemDescriptor("unknown-position", prompt, answer, { operation: "subtract", position: "left", right, result }, `${answer} - ${right} = ${result}`);
+          }
+          const total = mathRandomInt(10, Math.min(max + 12, 46));
+          const answer = mathRandomInt(2, total - 4);
+          const result = total - answer;
+          const prompt = `${total} - ? = ${result}`;
+          return mathProblemDescriptor("unknown-position", prompt, answer, { operation: "subtract", position: "right", total, result }, `${total} - ${answer} = ${result}`);
+        }
+      },
+      "part-part-whole": {
+        kind: "part-part-whole",
+        generate({ max }) {
+          const whole = mathRandomInt(8, Math.min(max + 8, 42));
+          const part = mathRandomInt(2, whole - 2);
+          const answer = whole - part;
+          const prompt = `전체 ${whole}에서 한 부분이 ${part}예요. 빈칸은 몇일까요?`;
+          return mathProblemDescriptor("part-part-whole", prompt, answer, { whole, knownPart: part }, `${part} + ${answer} = ${whole}`);
+        }
+      },
+      "compare-difference": {
+        kind: "compare-difference",
+        generate({ max }) {
+          const smaller = mathRandomInt(3, Math.min(max, 32));
+          const answer = mathRandomInt(2, 16);
+          const bigger = smaller + answer;
+          const prompt = `${bigger}은 ${smaller}보다 얼마나 더 클까요?`;
+          return mathProblemDescriptor("compare-difference", prompt, answer, { bigger, smaller }, `${bigger} - ${smaller} = ${answer}`);
+        }
+      },
+      "three-addends": {
+        kind: "three-addends",
+        generate() {
+          const first = mathRandomInt(2, 12);
+          const second = mathRandomInt(2, 10);
+          const third = mathRandomInt(1, 9);
+          const answer = first + second + third;
+          const prompt = `${first} + ${second} + ${third} = ?`;
+          return mathProblemDescriptor("three-addends", prompt, answer, { addends: [first, second, third] }, `${first} + ${second} + ${third} = ${answer}`);
+        }
+      },
+      "place-value-tens-ones": {
+        kind: "place-value-tens-ones",
+        generate() {
+          const tens = mathRandomInt(1, 8);
+          const ones = mathRandomInt(0, 9);
+          const answer = tens * 10 + ones;
+          const prompt = `십의 자리 ${tens}, 일의 자리 ${ones}이면 어떤 수일까요?`;
+          return mathProblemDescriptor("place-value-tens-ones", prompt, answer, { tens, ones }, `${tens}십 ${ones}일은 ${answer}`);
+        }
+      },
+      "short-story-choice": {
+        kind: "short-story-choice",
+        generate() {
+          const template = MATH_SHORT_STORY_TEMPLATES[mathRandomInt(0, MATH_SHORT_STORY_TEMPLATES.length - 1)];
+          const story = template.generate();
+          return mathProblemDescriptor(
+            "short-story-choice",
+            story.prompt,
+            story.answer,
+            { template: template.type, ...story.payload },
+            `정답은 ${story.answer}입니다.`
+          );
+        }
+      }
+    };
+
+    function mathProblemKindForStage() {
+      return MATH_PROBLEM_KINDS[Math.floor(Math.random() * MATH_PROBLEM_KINDS.length)];
+    }
+
+    function mathAnswerChoices(answer) {
+      const values = new Set([answer]);
+      const offsets = shuffle([-10, -8, -6, -4, -3, -2, -1, 1, 2, 3, 4, 6, 8, 10]);
+      offsets.forEach(offset => {
+        const candidate = answer + offset;
+        if (candidate >= 0 && values.size < 3) values.add(candidate);
+      });
+      let fallback = 1;
+      while (values.size < 3) {
+        values.add(answer + fallback);
+        fallback += 1;
+      }
+      return shuffle([...values]);
+    }
+
+    function mathChoiceValue(choice) {
+      if (choice && typeof choice === "object" && "value" in choice) return choice.value;
+      return choice;
+    }
+
+    function mathChoiceLabel(choice) {
+      if (choice && typeof choice === "object" && "label" in choice) return choice.label;
+      return mathChoiceValue(choice);
+    }
+
+    function mathQuestionPrompt(question) {
+      return question?.prompt ?? question?.text ?? "";
+    }
+
+    function normalizeMathQuestion(question, choices = []) {
+      if (!question || typeof question !== "object" || question.answer == null) return null;
+      const prompt = mathQuestionPrompt(question);
+      const normalized = {
+        kind: question.kind || "legacy-choice",
+        prompt,
+        text: question.text ?? prompt,
+        answer: question.answer,
+        choices: Array.isArray(question.choices) ? [...question.choices] : [...choices],
+        payload: question.payload && typeof question.payload === "object" ? question.payload : {},
+        ...(question.explanation ? { explanation: question.explanation } : {})
+      };
+      return normalized;
+    }
+
+    function normalizeMathChoices(question, choices = []) {
+      const source = Array.isArray(question?.choices) && question.choices.length
+        ? question.choices
+        : choices;
+      const normalized = Array.isArray(source) ? [...source] : [];
+      if (question && !normalized.some(choice => mathChoiceValue(choice) === question.answer)) {
+        normalized.unshift(question.answer);
+      }
+      if (question && normalized.length < 3 && typeof question.answer === "number") {
+        return mathAnswerChoices(question.answer);
+      }
+      return normalized;
+    }
+
+    function setMathQuestion(question) {
+      const normalized = normalizeMathQuestion(question, question.choices);
+      if (!normalized) {
+        state.math.question = null;
+        state.math.choices = [];
+        return;
+      }
+      const choices = normalizeMathChoices(normalized, normalized.choices);
+      normalized.choices = [...choices];
+      state.math.question = normalized;
+      state.math.choices = [...choices];
+    }
+
     function makeMathQuestion() {
       const max = Math.min(18 + state.math.stage * 4, 70);
-      const useMinus = state.math.stage > 1 && Math.random() > .48;
       let left = Math.floor(Math.random() * max) + 4;
       let right = Math.floor(Math.random() * Math.min(max, 24)) + 2;
-      if (useMinus && right > left) [left, right] = [right, left];
-      const answer = useMinus ? left - right : left + right;
-      const text = `${left} ${useMinus ? "-" : "+"} ${right} = ?`;
-      const values = new Set([answer]);
-      while (values.size < 3) {
-        const offset = [-8, -6, -4, -3, -2, -1, 1, 2, 3, 4, 6, 8][Math.floor(Math.random() * 12)];
-        const candidate = Math.max(0, answer + offset);
-        values.add(candidate);
-      }
-      state.math.question = { text, answer };
-      state.math.choices = shuffle([...values]);
+      const kind = mathProblemKindForStage();
+      const question = MATH_PROBLEM_REGISTRY[kind].generate({ left, right, max, stage: state.math.stage });
+      setMathQuestion(question);
       state.math.answered = false;
       state.math.selectedChoice = null;
       state.math.feedback = null;
@@ -5076,12 +7670,73 @@
 
     function ensureMathBattle() {
       if (!state.math) state.math = loadMathState();
-      if (!state.math.enemy || state.math.enemy.hp <= 0) state.math.enemy = makeMathEnemy();
+      if (!state.math.enemy || (state.math.enemy.hp <= 0 && !state.math.answered)) state.math.enemy = makeMathEnemy();
       if (!state.math.question) makeMathQuestion();
     }
 
     function mathHpPercent(value, max) {
       return `${Math.max(0, Math.min(100, Math.round((value / max) * 100)))}%`;
+    }
+
+    function mathEscape(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function mathPetStatus(petState, pet) {
+      const hpRatio = pet.maxHp ? petState.hp / pet.maxHp : 1;
+      if (hpRatio <= .35) return { state: "low", label: "주의" };
+      return { state: "ready", label: "활성" };
+    }
+
+    function ensureMathBattleGearPanel() {
+      let list = document.querySelector("#mathBattleGear");
+      if (list) return list;
+      const itemPanel = document.querySelector(".battle-item-panel");
+      const panel = document.createElement("section");
+      panel.className = "math-panel battle-gear-panel";
+      panel.innerHTML = `
+        <h3><img src="assets/math-pet-battle/ui/single/gear.png" alt="" aria-hidden="true">장비</h3>
+        <div id="mathBattleGear" class="battle-gear-list"></div>
+      `;
+      itemPanel?.parentNode?.insertBefore(panel, itemPanel);
+      return panel.querySelector("#mathBattleGear");
+    }
+
+    function renderMathActiveSideCard(pet, petState, gear) {
+      const card = document.querySelector(".battle-side-pet");
+      const skill = document.querySelector("#mathBattleSideSkill");
+      if (!card || !skill) return;
+      const status = mathPetStatus(petState, pet);
+      card.dataset.status = status.state;
+      card.innerHTML = `
+        <div class="side-pet-portrait">
+          <img id="mathBattleSidePetImage" src="${pet.asset}" alt="${mathEscape(pet.name)} 펫">
+          <span class="side-state-badge">${status.label}</span>
+        </div>
+        <div class="side-pet-copy">
+          <strong id="mathBattleSidePetName">${mathEscape(pet.name)} <small>Lv.${petState.level}</small></strong>
+          <span id="mathBattleSideTrait" class="side-pet-trait">${mathEscape(pet.element)} · ${mathEscape(pet.trait)}</span>
+          <div class="side-hp-row"><span>HP</span><b>${petState.hp}/${pet.maxHp}</b></div>
+          <div class="side-hp-track" aria-hidden="true"><i style="--hp:${mathHpPercent(petState.hp, pet.maxHp)}"></i></div>
+        </div>
+      `;
+      skill.innerHTML = `
+        <img src="assets/math-pet-battle/ui/single/trait-sparkle.png" alt="" aria-hidden="true">
+        <span><b>특성</b><small>${mathEscape(pet.desc)}</small></span>
+      `;
+      let gearStatus = document.querySelector("#mathBattleSideGearStatus");
+      if (!gearStatus) {
+        gearStatus = document.createElement("div");
+        gearStatus.id = "mathBattleSideGearStatus";
+        gearStatus.className = "battle-gear-status";
+        skill.insertAdjacentElement("afterend", gearStatus);
+      }
+      gearStatus.dataset.state = gear ? "equipped" : "empty";
+      gearStatus.textContent = gear ? `장비: ${gearName(gear)} 장착 중` : "장비: 빈 슬롯";
     }
 
     function renderMathBattle() {
@@ -5095,8 +7750,17 @@
       els.mathGems.textContent = math.gems;
       els.mathStage.textContent = `스테이지 ${math.stage}`;
       els.mathBattleStage.textContent = `스테이지 ${math.stage}`;
+      if (els.mathProgressStatus) els.mathProgressStatus.textContent = `진행도 ${math.stage}단계 · 승리 ${math.wins}`;
+      if (els.mathBattleSaveStatus) els.mathBattleSaveStatus.textContent = `저장됨 · 진행도 ${math.stage}단계 · 승리 ${math.wins}`;
       els.mathBattlePet.textContent = `${pet.name} Lv.${petState.level}`;
       els.mathBattleEnemy.textContent = enemySpec.name;
+      els.mathBattleCoins.textContent = math.coins;
+      els.mathBattleGems.textContent = math.gems;
+      els.mathBattleSidePetImage.src = pet.asset;
+      els.mathBattleSidePetImage.alt = `${pet.name} 펫`;
+      els.mathBattleSidePetName.textContent = `${pet.name} Lv.${petState.level}`;
+      els.mathBattleSideTrait.textContent = `${pet.element} · ${pet.trait}`;
+      els.mathBattleSideSkill.textContent = pet.desc;
       els.mathPetImage.src = pet.asset;
       els.mathPetImage.alt = `${pet.name} 펫`;
       els.mathPetHpBar.style.setProperty("--hp", mathHpPercent(petState.hp, pet.maxHp));
@@ -5105,8 +7769,11 @@
       els.mathEnemyImage.alt = `${enemySpec.name} 상대`;
       els.mathEnemyHpBar.style.setProperty("--hp", mathHpPercent(math.enemy.hp, math.enemy.maxHp));
       els.mathEnemyName.textContent = `${enemySpec.name} HP ${Math.max(0, math.enemy.hp)}/${math.enemy.maxHp}`;
-      els.mathQuestion.textContent = math.question.text;
-      els.mathPrompt.textContent = math.answered ? "결과를 확인하고 다음 문제로 넘어가요." : "정답을 골라 펫에게 명령하세요.";
+      const questionPrompt = mathQuestionPrompt(math.question);
+      const questionLabel = mathProblemLabel(math.question?.kind);
+      els.mathQuestion.textContent = questionPrompt;
+      els.mathQuestion.classList.toggle("long-prompt", String(questionPrompt).length > 26);
+      els.mathPrompt.textContent = math.answered ? `결과 확인 · ${questionLabel}` : `문제: ${questionLabel} · 정답을 골라 펫에게 힘을 주세요.`;
       els.mathCombo.textContent = `연속 정답 ${math.combo}`;
       els.mathLog.textContent = math.log;
       els.mathNextTurn.textContent = math.enemy.hp <= 0 ? "다음 스테이지" : "다음 문제";
@@ -5117,13 +7784,17 @@
       els.mathActivePetTrait.textContent = `${pet.element} · ${pet.trait}`;
       els.mathActivePetDesc.textContent = `${pet.desc}${gear ? ` · 장비: ${gearName(gear)}` : ""}`;
       els.mathEquipButton.textContent = gear ? `${gearName(gear)} 해제` : "장비 장착";
+      renderMathActiveSideCard(pet, petState, gear);
       els.mathWorldMessage.textContent = math.log;
       els.moves.textContent = state.moves;
       els.matches.textContent = `${state.matches}/${math.stage}`;
+      renderMathWorldNodes();
       renderMathScreen();
       renderMathFeedback();
       renderMathChoices();
       renderMathTeam();
+      renderMathBattleRoster();
+      renderMathGearPanel();
       renderMathItems();
       renderMathShop();
       saveMathState();
@@ -5131,6 +7802,7 @@
 
     function renderMathScreen() {
       const screen = state.math.screen || "world";
+      document.body.classList.toggle("math-battle-screen", document.body.classList.contains("math-active") && screen === "battle");
       els.mathBattleWrap.dataset.screen = screen;
       els.mathWorldView.classList.toggle("hidden", screen !== "world");
       els.mathBattleView.classList.toggle("hidden", screen !== "battle");
@@ -5149,6 +7821,24 @@
       }
     }
 
+    function mathFeedbackStep(kind, label, text, asset) {
+      return { kind, label, text, asset };
+    }
+
+    function setMathFeedback(type, asset, text, steps = []) {
+      state.math.feedback = { type, asset, text, steps };
+    }
+
+    function answeredNextStep() {
+      const stageClear = state.math.enemy.hp <= 0;
+      return mathFeedbackStep(
+        "next",
+        stageClear ? "다음 스테이지" : "다음 문제",
+        stageClear ? "버튼을 눌러 새 적을 만나요." : "버튼을 눌러 이어서 풀어요.",
+        MATH_ASSETS.effects.portal
+      );
+    }
+
     function renderMathFeedback() {
       const feedback = state.math.feedback;
       if (!feedback || !feedback.asset) {
@@ -5157,22 +7847,86 @@
         return;
       }
       els.mathBattleEffect.classList.remove("hidden");
-      els.mathBattleEffect.innerHTML = `<img src="${feedback.asset}" alt="" aria-hidden="true"><span>${feedback.text}</span>`;
+      els.mathBattleEffect.dataset.feedbackType = feedback.type || "";
+      els.mathBattleEffect.replaceChildren();
+
+      const hero = document.createElement("div");
+      hero.className = "feedback-hero";
+      const heroImg = document.createElement("img");
+      heroImg.src = feedback.asset;
+      heroImg.alt = "";
+      heroImg.setAttribute("aria-hidden", "true");
+      const heroText = document.createElement("span");
+      heroText.textContent = feedback.text;
+      hero.append(heroImg, heroText);
+      els.mathBattleEffect.append(hero);
+
+      const steps = Array.isArray(feedback.steps) ? feedback.steps : [];
+      if (!steps.length) return;
+
+      const list = document.createElement("ol");
+      list.className = "feedback-sequence";
+      list.setAttribute("aria-label", "전투 피드백 순서");
+      steps.forEach((step, index) => {
+        const item = document.createElement("li");
+        item.className = "feedback-step";
+        item.dataset.step = step.kind || "state";
+
+        const order = document.createElement("span");
+        order.className = "feedback-order";
+        order.textContent = String(index + 1);
+
+        const icon = document.createElement("img");
+        icon.src = step.asset || feedback.asset;
+        icon.alt = "";
+        icon.setAttribute("aria-hidden", "true");
+
+        const copy = document.createElement("span");
+        const label = document.createElement("b");
+        label.textContent = step.label || "상태";
+        const body = document.createElement("span");
+        body.textContent = step.text || "";
+        copy.append(label, body);
+
+        item.append(order, icon, copy);
+        list.append(item);
+      });
+      els.mathBattleEffect.append(list);
     }
 
     function renderMathChoices() {
       const math = state.math;
-      els.mathChoices.replaceChildren(...math.choices.map(value => {
+      const questionPrompt = mathQuestionPrompt(math.question);
+      const answer = math.question.answer;
+      const choices = normalizeMathChoices(math.question, math.choices);
+      math.choices = [...choices];
+      math.question.choices = [...choices];
+      els.mathChoices.replaceChildren(...choices.map(choice => {
+        const value = mathChoiceValue(choice);
+        const label = mathChoiceLabel(choice);
         const button = document.createElement("button");
         button.type = "button";
         button.className = "math-choice";
-        button.textContent = value;
-        if (math.removedChoices.includes(value)) button.classList.add("removed");
+        button.textContent = label;
+        button.setAttribute("aria-label", `${questionPrompt} 선택지 ${String(label)}`);
+        const isRemoved = math.removedChoices.includes(value);
+        if (isRemoved) {
+          button.classList.add("removed");
+          button.dataset.choiceState = "removed";
+          button.disabled = true;
+        }
         if (math.highlightedChoice === value) button.classList.add("hint-choice");
         if (math.answered) {
           button.disabled = true;
-          if (value === math.question.answer) button.classList.add("correct");
-          if (value === math.selectedChoice && value !== math.question.answer) button.classList.add("wrong-selected");
+          if (value === answer) {
+            button.classList.add("correct");
+            button.dataset.choiceState = "correct";
+          }
+          if (value === math.selectedChoice && value !== answer) {
+            button.classList.add("wrong-selected");
+            button.dataset.choiceState = "wrong";
+          }
+          if (!button.dataset.choiceState) button.dataset.choiceState = "disabled";
         }
         button.addEventListener("click", () => answerMath(value));
         return button;
@@ -5185,6 +7939,10 @@
         const button = document.createElement("button");
         button.type = "button";
         button.className = `pet-button${pet.id === state.math.activePetId ? " active" : ""}${petState.unlocked ? "" : " locked"}`;
+        button.dataset.state = petState.unlocked ? (pet.id === state.math.activePetId ? "active" : "available") : "locked";
+        button.dataset.stateLabel = petState.unlocked ? (pet.id === state.math.activePetId ? "활성" : "대기") : "잠김";
+        button.disabled = !petState.unlocked;
+        button.setAttribute("aria-disabled", petState.unlocked ? "false" : "true");
         button.innerHTML = `
           <img src="${pet.asset}" alt="" aria-hidden="true">
           <span><b>${pet.name}</b><span>${petState.unlocked ? `${pet.trait} · HP ${petState.hp}/${pet.maxHp}` : `잠김 · ${pet.priceGem}보석`}</span></span>
@@ -5194,15 +7952,73 @@
       }));
     }
 
-    function renderMathItems() {
-      const items = MATH_SHOP.items;
-      els.mathItems.replaceChildren(...items.map(item => {
-        const count = state.math.inventory[item.id] || 0;
+    function renderMathBattleRoster() {
+      const slots = [...MATH_PETS, null, null];
+      els.mathBattleRoster.replaceChildren(...slots.map((pet) => {
+        if (!pet) {
+          const empty = document.createElement("div");
+          empty.className = "battle-roster-slot empty";
+          empty.dataset.state = "empty";
+          empty.setAttribute("aria-label", "빈 펫 슬롯");
+          empty.innerHTML = `<span class="roster-empty-mark">+</span><span>빈 자리</span><small>대기</small>`;
+          return empty;
+        }
+        const petState = state.math.pets[pet.id];
+        const isActive = pet.id === state.math.activePetId;
+        const slotState = !petState.unlocked ? "locked" : isActive ? "active" : "available";
+        const slot = document.createElement("div");
+        slot.className = `battle-roster-slot ${slotState}`;
+        slot.dataset.state = slotState;
+        slot.setAttribute("aria-label", petState.unlocked
+          ? `${pet.name} ${isActive ? "활성" : "대기"} HP ${petState.hp}/${pet.maxHp}`
+          : `${pet.name} 잠김 ${pet.priceGem} 보석 필요`);
+        slot.innerHTML = `
+          <img src="${pet.asset}" alt="" aria-hidden="true">
+          <span>${mathEscape(pet.name)}</span>
+          <small>${petState.unlocked ? (isActive ? "활성" : `HP ${petState.hp}/${pet.maxHp}`) : `잠김 ${pet.priceGem}보석`}</small>
+          ${petState.unlocked ? `<i class="roster-hp" style="--hp:${mathHpPercent(petState.hp, pet.maxHp)}"></i>` : ""}
+        `;
+        return slot;
+      }));
+    }
+
+    function renderMathGearPanel() {
+      const list = ensureMathBattleGearPanel();
+      if (!list) return;
+      const activeGear = activeMathGear();
+      list.replaceChildren(...MATH_SHOP.gear.map(item => {
+        const owned = state.math.ownedGear.includes(item.id);
+        const equipped = activeGear === item.id;
+        const gearState = equipped ? "equipped" : owned ? "owned" : "locked";
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "item-button";
+        button.className = `gear-button ${gearState}`;
+        button.dataset.state = gearState;
+        button.disabled = true;
+        button.setAttribute("aria-label", `${item.name} ${equipped ? "장착 중" : owned ? "보유" : "잠김"}`);
+        button.innerHTML = `
+          <img src="${item.asset}" alt="" aria-hidden="true">
+          <span><b>${mathEscape(item.name)}</b><small>${equipped ? "장착 중" : owned ? "보유 · 월드에서 교체" : `${item.cost} ${mathCurrencyLabel(item.currency)}`}</small></span>
+        `;
+        return button;
+      }));
+    }
+
+    function renderMathItems() {
+      els.mathItems.replaceChildren(...MATH_SHOP.items.map(item => {
+        const count = state.math.inventory[item.id] || 0;
+        const itemState = state.math.answered ? "turn-locked" : count > 0 ? "usable" : "zero";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `item-button ${itemState}`;
+        button.dataset.state = itemState;
         button.disabled = count <= 0 || state.math.answered;
-        button.innerHTML = `<img src="${item.asset}" alt="" aria-hidden="true"><span><b>${item.name} x${count}</b><span>${item.desc}</span></span>`;
+        button.setAttribute("aria-label", `${item.name} ${count}개 ${button.disabled ? "사용 불가" : "사용 가능"}`);
+        button.innerHTML = `
+          <span class="item-count-badge">x${count}</span>
+          <img src="${item.asset}" alt="" aria-hidden="true">
+          <span><b>${mathEscape(item.name)}</b><small>${itemState === "usable" ? "사용 가능" : itemState === "zero" ? "수량 0" : "결과 확인 중"}</small></span>
+        `;
         button.addEventListener("click", () => useMathItem(item.id));
         return button;
       }));
@@ -5229,14 +8045,33 @@
           : item.type === "gear"
             ? state.math.ownedGear.includes(item.id)
             : false;
+        const equipped = item.type === "gear" && activeMathGear() === item.id;
         const canBuy = item.currency === "gems" ? state.math.gems >= item.cost : state.math.coins >= item.cost;
+        const cardState = equipped
+          ? "equipped"
+          : owned
+            ? "owned"
+            : canBuy
+              ? "affordable"
+              : item.type === "pet"
+                ? "locked"
+                : "unaffordable";
+        const stateLabel = {
+          equipped: "장착 중",
+          owned: "보유",
+          affordable: "구매 가능",
+          locked: "잠김",
+          unaffordable: "코인 부족"
+        }[cardState];
         const card = document.createElement("div");
-        card.className = "shop-card";
+        card.className = `shop-card ${cardState}`;
+        card.dataset.state = cardState;
+        card.dataset.stateLabel = stateLabel;
         card.innerHTML = `
           <img src="${shopAsset(item)}" alt="" aria-hidden="true">
           <span><b>${item.name}</b><span>${item.desc}</span></span>
           <span class="shop-actions">
-            <b>${owned ? "보유중" : `${item.cost} ${mathCurrencyLabel(item.currency)}`}</b>
+            <b>${owned ? stateLabel : `${item.cost} ${mathCurrencyLabel(item.currency)}`}</b>
             <button class="shop-buy" type="button" ${owned || !canBuy ? "disabled" : ""}>${owned ? "완료" : "구매"}</button>
           </span>
         `;
@@ -5295,26 +8130,37 @@
     function useMathItem(id) {
       if (state.math.answered || (state.math.inventory[id] || 0) <= 0) return;
       if (id === "focusCookie") {
-        const wrong = state.math.choices.find(value => value !== state.math.question.answer && !state.math.removedChoices.includes(value));
+        const answer = state.math.question.answer;
+        const wrong = normalizeMathChoices(state.math.question, state.math.choices)
+          .map(mathChoiceValue)
+          .find(value => value !== answer && !state.math.removedChoices.includes(value));
         if (wrong == null) return;
         state.math.removedChoices.push(wrong);
         state.math.inventory[id] -= 1;
         state.math.log = "집중쿠키를 사용해서 오답 하나를 치웠어요.";
-        state.math.feedback = {
-          type: "item",
-          asset: MATH_ASSETS.effects.correct,
-          text: "집중쿠키가 오답 하나를 치웠어요."
-        };
+        setMathFeedback(
+          "item",
+          MATH_ASSETS.items.focusCookie,
+          "집중쿠키가 오답 하나를 치웠어요.",
+          [
+            mathFeedbackStep("item", "아이템", "집중쿠키 사용", MATH_ASSETS.items.focusCookie),
+            mathFeedbackStep("next", "선택 이어가기", "남은 선택지에서 골라요.", MATH_ASSETS.effects.command)
+          ]
+        );
       }
       if (id === "hintCompass") {
         state.math.highlightedChoice = state.math.question.answer;
         state.math.inventory[id] -= 1;
         state.math.log = "힌트나침반이 정답 후보를 반짝였어요.";
-        state.math.feedback = {
-          type: "item",
-          asset: "assets/math-pet-battle/ui/single/hint-compass.png",
-          text: "힌트나침반이 정답 후보를 알려줘요."
-        };
+        setMathFeedback(
+          "item",
+          MATH_ASSETS.items.hintCompass,
+          "힌트나침반이 정답 후보를 알려줘요.",
+          [
+            mathFeedbackStep("item", "아이템", "힌트나침반 사용", MATH_ASSETS.items.hintCompass),
+            mathFeedbackStep("next", "선택 이어가기", "반짝이는 답을 확인해요.", MATH_ASSETS.effects.command)
+          ]
+        );
       }
       renderMathBattle();
     }
@@ -5361,57 +8207,81 @@
       const pet = getMathPet();
       const petState = activeMathPetState();
       const gear = activeMathGear();
-      const correct = value === state.math.question.answer;
+      const answer = state.math.question.answer;
+      const correct = value === answer;
       if (correct) {
         state.matches += 1;
         state.math.combo += 1;
         let damage = pet.attack + (gear === "starCollar" ? 3 : 0) + Math.floor((petState.level - 1) * 2);
+        const steps = [
+          mathFeedbackStep("pet", "펫 행동", `${pet.name}가 앞으로 공격해요.`, MATH_ASSETS.effects.command)
+        ];
         const messages = [`정답! ${pet.name}가 ${damage} 피해를 줬어요.`];
         const doubleChance = pet.id === "momo" ? (gear === "starCollar" ? .5 : .32) : 0;
         if (doubleChance && Math.random() < doubleChance) {
           damage += pet.attack;
           messages.push("두번톡톡 발동! 한 번 더 공격했어요.");
+          steps.push(mathFeedbackStep("trait", "특성 발동", "두번톡톡 추가 공격", MATH_ASSETS.effects.double));
         }
         if (pet.id === "tori" && state.math.combo >= 2) {
           damage += 8;
           messages.push("빠른발 발동! 번개처럼 추가 공격했어요.");
+          steps.push(mathFeedbackStep("speed", "속도 특성", "빠른발 추가 피해", MATH_ASSETS.effects.speed));
         }
         if (pet.id === "popo") {
           petState.hp = Math.min(pet.maxHp, petState.hp + 8);
           messages.push("포근회복으로 체력을 회복했어요.");
+          steps.push(mathFeedbackStep("heal", "회복 특성", `${pet.name} HP +8`, MATH_ASSETS.effects.heal));
         }
         state.math.enemy.hp -= damage;
+        steps.push(mathFeedbackStep("damage", "적 피해", `${damage} 피해`, MATH_ASSETS.effects.damage));
         state.math.log = messages.join(" ");
-        state.math.feedback = {
-          type: "correct",
-          asset: MATH_ASSETS.effects.correct,
-          text: messages.join(" ")
-        };
-        if (state.math.enemy.hp <= 0) winMathBattle();
+        if (state.math.enemy.hp <= 0) {
+          winMathBattle(steps);
+        } else {
+          setMathFeedback(
+          "correct",
+          MATH_ASSETS.effects.correct,
+          messages.join(" "),
+          [...steps, answeredNextStep()]
+        );
+        }
       } else {
         state.math.combo = 0;
         let damage = state.math.enemy.attack;
-        const messages = [`오답이에요. 정답은 ${state.math.question.answer}이에요.`];
+        const messages = [`오답이에요. 정답은 ${answer}이에요.`];
+        const steps = [
+          mathFeedbackStep("counter", "반격", "적이 되받아쳐요.", MATH_ASSETS.effects.counter)
+        ];
         if (pet.id === "lulu") {
           damage = Math.max(0, damage - 7);
           messages.push("보호잎이 피해를 줄였어요.");
+          steps.push(mathFeedbackStep("shield", "펫 방어", "보호잎 피해 감소", MATH_ASSETS.effects.shield));
         }
         if (gear === "shieldBadge") {
           damage = Math.max(0, damage - 3);
           messages.push("방패배지가 한 번 더 막아줬어요.");
+          steps.push(mathFeedbackStep("shield", "장비 방어", "방패배지 피해 감소", MATH_ASSETS.effects.shield));
         }
         petState.hp = Math.max(1, petState.hp - damage);
         state.math.log = `${messages.join(" ")} ${pet.name}가 ${damage} 피해를 받았어요.`;
-        state.math.feedback = {
-          type: "wrong",
-          asset: MATH_ASSETS.effects.wrong,
-          text: state.math.log
-        };
+        steps.push(mathFeedbackStep(
+          damage > 0 ? "damage" : "shield",
+          damage > 0 ? "펫 HP" : "보호 성공",
+          damage > 0 ? `${pet.name} HP -${damage}` : "피해 0",
+          damage > 0 ? MATH_ASSETS.effects.damage : MATH_ASSETS.effects.shield
+        ));
+        setMathFeedback(
+          "wrong",
+          MATH_ASSETS.effects.wrong,
+          state.math.log,
+          [...steps, answeredNextStep()]
+        );
       }
       renderMathBattle();
     }
 
-    function winMathBattle() {
+    function winMathBattle(battleSteps = []) {
       const enemySpec = getMathEnemySpec(state.math.enemy.id);
       const coinReward = enemySpec.rewardCoins + state.math.stage * 6;
       const gemReward = enemySpec.rewardGems + (state.math.combo >= 3 ? 1 : 0);
@@ -5428,25 +8298,37 @@
         state.math.log += ` ${pet.name}가 Lv.${petState.level}이 되었어요!`;
       }
       state.math.log += ` ${enemySpec.name} 승리! 별코인 ${coinReward}, 정답보석 ${gemReward} 획득.`;
-      state.math.feedback = {
-        type: "correct",
-        asset: MATH_ASSETS.effects.reward,
-        text: `${enemySpec.name} 승리! 별코인 ${coinReward}, 정답보석 ${gemReward} 획득.`
-      };
+      const rewardText = `${enemySpec.name} 승리! 별코인 ${coinReward}, 정답보석 ${gemReward} 획득.`;
+      setMathFeedback(
+        "correct",
+        MATH_ASSETS.effects.reward,
+        rewardText,
+        [
+          ...battleSteps,
+          mathFeedbackStep("reward", "보상", `별코인 ${coinReward}, 정답보석 ${gemReward}`, MATH_ASSETS.effects.reward),
+          answeredNextStep()
+        ]
+      );
     }
 
     function nextMathTurn() {
+      let stageFeedback = null;
       if (state.math.enemy?.hp <= 0) {
         state.math.stage += 1;
         state.math.enemy = makeMathEnemy();
         state.math.log = `스테이지 ${state.math.stage} 시작! 새 상대가 나타났어요.`;
-        state.math.feedback = {
-          type: "correct",
+        stageFeedback = {
+          type: "next",
           asset: MATH_ASSETS.effects.portal,
-          text: `스테이지 ${state.math.stage}로 이동했어요.`
+          text: `스테이지 ${state.math.stage}로 이동했어요.`,
+          steps: [
+            mathFeedbackStep("next", "새 스테이지", `스테이지 ${state.math.stage}`, MATH_ASSETS.effects.portal),
+            mathFeedbackStep("pet", "새 문제", "선택지를 보고 다시 명령해요.", MATH_ASSETS.effects.command)
+          ]
         };
       }
       makeMathQuestion();
+      if (stageFeedback) state.math.feedback = stageFeedback;
       renderMathBattle();
     }
 
@@ -5454,7 +8336,8 @@
       stopTimer();
       state.mode = "math-battle";
       if (resetRun || !state.math) {
-        state.math = resetRun ? baseMathState() : loadMathState();
+        if (resetRun) resetMathBattleState();
+        else state.math = loadMathState();
       }
       state.deck = [];
       state.quizItems = [];
@@ -5911,8 +8794,10 @@
     function setMode(mode) {
       if (!requireAuth()) return;
       document.body.classList.toggle("math-active", mode === "math-battle");
+      document.body.classList.remove("math-battle-screen");
       document.body.classList.remove("home-active");
       els.homeView.classList.add("hidden");
+      els.hanjaHomeView?.classList.add("hidden");
       els.gameView.classList.remove("hidden");
       if (mode === "math-battle") {
         closeQuizResult();
@@ -5930,6 +8815,7 @@
       stopTimer();
       closeQuizResult();
       document.body.classList.remove("math-active");
+      document.body.classList.remove("math-battle-screen");
       const levelInfo = LEVELS[state.level];
       const pool = poolForLevel(state.level);
       const words = shuffle(pool).slice(0, state.pairCount);
@@ -6000,8 +8886,29 @@
       if (!requireAuth()) return;
       closeQuizResult();
       document.body.classList.remove("math-active");
+      document.body.classList.remove("math-battle-screen");
       document.body.classList.add("home-active");
       els.homeView.classList.remove("hidden");
+      els.hanjaHomeView?.classList.add("hidden");
+      els.gameView.classList.add("hidden");
+    }
+
+    function syncHanjaHomeControls() {
+      document.querySelectorAll("[data-hanja-level]").forEach(tab => {
+        tab.setAttribute("aria-pressed", String(tab.dataset.hanjaLevel === state.level));
+      });
+      if (els.hanjaPairSelect) els.hanjaPairSelect.value = String(state.pairCount);
+    }
+
+    function showHanjaHome() {
+      if (!requireAuth()) return;
+      closeQuizResult();
+      syncHanjaHomeControls();
+      document.body.classList.remove("math-active");
+      document.body.classList.remove("math-battle-screen");
+      document.body.classList.add("home-active");
+      els.homeView.classList.add("hidden");
+      els.hanjaHomeView?.classList.remove("hidden");
       els.gameView.classList.add("hidden");
     }
 
@@ -6021,6 +8928,11 @@
     els.homeButton.addEventListener("click", showHome);
     els.openModes?.addEventListener("click", () => document.querySelector("#subjectGrid")?.scrollIntoView({ behavior: "smooth", block: "center" }));
     els.homeView.addEventListener("click", event => {
+      const hanjaEntry = event.target.closest("[data-hanja-entry]");
+      if (hanjaEntry) {
+        showHanjaHome();
+        return;
+      }
       const action = event.target.closest("[data-home-mode]");
       if (!action) return;
       setMode(action.dataset.homeMode);
@@ -6029,7 +8941,7 @@
       const card = event.target.closest(".subject-card");
       if (!card) return;
       if (card.dataset.pack === "hanja") {
-        setMode("memory");
+        showHanjaHome();
         return;
       }
       if (card.dataset.pack === "math") {
@@ -6039,10 +8951,24 @@
       if (els.tipText) els.tipText.textContent = "새 콘텐츠팩은 같은 게임 모드 구조로 추가할 예정입니다.";
     });
     els.modeGrid?.addEventListener("click", event => {
-      const card = event.target.closest(".mode-card");
+      const card = event.target.closest(".mode-card, .hanja-mode-card");
       if (!card) return;
       if (card.dataset.ready === "false") return;
       setMode(card.dataset.mode);
+    });
+    els.hanjaBackHome?.addEventListener("click", showHome);
+    els.hanjaPairSelect?.addEventListener("change", event => {
+      state.pairCount = Number(event.target.value);
+      els.pairCount.value = event.target.value;
+    });
+    document.querySelectorAll("[data-hanja-level]").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-hanja-level]").forEach(tab => {
+          tab.setAttribute("aria-pressed", String(tab === button));
+        });
+        setLevel(button.dataset.hanjaLevel);
+        showHanjaHome();
+      });
     });
     els.newGame.addEventListener("click", () => {
       if (els.gameView.classList.contains("hidden")) showGame();
@@ -6059,11 +8985,16 @@
     els.quizResultNext.addEventListener("click", nextQuiz);
     els.mathNextTurn.addEventListener("click", nextMathTurn);
     els.mathEquipButton.addEventListener("click", toggleMathGear);
+    els.mathResetButton?.addEventListener("click", () => startMathBattle(true));
+    els.mathBattleResetButton?.addEventListener("click", () => startMathBattle(true));
     document.querySelectorAll(".shop-tab").forEach(tab => {
       tab.addEventListener("click", () => setMathShopTab(tab.dataset.shopTab));
     });
     document.querySelectorAll("[data-math-destination]").forEach(button => {
-      button.addEventListener("click", () => setMathScreen(button.dataset.mathDestination));
+      button.addEventListener("click", () => {
+        if (button.disabled || button.getAttribute("aria-disabled") === "true") return;
+        setMathScreen(button.dataset.mathDestination);
+      });
     });
     els.mathExitButton.addEventListener("click", showHome);
     els.hintButton.addEventListener("click", useHint);
